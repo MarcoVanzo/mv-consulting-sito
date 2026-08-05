@@ -36,33 +36,66 @@ del rispettivo brand dall'attributo `style` dell'elemento `<article class="case"
 sfondo della fascia. Per aggiungere un progetto basta duplicare un `<article>` e
 cambiare i colori.
 
-## Pubblicazione su Aruba
+## Pubblicazione
 
-L'hosting risponde `server: aruba-proxy` e supporta PHP, quindi `contatti.php` funziona
-senza configurazione. Il caricamento avviene via FTP/SFTP nella cartella pubblica
-(di norma `/www` o `/htdocs`).
+Il deploy gira su **GitHub Actions** (`.github/workflows/deploy.yml`) e carica via FTP
+sull'hosting Aruba, che supporta PHP: `contatti.php` funziona senza configurazione.
+Ogni push su `main` pubblica; il workflow si può anche lanciare a mano.
 
-**Prima di sostituire il sito attuale:**
+Il repository è **pubblico** di proposito: contiene solo il sito, che è già pubblico, e
+sui repo pubblici i minuti di Actions non si consumano — quelli del piano sono già
+impegnati dagli altri progetti.
 
-1. Scaricare una copia completa della cartella pubblica esistente (WordPress) e
-   **esportare il database** dal pannello Aruba. È l'unico modo per tornare indietro.
-2. Annotare gli indirizzi email configurati sul dominio: `contatti.php` invia
-   *da* `no-reply@mv-consulting.it`, che deve esistere come casella o alias del
-   dominio — Aruba rifiuta le mail con mittente esterno.
+### Configurazione, una volta sola
 
-**Caricamento:**
+Segreti da impostare in *Settings → Secrets and variables → Actions*, oppure da
+terminale:
 
-1. Caricare il contenuto di questa cartella nella radice pubblica (compreso `.htaccess`,
-   che i client FTP nascondono di default: attivare "mostra file nascosti").
-2. Rimuovere i file WordPress residui (`wp-admin/`, `wp-includes/`, `wp-content/`,
-   `wp-config.php`, `index.php`, `xmlrpc.php`). Finché restano, `index.php` può avere
-   la precedenza su `index.html` e continuare a servire il vecchio sito.
-3. Verificare, nell'ordine:
-   - `https://www.mv-consulting.it/` — la home
-   - `https://mv-consulting.it/` — deve reindirizzare a `www`
-   - `https://www.mv-consulting.it/chi-siamo/` — deve reindirizzare a `/#studio`
-   - `https://www.mv-consulting.it/privacy-policy/` — deve reindirizzare alla nuova pagina
-   - un invio di prova del modulo di contatto
+```bash
+gh secret set FTP_SERVER   --repo MarcoVanzo/mv-consulting-sito
+gh secret set FTP_USERNAME --repo MarcoVanzo/mv-consulting-sito
+gh secret set FTP_PASSWORD --repo MarcoVanzo/mv-consulting-sito
+```
+
+Se la cartella pubblica su Aruba non è la radice della connessione FTP ma `/www`,
+aggiungere anche la variabile (non segreta) `FTP_DIR` con valore `/www/`.
+
+### Prima del primo deploy
+
+1. **Backup**: scaricare una copia completa della cartella pubblica attuale (WordPress)
+   ed esportare il database dal pannello Aruba. È l'unico modo per tornare indietro.
+2. Verificare che esista la casella o l'alias `no-reply@mv-consulting.it`: è il mittente
+   usato da `contatti.php` e Aruba rifiuta le mail con mittente esterno al dominio.
+
+### Deploy
+
+```bash
+gh workflow run "Deploy su Aruba" --repo MarcoVanzo/mv-consulting-sito
+gh run watch --repo MarcoVanzo/mv-consulting-sito
+```
+
+Il workflow, alla fine, controlla da solo che `https://www.mv-consulting.it/` risponda
+200 e serva davvero il sito nuovo; se così non è, fallisce con l'errore esplicito.
+
+I file WordPress non vengono rimossi: restano sul server sotto il sito nuovo, che ha
+comunque la precedenza grazie a `DirectoryIndex index.html index.php` nel `.htaccess`.
+È voluto — così il primo deploy è reversibile. Quando il sito nuovo è verificato, si
+lancia il workflow con l'opzione **pulizia_totale** attiva, che svuota la cartella
+remota prima di caricare:
+
+```bash
+gh workflow run "Deploy su Aruba" --repo MarcoVanzo/mv-consulting-sito -f pulizia_totale=true
+```
+
+Da fare **solo dopo il backup**: cancella tutto ciò che c'è sul server.
+
+### Verifica dopo la pubblicazione
+
+- `https://www.mv-consulting.it/` — la home
+- `https://mv-consulting.it/` — deve reindirizzare a `www`
+- `https://www.mv-consulting.it/chi-siamo/` — deve reindirizzare a `/#studio`
+- `https://www.mv-consulting.it/privacy-policy/` — deve reindirizzare alla nuova pagina
+- un invio di prova del modulo di contatto
 
 **Rollback:** ricaricare la copia scaricata al punto 1 e ripristinare il database.
 
