@@ -41,6 +41,7 @@ $azienda   = $campo('azienda');
 $email     = $campo('email');
 $telefono  = $campo('telefono');
 $messaggio = $campo('messaggio');
+$origine   = $campo('origine');                   // campagna di provenienza, riempita dalla pagina
 $consenso  = ($_POST['consenso'] ?? '') === '1';
 
 if ($nome === '' || $messaggio === '') {
@@ -62,6 +63,7 @@ $corpo = "Nuovo messaggio dal sito mv-consulting.it\n\n"
     . "Azienda:   " . ($azienda !== '' ? $azienda : '-') . "\n"
     . "Email:     {$email}\n"
     . "Telefono:  " . ($telefono !== '' ? $telefono : '-') . "\n"
+    . "Origine:   " . ($origine !== '' ? $origine : 'diretta') . "\n"
     . "Data:      " . date('d/m/Y H:i') . "\n"
     . "IP:        " . ($_SERVER['REMOTE_ADDR'] ?? '-') . "\n\n"
     . "Messaggio:\n{$messaggio}\n";

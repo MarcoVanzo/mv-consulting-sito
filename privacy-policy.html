@@ -32,6 +32,11 @@
 .doc a{color:var(--brand); text-decoration:underline; text-underline-offset:2px;}
 .doc .back{display:inline-block; margin-bottom:30px; font-size:13px; color:var(--dim);}
 .doc .back:hover{color:var(--brand);}
+.doc .nota{background:var(--panel); border:1px solid var(--edge); border-left:3px solid var(--brand);
+  border-radius:10px; padding:20px 22px 8px; margin:0 0 22px;}
+.doc .nota p{font-size:14.5px;}
+.doc .nota b{color:var(--text);}
+.doc code{font-family:Menlo,"SF Mono",ui-monospace,monospace; font-size:.88em; color:var(--brand);}
 </style>
 </head>
 <body>
@@ -53,6 +58,14 @@
 <h3>Dati forniti volontariamente dall’Utente</h3>
 <p>L’invio di posta elettronica agli indirizzi indicati nel Sito – facoltativo, esplicito e volontario – comporta la successiva acquisizione tuo indirizzo e-mail, necessario per rispondere alle richieste, nonché degli ulteriori dati personali eventualmente comunicati. Nel Sito sono presenti form di compilazione, corredati da specifiche informative sul trattamento dei dati personali svolto e, laddove necessario, da richieste di consenso: ti invitiamo pertanto a prenderne visione prima di procedere con l’utilizzo del form.</p>
 <h3>Cookie</h3>
+
+<div class="nota">
+<p><b>Come stanno le cose su questo sito, oggi.</b> Il Sito è composto di pagine statiche e non installa cookie di profilazione né strumenti di misurazione di terze parti. Nessuno script esterno viene caricato all'apertura della pagina.</p>
+<p>L'unica informazione che il Sito può salvare sul dispositivo è la memoria della scelta espressa sul banner del consenso, conservata nell'archivio locale del browser (<i>localStorage</i>, chiave <code>mv-consenso</code>) per non riproporre la domanda a ogni visita. Se non è attivo alcuno strumento di misurazione, il banner non compare e non viene salvato nulla.</p>
+<p>Qualora vengano attivati strumenti di misurazione delle campagne pubblicitarie (ad esempio Google Analytics 4, Meta Pixel o LinkedIn Insight Tag), questi restano <b>bloccati fino al consenso</b>: il blocco è preventivo, non successivo alla navigazione. Il consenso è revocabile in qualsiasi momento dal collegamento «Preferenze cookie» nel piè di pagina della home.</p>
+<p><b>Provenienza della visita.</b> Chi arriva da un annuncio o da un collegamento condiviso sui social può avere nell'indirizzo dei parametri di campagna (<code>utm_source</code>, <code>utm_medium</code>, <code>utm_campaign</code>, <code>gclid</code>, <code>fbclid</code> e simili). Se si compila il modulo di contatto, questi parametri vengono accodati al messaggio per sapere quale iniziativa ha originato la richiesta. Non vengono salvati sul dispositivo e non consentono di seguire l'utente su altri siti; il trattamento si fonda sul legittimo interesse del Titolare a valutare l'efficacia della propria comunicazione, e i dati seguono la sorte del messaggio di contatto.</p>
+</div>
+
 <p>In conformità al Provvedimento del Garante per la protezione dei dati personali n. 229 dell’8 maggio 2014, recante “Individuazione delle modalità semplificate per l’informativa e l’acquisizione del consenso per l’uso dei cookie”, ti informiamo sull’utilizzo dei cookie di navigazione nel presente Sito.</p>
 <p>Cosa sono i cookie.</p>
 <p>Un cookie è un file di piccole dimensioni che viene inviato al browser in uso e salvato sul tuo dispositivo quando visiti un sito internet come mv-consulting.it I cookie permettono un funzionamento efficiente del Sito e ne migliorano le prestazioni, forniscono informazioni al proprietario del Sito per fini statistici o pubblicitari, principalmente per personalizzare la tua esperienza di navigazione ricordando le tue preferenze. Il Sito utilizza diverse tipologie di cookie di prima parte (predisposti e gestiti da noi e di terze parti (predisposti e gestiti da soggetti terzi in base alle proprie privacy policy e non sotto il nostro controllo): di seguito una tabella esplicativa</p>
@@ -90,10 +103,10 @@
 <p>2025 © MV Consulting S.R.L.S. SOCIO UNICO - P.IVA 05524540266 - Privacy &amp; Cookie Policy</p>
 </main>
 <footer>
-  <div class="w foot-in">
+  <div class="w foot-in simple">
     <span class="foot-brand" role="img" aria-label="MV Consulting"></span>
     <span>MV Consulting S.R.L.S. Socio Unico &middot; P.IVA 05524540266</span>
-    <span><a href="/" style="color:inherit">mv-consulting.it</a></span>
+    <span><a href="/">mv-consulting.it</a></span>
   </div>
 </footer>
 </body>

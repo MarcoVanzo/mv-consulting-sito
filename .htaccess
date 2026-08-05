@@ -58,6 +58,21 @@ ErrorDocument 404 /404.html
   Header always set Permissions-Policy "geolocation=(), microphone=(), camera=()"
   # Il sito non carica nulla da domini esterni: la policy può restare stretta.
   Header always set Content-Security-Policy "default-src 'self'; img-src 'self' data:; style-src 'self'; script-src 'self'; form-action 'self'; frame-ancestors 'self'; base-uri 'self'"
+
+  # --- Se si accende la misurazione delle campagne ---------------------------
+  # Gli identificativi si impostano in assets/js/main.js (oggetto MISURAZIONE).
+  # Senza le righe qui sotto la policy blocca gli script dei rispettivi domini:
+  # commentare la riga precedente e togliere il commento a UNA di queste,
+  # tenendo solo i domini dei servizi effettivamente attivati.
+  #
+  # Google Analytics 4:
+  # Header always set Content-Security-Policy "default-src 'self'; img-src 'self' data: https://www.google-analytics.com https://*.googletagmanager.com; style-src 'self'; script-src 'self' https://*.googletagmanager.com; connect-src 'self' https://*.google-analytics.com https://*.analytics.google.com https://*.googletagmanager.com; form-action 'self'; frame-ancestors 'self'; base-uri 'self'"
+  #
+  # Meta Pixel (Facebook e Instagram):
+  # Header always set Content-Security-Policy "default-src 'self'; img-src 'self' data: https://www.facebook.com; style-src 'self'; script-src 'self' https://connect.facebook.net; connect-src 'self' https://www.facebook.com; form-action 'self'; frame-ancestors 'self'; base-uri 'self'"
+  #
+  # LinkedIn Insight Tag:
+  # Header always set Content-Security-Policy "default-src 'self'; img-src 'self' data: https://px.ads.linkedin.com https://*.licdn.com; style-src 'self'; script-src 'self' https://snap.licdn.com; connect-src 'self' https://px.ads.linkedin.com; form-action 'self'; frame-ancestors 'self'; base-uri 'self'"
   Header always set Strict-Transport-Security "max-age=31536000"
   <FilesMatch "\.html$">
     Header set Cache-Control "public, max-age=300, must-revalidate"

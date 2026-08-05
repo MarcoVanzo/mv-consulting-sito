@@ -2,6 +2,25 @@
   "use strict";
   var reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
+  /* =======================================================================
+     Misurazione delle campagne social.
+
+     Finché queste tre voci restano vuote il sito non carica alcuno script di
+     terze parti, non scrive nulla sul dispositivo e il banner del consenso
+     non compare. Per accendere la misurazione basta incollare qui l'identi-
+     ficativo del servizio; ricordarsi di aggiungere i domini corrispondenti
+     alla Content-Security-Policy nel file .htaccess (le righe sono già
+     pronte, commentate).
+     ======================================================================= */
+  var MISURAZIONE = {
+    ga4:       "",   // Google Analytics 4, es. "G-XXXXXXXXXX"
+    metaPixel: "",   // Meta (Facebook/Instagram) Pixel, es. "123456789012345"
+    linkedin:  ""    // LinkedIn Insight Tag, es. "1234567"
+  };
+
+  var attivi = Object.keys(MISURAZIONE).filter(function(k){ return MISURAZIONE[k]; });
+  var CHIAVE_CONSENSO = "mv-consenso";
+
   /* ---- rivelazione allo scroll ---- */
   var io = new IntersectionObserver(function(es){
     es.forEach(function(e){
@@ -45,6 +64,72 @@
     nav.classList.toggle("stuck", window.scrollY > 12);
   }
   window.addEventListener("scroll", onScroll, {passive:true}); onScroll();
+
+  /* ---- altezza reale della barra fissa ----
+     Serve a due cose: far fermare le ancore sotto la barra invece che dietro,
+     e far partire il menu del telefono esattamente dal suo bordo inferiore.
+     La barra si restringe allo scroll, quindi va rimisurata. */
+  function misuraNav(){
+    document.documentElement.style.setProperty("--navh", Math.round(nav.getBoundingClientRect().height) + "px");
+  }
+  misuraNav();
+  window.addEventListener("resize", misuraNav);
+  window.addEventListener("scroll", misuraNav, {passive:true});
+
+  /* ---- menu del telefono ---- */
+  var burger = document.getElementById("burger"), menu = document.getElementById("menu");
+  if(burger && menu){
+    var apri = function(){
+      menu.hidden = false;
+      requestAnimationFrame(function(){ menu.classList.add("open"); });
+      burger.setAttribute("aria-expanded","true");
+      burger.setAttribute("aria-label","Chiudi il menu");
+      document.body.classList.add("locked");
+    };
+    var chiudi = function(torna){
+      menu.classList.remove("open");
+      burger.setAttribute("aria-expanded","false");
+      burger.setAttribute("aria-label","Apri il menu");
+      document.body.classList.remove("locked");
+      setTimeout(function(){ menu.hidden = true; }, reduce ? 0 : 250);
+      if(torna) burger.focus();
+    };
+    burger.addEventListener("click", function(){
+      burger.getAttribute("aria-expanded") === "true" ? chiudi(false) : apri();
+    });
+    menu.addEventListener("click", function(e){
+      if(e.target.closest("a")) chiudi(false);      // scelta una voce, il menu se ne va
+    });
+    document.addEventListener("keydown", function(e){
+      if(e.key === "Escape" && burger.getAttribute("aria-expanded") === "true") chiudi(true);
+    });
+    // tornando al desktop il menu non deve restare aperto sopra la pagina
+    window.matchMedia("(min-width:901px)").addEventListener("change", function(e){
+      if(e.matches && burger.getAttribute("aria-expanded") === "true") chiudi(false);
+    });
+  }
+
+  /* ---- richiamo fisso in basso sul telefono ----
+     Compare quando la hero è passata e si toglie di mezzo sul modulo. */
+  var ctaBar = document.getElementById("ctaBar");
+  if(ctaBar){
+    var oltreHero = false, suModulo = false;
+    var aggiornaBarra = function(){
+      var mostra = oltreHero && !suModulo;
+      ctaBar.hidden = false;
+      ctaBar.classList.toggle("show", mostra);
+    };
+    new IntersectionObserver(function(es){
+      oltreHero = !es[0].isIntersecting; aggiornaBarra();
+    }, {threshold:0}).observe(document.querySelector(".hero"));
+    new IntersectionObserver(function(es){
+      suModulo = es[0].isIntersecting; aggiornaBarra();
+    }, {threshold:0}).observe(document.getElementById("contatti"));
+  }
+
+  /* ---- anno nel piè di pagina ---- */
+  var anno = document.getElementById("anno");
+  if(anno) anno.textContent = String(new Date().getFullYear());
 
   /* ---- demo: documenti che diventano dati ---- */
   var cv = document.getElementById("cv"), ctx = cv.getContext("2d");
@@ -96,10 +181,11 @@
       var h = (it.w0*1.38) + (it.h1 - it.w0*1.38)*p;
       ctx.save();
       ctx.translate(x,y); ctx.rotate(ang);
-      var al = 0.30 + 0.62*p;
+      // allo 0% i documenti restavano quasi invisibili: la scheda sembrava vuota
+      var al = 0.52 + 0.44*p;
       if(p < 0.5){
-        ctx.fillStyle = "rgba(102,135,158," + (0.26 + 0.3*p) + ")";
-        ctx.strokeStyle = "rgba(102,135,158,0.5)";
+        ctx.fillStyle = "rgba(102,135,158," + (0.34 + 0.3*p) + ")";
+        ctx.strokeStyle = "rgba(102,135,158,0.6)";
       } else {
         var q = (p-0.5)*2;
         ctx.fillStyle = it.lit
@@ -171,6 +257,121 @@
     rt = setTimeout(function(){ build(); paint(); }, 160);
   });
 
+  /* =======================================================================
+     Provenienza della visita, senza cookie.
+
+     Chi arriva da un annuncio porta i parametri utm_* (o gclid/fbclid) nell'
+     indirizzo. Li leggiamo una sola volta, li teniamo in una variabile — non
+     sul dispositivo dell'utente — e li accodiamo al messaggio del modulo.
+     Così si sa quale campagna ha prodotto la richiesta anche senza consenso
+     e senza alcuno strumento di tracciamento.
+     ======================================================================= */
+  var origine = (function(){
+    var q = new URLSearchParams(window.location.search), pezzi = [];
+    ["utm_source","utm_medium","utm_campaign","utm_content","utm_term","gclid","fbclid","li_fat_id"]
+      .forEach(function(k){ if(q.get(k)) pezzi.push(k.replace("utm_","") + "=" + q.get(k).slice(0,80)); });
+    if(!pezzi.length && document.referrer){
+      try{
+        var host = new URL(document.referrer).hostname;
+        if(host && host !== window.location.hostname) pezzi.push("da=" + host);
+      }catch(_){}
+    }
+    return pezzi.join(" · ");
+  })();
+  var campoOrigine = document.getElementById("f-origine");
+  if(campoOrigine) campoOrigine.value = origine;
+
+  /* =======================================================================
+     Consenso e misurazione.
+
+     Nessuno script di terze parti viene caricato prima di una scelta
+     esplicita: il blocco è preventivo, non successivo. Se in cima al file non
+     è configurato alcun servizio, qui non succede niente e l'utente non vede
+     nemmeno il banner.
+     ======================================================================= */
+  var barra = document.getElementById("consentBar");
+  var riapri = document.getElementById("riapriConsenso");
+
+  function leggiConsenso(){
+    try{ return localStorage.getItem(CHIAVE_CONSENSO); }catch(_){ return null; }
+  }
+  function scriviConsenso(v){
+    try{ localStorage.setItem(CHIAVE_CONSENSO, v + "|" + new Date().toISOString().slice(0,10)); }catch(_){}
+  }
+
+  function caricaScript(src){
+    var s = document.createElement("script");
+    s.async = true; s.src = src;
+    document.head.appendChild(s);
+    return s;
+  }
+
+  function avviaMisurazione(){
+    if(window.__mvMisurazione) return;
+    window.__mvMisurazione = true;
+
+    if(MISURAZIONE.ga4){
+      window.dataLayer = window.dataLayer || [];
+      window.gtag = function(){ window.dataLayer.push(arguments); };
+      window.gtag("js", new Date());
+      window.gtag("config", MISURAZIONE.ga4, {anonymize_ip:true});
+      caricaScript("https://www.googletagmanager.com/gtag/js?id=" + encodeURIComponent(MISURAZIONE.ga4));
+    }
+    if(MISURAZIONE.metaPixel){
+      /* eslint-disable */
+      !function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+      n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;
+      n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;
+      t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}
+      (window,document,'script','https://connect.facebook.net/en_US/fbevents.js');
+      /* eslint-enable */
+      window.fbq("init", MISURAZIONE.metaPixel);
+      window.fbq("track", "PageView");
+    }
+    if(MISURAZIONE.linkedin){
+      window._linkedin_partner_id = MISURAZIONE.linkedin;
+      window._linkedin_data_partner_ids = window._linkedin_data_partner_ids || [];
+      window._linkedin_data_partner_ids.push(MISURAZIONE.linkedin);
+      caricaScript("https://snap.licdn.com/li.lms-analytics/insight.min.js");
+    }
+  }
+
+  /* Un evento solo, con lo stesso nome per tutti i servizi configurati:
+     i pulsanti del sito lo chiamano senza sapere che cosa c'è sotto. */
+  function evento(nome, dati){
+    if(!window.__mvMisurazione) return;
+    if(MISURAZIONE.ga4 && window.gtag) window.gtag("event", nome, dati || {});
+    if(MISURAZIONE.metaPixel && window.fbq) window.fbq("trackCustom", nome, dati || {});
+  }
+
+  if(attivi.length){
+    var scelta = leggiConsenso();
+    if(scelta && scelta.indexOf("si") === 0){
+      avviaMisurazione();
+    } else if(!scelta && barra){
+      barra.hidden = false;
+    }
+    if(barra){
+      var chiudiBarra = function(){ barra.hidden = true; };
+      document.getElementById("consentSi").addEventListener("click", function(){
+        scriviConsenso("si"); avviaMisurazione(); chiudiBarra();
+      });
+      document.getElementById("consentNo").addEventListener("click", function(){
+        scriviConsenso("no"); chiudiBarra();
+      });
+    }
+    if(riapri && barra) riapri.addEventListener("click", function(){ barra.hidden = false; });
+  } else if(riapri){
+    // nessuno strumento configurato: non c'è niente da preferire
+    riapri.hidden = true;
+  }
+
+  /* i richiami al contatto segnalano l'intenzione, non l'identità */
+  document.addEventListener("click", function(e){
+    var el = e.target.closest("[data-cta]");
+    if(el) evento("contatto_cta", {posizione: el.getAttribute("data-cta")});
+  });
+
   /* ---- invio del modulo senza ricaricare la pagina ---- */
   var form = document.getElementById("contatto"), msg = document.getElementById("formMsg");
   if(form){
@@ -185,8 +386,11 @@
         .then(function(j){
           if(!j.ok) throw new Error(j.error || "invio non riuscito");
           form.reset();
+          if(campoOrigine) campoOrigine.value = origine;   // reset() svuota anche i campi nascosti
           msg.className = "form-msg ok";
           msg.textContent = "Messaggio inviato. Vi rispondiamo entro un giorno lavorativo.";
+          msg.focus && msg.focus();
+          evento("richiesta_inviata", {origine: origine || "diretta"});
         })
         .catch(function(){
           msg.className = "form-msg ko";
