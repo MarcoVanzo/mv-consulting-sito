@@ -109,10 +109,16 @@ Da fare **solo dopo il backup**: cancella tutto ciò che c'è sul server.
 
 ## Accessibilità e privacy
 
-- Cookie tecnici del banner Cookiebot e, solo con il consenso, Google Analytics 4
-  (proprietà `MV Consulting`, ID `G-XJX17YKC6D`). Il banner è il primo script di ogni
-  pagina e blocca da solo gli script non consentiti.
+- Cookie tecnici del banner Cookiebot e, solo con il consenso, due categorie
+  separate: **statistica** con Google Analytics 4 (proprietà `MV Consulting`, ID
+  `G-XJX17YKC6D`) e **marketing** con il pixel di Meta (ID `2091002778460176`,
+  portfolio `MV Consulting Srl`) e l'Insight Tag di LinkedIn (Partner ID `9453514`,
+  account `550280115`). Il banner è il primo script di ogni pagina e blocca da solo
+  gli script non consentiti.
 - Le animazioni si disattivano da sole con `prefers-reduced-motion`.
-- La `Content-Security-Policy` in `.htaccess` ammette solo Cookiebot e Google
-  Analytics: aggiungendo altri script di terze parti va aggiornata, altrimenti
-  verranno bloccati.
+- La `Content-Security-Policy` in `.htaccess` ammette solo Cookiebot, Google
+  Analytics, Meta e LinkedIn: aggiungendo altri script di terze parti va aggiornata,
+  altrimenti verranno bloccati.
+- Aggiungendo o togliendo uno strumento vanno rifatti tre passaggi insieme: la CSP,
+  l'informativa in `privacy-policy.html` e la riscansione del sito su Cookiebot, che
+  rigenera la dichiarazione dei cookie e ripropone il banner a chi aveva già scelto.
