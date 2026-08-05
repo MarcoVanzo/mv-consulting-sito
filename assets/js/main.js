@@ -2,6 +2,7 @@
   "use strict";
   var reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
+
   /* ---- rivelazione allo scroll ---- */
   var io = new IntersectionObserver(function(es){
     es.forEach(function(e){
@@ -17,6 +18,22 @@
     io.observe(rvs[i]);
   }
   document.querySelectorAll("[data-viz]").forEach(function(v){ io.observe(v); });
+
+  /* Se la pagina si carica mentre la scheda è in secondo piano — link aperto in
+     un'altra scheda, telefono con lo schermo spento — IntersectionObserver non
+     emette niente e al ritorno non recupera: il contenuto resterebbe invisibile.
+     Al primo momento in cui la pagina si vede si rivela a mano quel che è già
+     dentro lo schermo. */
+  document.addEventListener("visibilitychange", function(){
+    if(document.visibilityState !== "visible") return;
+    for(var j=0;j<rvs.length;j++){
+      var r = rvs[j].getBoundingClientRect();
+      if(r.top < window.innerHeight && r.bottom > 0){
+        rvs[j].classList.add("in");
+        io.unobserve(rvs[j]);
+      }
+    }
+  });
 
   /* ---- conteggio numeri ---- */
   var cio = new IntersectionObserver(function(es){

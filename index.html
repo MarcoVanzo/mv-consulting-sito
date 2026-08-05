@@ -5,6 +5,27 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <!-- Consenso cookie: deve restare il primo script della pagina, blocca gli altri finché non c'è il consenso -->
 <script id="Cookiebot" src="https://consent.cookiebot.com/uc.js" data-cbid="abf0bc57-ae54-458d-bb39-ae97f9323b72" data-blockingmode="auto" type="text/javascript"></script>
+<!-- Rete di sicurezza per le animazioni: la classe "js" abilita lo stato nascosto
+     di .rv, che main.js poi rivela. Se tre secondi dopo che la pagina è davvero
+     sotto gli occhi non è stato rivelato niente — script bloccato, errore, o un
+     IntersectionObserver che non è mai scattato — la classe se ne va e il
+     contenuto compare comunque. La pagina non deve mai restare vuota.
+     data-cookieconsent="ignore": non tocca cookie, non va bloccato. -->
+<script data-cookieconsent="ignore">
+  (function(){
+    var d = document.documentElement;
+    d.className += " js";
+    function controlla(){
+      if(document.visibilityState !== "visible") return;
+      document.removeEventListener("visibilitychange", controlla);
+      setTimeout(function(){
+        if(!document.querySelector(".rv.in")) d.className = d.className.replace(/\bjs\b/, "");
+      }, 3000);
+    }
+    document.addEventListener("visibilitychange", controlla);
+    controlla();
+  })();
+</script>
 <!-- Google Analytics 4: parte solo con il consenso "statistiche" -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-XJX17YKC6D"></script>
 <script>
@@ -519,6 +540,8 @@ s.parentNode.insertBefore(b, s);})(window.lintrk);
     <span><a href="/privacy-policy.html">Privacy &amp; Cookie Policy</a></span>
   </div>
 </footer>
-<script src="/assets/js/main.js" defer></script>
+<!-- data-cookieconsent="ignore": è lo script del sito, non tocca cookie e non va
+     mai bloccato in attesa del consenso, altrimenti la pagina resta nascosta -->
+<script src="/assets/js/main.js" defer data-cookieconsent="ignore"></script>
 </body>
 </html>
