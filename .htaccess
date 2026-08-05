@@ -23,6 +23,10 @@ RewriteRule ^servizi/?$        https://www.mv-consulting.it/#aree            [R=
 RewriteRule ^partner/?$        https://www.mv-consulting.it/#progetti        [R=301,L,QSD,NE]
 RewriteRule ^contatti/?$       https://www.mv-consulting.it/#contatti        [R=301,L,QSD,NE]
 RewriteRule ^privacy-policy/?$ https://www.mv-consulting.it/privacy-policy.html [R=301,L,QSD,NE]
+# La cookie policy è una sezione dell'informativa: chi cerca l'indirizzo storico
+# o quello che ci si aspetta di trovare finisce direttamente su quella sezione.
+RewriteRule ^cookie-policy/?$  https://www.mv-consulting.it/privacy-policy.html#cookie [R=301,L,QSD,NE]
+RewriteRule ^privacy/?$        https://www.mv-consulting.it/privacy-policy.html [R=301,L,QSD,NE]
 
 # Residui dell'installazione WordPress: non esistono più, meglio dirlo subito
 RedirectMatch 410 ^/(wp-admin|wp-login\.php|wp-json|xmlrpc\.php|wp-content|wp-includes)
