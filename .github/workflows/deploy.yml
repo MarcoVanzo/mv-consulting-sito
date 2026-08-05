@@ -43,6 +43,24 @@ jobs:
       - name: Installa lftp
         run: sudo apt-get update -qq && sudo apt-get install -y -qq lftp
 
+      # Il proxy di Aruba tiene CSS e JS per un anno (.htaccess). Con un
+      # indirizzo fisso, una copia sbagliata resta servita per un anno anche
+      # se sul server il file è integro: è già successo con uno style.css che
+      # il proxy ha letto mentre l'FTP lo stava riscrivendo, memorizzandolo
+      # tagliato a metà. Aggiungendo l'impronta del file all'indirizzo, ogni
+      # versione ha un URL suo e la cache non può servire quella precedente.
+      # Si tocca solo la copia che va sul server: i file del repository
+      # restano quelli che si modificano a mano.
+      - name: Versiona i riferimenti a CSS e JS
+        run: |
+          for asset in assets/css/style.css assets/js/main.js; do
+            v=$(sha256sum "$asset" | cut -c1-8)
+            grep -rl "/$asset" --include='*.html' --include='*.php' . \
+              | xargs -r sed -i "s#/$asset\([\"']\)#/$asset?v=$v\1#g"
+            echo "/$asset -> ?v=$v"
+          done
+          grep -ohE '/assets/[^"]+\.(css|js)\?v=[0-9a-f]+' ./*.html | sort -u
+
       - name: Carica via FTP
         env:
           FTP_HOST: ${{ secrets.FTP_SERVER }}
@@ -139,6 +157,21 @@ jobs:
             confronta "$f" || esito=1
           done
           [ "$esito" -eq 0 ] || exit 1
+
+          # Il confronto qui sopra usa un parametro e quindi raggiunge
+          # l'origine: dice che il file è arrivato intero sul server, non che
+          # il visitatore lo riceve intero. Si rifà allora il giro come lo fa
+          # un browser — si legge la home e si scarica ogni foglio di stile e
+          # script all'indirizzo esatto che vi compare, quello versionato —
+          # perché è lì che la cache di Aruba può servire una copia sbagliata.
+          esito_cache=0
+          for u in $(grep -ohE '/assets/[^"]+\.(css|js)(\?[^"]*)?' /tmp/home.html | sort -u); do
+            atteso=$(wc -c < ".${u%%\?*}")
+            servito=$(curl -s --max-time 30 "https://www.mv-consulting.it$u" | wc -c)
+            echo "$u -> $servito byte (attesi $atteso)"
+            [ "$servito" = "$atteso" ] || { echo "::error::$u arriva al visitatore in versione sbagliata ($servito byte invece di $atteso): svuotare la cache da Pannello Aruba > Velocità > Caching"; esito_cache=1; }
+          done
+          [ "$esito_cache" -eq 0 ] || exit 1
 
           # Stato della cache pubblica: informativo, non fa fallire il deploy.
           cache=$(curl -sI https://www.mv-consulting.it/ | grep -i '^x-aruba-cache' | tr -d '\r')
