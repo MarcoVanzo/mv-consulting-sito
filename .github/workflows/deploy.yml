@@ -1,0 +1,63 @@
+name: Deploy su Aruba
+
+on:
+  push:
+    branches: [main]
+    paths-ignore:
+      - 'README.md'
+      - '.gitignore'
+  workflow_dispatch:
+    inputs:
+      pulizia_totale:
+        description: "Svuota la cartella remota prima di caricare (rimuove i residui WordPress). Usare solo dopo aver fatto il backup."
+        type: boolean
+        default: false
+
+concurrency:
+  group: deploy-produzione
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Verifica che i secret siano configurati
+        run: |
+          mancanti=""
+          [ -z "${{ secrets.FTP_SERVER }}" ]   && mancanti="$mancanti FTP_SERVER"
+          [ -z "${{ secrets.FTP_USERNAME }}" ] && mancanti="$mancanti FTP_USERNAME"
+          [ -z "${{ secrets.FTP_PASSWORD }}" ] && mancanti="$mancanti FTP_PASSWORD"
+          if [ -n "$mancanti" ]; then
+            echo "::error::Secret mancanti:$mancanti — impostarli in Settings > Secrets and variables > Actions, poi rilanciare."
+            exit 1
+          fi
+
+      - name: Carica via FTP
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+        with:
+          server: ${{ secrets.FTP_SERVER }}
+          username: ${{ secrets.FTP_USERNAME }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          # Cartella pubblica sul server. Su Aruba di norma è la radice della
+          # connessione FTP; se invece i file vanno in /www, impostare la
+          # variabile FTP_DIR (Settings > Variables) a  /www/
+          server-dir: ${{ vars.FTP_DIR || './' }}
+          local-dir: ./
+          dangerous-clean-slate: ${{ inputs.pulizia_totale == true }}
+          exclude: |
+            **/.git*
+            **/.git*/**
+            **/README.md
+            **/.DS_Store
+
+      - name: Controllo del sito pubblicato
+        run: |
+          sleep 5
+          codice=$(curl -s -o /tmp/home.html -w '%{http_code}' https://www.mv-consulting.it/)
+          echo "HTTP $codice"
+          [ "$codice" = "200" ] || { echo "::error::la home risponde $codice"; exit 1; }
+          grep -q "Non esistono cose facili" /tmp/home.html \
+            || { echo "::error::la home risponde ma non è il sito nuovo — controllare che index.html abbia la precedenza su index.php"; exit 1; }
+          echo "Sito nuovo online."

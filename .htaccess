@@ -1,0 +1,62 @@
+# mv-consulting.it — configurazione Apache (hosting Aruba)
+
+# --- Pagina iniziale --------------------------------------------------------
+# index.html prima di index.php: finché restano file WordPress sul server,
+# senza questa riga il vecchio index.php continuerebbe a servire il sito.
+DirectoryIndex index.html index.php
+
+# --- HTTPS e www ------------------------------------------------------------
+RewriteEngine On
+RewriteCond %{HTTPS} !=on
+RewriteRule ^(.*)$ https://www.mv-consulting.it/$1 [R=301,L]
+RewriteCond %{HTTP_HOST} !^www\. [NC]
+RewriteRule ^(.*)$ https://www.mv-consulting.it/$1 [R=301,L]
+
+# --- Vecchi indirizzi WordPress --------------------------------------------
+# Le pagine del vecchio sito confluiscono nelle sezioni della nuova home:
+# senza questi redirect i link esistenti e i risultati di ricerca finirebbero su 404.
+Redirect 301 /chi-siamo/       /#studio
+Redirect 301 /servizi/         /#aree
+Redirect 301 /partner/         /#progetti
+Redirect 301 /contatti/        /#contatti
+Redirect 301 /privacy-policy/  /privacy-policy.html
+
+# Residui dell'installazione WordPress: non esistono più, meglio dirlo subito
+RedirectMatch 410 ^/(wp-admin|wp-login\.php|wp-json|xmlrpc\.php|wp-content|wp-includes)
+
+# --- Pagina di errore -------------------------------------------------------
+ErrorDocument 404 /404.html
+
+# --- Compressione -----------------------------------------------------------
+<IfModule mod_deflate.c>
+  AddOutputFilterByType DEFLATE text/html text/css text/plain text/xml \
+    application/javascript application/json image/svg+xml
+</IfModule>
+
+# --- Cache ------------------------------------------------------------------
+<IfModule mod_expires.c>
+  ExpiresActive On
+  ExpiresByType text/css                "access plus 1 year"
+  ExpiresByType application/javascript  "access plus 1 year"
+  ExpiresByType image/svg+xml           "access plus 1 year"
+  ExpiresByType image/jpeg              "access plus 1 year"
+  ExpiresByType image/webp              "access plus 1 year"
+  ExpiresByType image/png               "access plus 1 year"
+  ExpiresByType text/html               "access plus 1 hour"
+</IfModule>
+
+# --- Intestazioni di sicurezza ---------------------------------------------
+<IfModule mod_headers.c>
+  Header always set X-Content-Type-Options "nosniff"
+  Header always set Referrer-Policy "strict-origin-when-cross-origin"
+  Header always set X-Frame-Options "SAMEORIGIN"
+  Header always set Permissions-Policy "geolocation=(), microphone=(), camera=()"
+  # Il sito non carica nulla da domini esterni: la policy può restare stretta.
+  Header always set Content-Security-Policy "default-src 'self'; img-src 'self' data:; style-src 'self'; script-src 'self'; form-action 'self'; frame-ancestors 'self'; base-uri 'self'"
+  Header always set Strict-Transport-Security "max-age=31536000"
+</IfModule>
+
+# --- File da non servire ----------------------------------------------------
+<FilesMatch "^(README\.md|\.gitignore)$">
+  Require all denied
+</FilesMatch>
