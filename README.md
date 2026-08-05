@@ -16,7 +16,9 @@ contatti.php            ricezione del modulo, invia via mail() a marco@mv-consul
 robots.txt sitemap.xml  indicizzazione
 assets/css/style.css    tutto lo stile
 assets/js/main.js       animazione della hero, menu del telefono, rivelazioni allo scroll,
-                        provenienza della visita, consenso, invio del modulo
+                        provenienza della visita, avvio degli strumenti su consenso,
+                        invio del modulo
+assets/js/consenso.js   riapertura del banner Cookiebot (serve anche alle pagine interne)
 assets/img/             logo (SVG), ritratto (JPG + WebP), immagini per le condivisioni
 tools/social.html       modelli delle grafiche per i post e le inserzioni
 favicon.svg .ico apple-touch-icon.png
@@ -151,34 +153,85 @@ L'infrastruttura c'è ma è spenta. In cima ad `assets/js/main.js`:
 
 ```js
 var MISURAZIONE = {
-  ga4:       "",   // es. "G-XXXXXXXXXX"
-  metaPixel: "",   // es. "123456789012345"
-  linkedin:  ""    // es. "1234567"
+  ga4:       "",   // es. "G-XXXXXXXXXX"   -> categoria "statistics"
+  metaPixel: "",   // es. "123456789012345" -> categoria "marketing"
+  linkedin:  ""    // es. "1234567"         -> categoria "marketing"
 };
 ```
 
-Finché i tre campi sono vuoti il sito non carica niente da domini terzi e il banner del
-consenso **non compare affatto**. Appena si compila un identificativo:
+Finché i tre campi sono vuoti il sito non carica nessuno di questi strumenti. Appena si
+compila un identificativo:
 
-1. il banner appare e nessuno script parte prima di una scelta esplicita (blocco
-   preventivo, come chiede il Garante);
+1. lo strumento parte **solo** se Cookiebot ha registrato il consenso per la sua
+   categoria (vedi sotto);
 2. va tolto il commento alla riga di `Content-Security-Policy` corrispondente in
    `.htaccess`, altrimenti la policy blocca lo script;
-3. va verificato che il testo dell'informativa sia ancora allineato (la sezione
-   «Cookie» di `privacy-policy.html` descrive già il meccanismo).
+3. va rilanciata la scansione dal pannello Cookiebot, così il nuovo cookie compare
+   nell'elenco dell'informativa.
 
 Due eventi sono già cablati e partono solo dopo il consenso: `contatto_cta` (clic su un
 richiamo al contatto, con la posizione) e `richiesta_inviata` (modulo spedito).
 
+## Cookie e consenso: Cookiebot
+
+Il consenso è gestito da **Cookiebot**. Lo script sta in testa a `index.html`,
+`privacy-policy.html` e `404.html` e deve restare **il primo script della pagina**.
+
+### Cosa fare per attivarlo
+
+Serve l'identificativo del gruppo di domini (CBID), che si copia dal pannello Cookiebot.
+Compare in quattro punti, tutti marcati con lo stesso segnaposto:
+
+```bash
+grep -rn "INSERIRE-CBID-COOKIEBOT" .
+```
+
+Sono i tre tag `<script id="Cookiebot">` nelle pagine e il tag `CookieDeclaration` dentro
+`privacy-policy.html`, che disegna l'elenco dei cookie aggiornato in automatico.
+
+### Blocco manuale, non automatico
+
+Il tag **non** ha `data-blockingmode="auto"`, ed è voluto. Il blocco automatico di
+Cookiebot funziona riscrivendo i tag `<script>` della pagina, e la documentazione di
+Cookiebot stessa avverte che non convive bene con una Content-Security-Policy: per farlo
+funzionare bisognerebbe aggiungere `'unsafe-inline'` a `script-src`, cioè smontare la
+protezione più utile della policy.
+
+Qui non serve: gli unici strumenti da bloccare sono quelli dichiarati in `MISURAZIONE`,
+che li carica `assets/js/main.js` chiedendo prima il permesso a Cookiebot:
+
+| categoria Cookiebot | strumenti |
+|---|---|
+| `statistics` | Google Analytics 4 |
+| `marketing` | Meta Pixel, LinkedIn Insight Tag |
+
+Se il consenso viene ritirato dopo che uno strumento era già partito, la pagina si
+ricarica: uno script caricato non si può scaricare, ed è l'unico modo onesto di fermarlo.
+
+**Attenzione**: se un giorno si incolla uno script di terze parti direttamente nell'HTML,
+questo *non* verrà bloccato da solo. Va marcato a mano secondo la documentazione di
+Cookiebot (`type="text/plain" data-cookieconsent="marketing"`), oppure caricato da
+`main.js` come gli altri.
+
+### La voce «Preferenze cookie»
+
+Sta nel piè di pagina di tutte le pagine e riapre il banner. La documentazione di
+Cookiebot suggerisce `href="javascript: Cookiebot.renew()"`, che però la CSP del sito
+blocca: l'aggancio è in `assets/js/consenso.js`, che cerca gli elementi con l'attributo
+`data-cookie-renew`. Se il CBID non è ancora stato inserito, la voce resta nascosta
+invece di non fare niente quando la si tocca.
+
 ## Accessibilità e privacy
 
-- Nessun cookie e nessuna richiesta a domini terzi finché la misurazione resta spenta.
-  L'unica cosa che il sito può scrivere sul dispositivo è la memoria della scelta sul
-  banner (`localStorage`, chiave `mv-consenso`), e solo se il banner esiste.
+- Finché la misurazione resta spenta, gli unici cookie del sito sono quelli tecnici di
+  Cookiebot (`CookieConsent`), necessari a conservare la prova della scelta.
 - Le animazioni si disattivano da sole con `prefers-reduced-motion`.
-- La `Content-Security-Policy` in `.htaccess` vieta ogni risorsa esterna: aggiungendo
-  script di terze parti va aggiornata, altrimenti verranno bloccati. Le righe pronte per
-  GA4, Meta Pixel e LinkedIn sono già nel file, commentate.
+- La `Content-Security-Policy` in `.htaccess` elenca i domini ammessi. `style-src` ha
+  `'unsafe-inline'` perché serve: i colori dei tre progetti arrivano da un attributo
+  `style="--p:..."` e le pagine interne hanno un blocco `<style>` — senza, in produzione
+  i progetti uscivano tutti dello stesso blu e i campioni di palette erano invisibili.
+  `script-src` invece resta senza: nessuna pagina ha JavaScript in linea, e va tenuto
+  così.
 - Menu del telefono, collegamento «Vai al contenuto», aree toccabili da 44px, ancore che
   si fermano sotto la barra fissa.
 

@@ -56,23 +56,38 @@ ErrorDocument 404 /404.html
   Header always set Referrer-Policy "strict-origin-when-cross-origin"
   Header always set X-Frame-Options "SAMEORIGIN"
   Header always set Permissions-Policy "geolocation=(), microphone=(), camera=()"
-  # Il sito non carica nulla da domini esterni: la policy può restare stretta.
-  Header always set Content-Security-Policy "default-src 'self'; img-src 'self' data:; style-src 'self'; script-src 'self'; form-action 'self'; frame-ancestors 'self'; base-uri 'self'"
+  # --- Content-Security-Policy -----------------------------------------------
+  # style-src ha bisogno di 'unsafe-inline': le tre schede progetto prendono i
+  # colori del rispettivo marchio da un attributo style="--p:...", e le pagine
+  # dell'informativa e dell'errore hanno un blocco <style>. Con la sola
+  # 'self' il browser li rifiutava e in produzione i progetti uscivano tutti
+  # dello stesso blu, con i campioni di palette invisibili. Serve comunque
+  # anche a Cookiebot, che disegna il banner con stili in linea.
+  #
+  # script-src resta senza 'unsafe-inline': nessuna pagina ha JavaScript in
+  # linea. Per questo il blocco dei cookie di Cookiebot è impostato in modo
+  # manuale e non automatico — il blocco automatico riscrive i tag <script> e
+  # la documentazione di Cookiebot avverte che non convive con una CSP.
+  #
+  # Sono elencati sia i domini .com sia i .eu di Cookiebot: se in futuro si
+  # attiva la consegna dal CDN europeo, la policy non va ritoccata.
+  Header always set Content-Security-Policy "default-src 'self'; img-src 'self' data: https://imgsct.cookiebot.com https://imgsct.cookiebot.eu; style-src 'self' 'unsafe-inline'; script-src 'self' https://consent.cookiebot.com https://consentcdn.cookiebot.com https://consent.cookiebot.eu https://consentcdn.cookiebot.eu; connect-src 'self' https://consent.cookiebot.com https://consentcdn.cookiebot.com https://consent.cookiebot.eu https://consentcdn.cookiebot.eu; frame-src https://consentcdn.cookiebot.com https://consentcdn.cookiebot.eu; form-action 'self'; frame-ancestors 'self'; base-uri 'self'"
 
   # --- Se si accende la misurazione delle campagne ---------------------------
   # Gli identificativi si impostano in assets/js/main.js (oggetto MISURAZIONE).
-  # Senza le righe qui sotto la policy blocca gli script dei rispettivi domini:
-  # commentare la riga precedente e togliere il commento a UNA di queste,
-  # tenendo solo i domini dei servizi effettivamente attivati.
+  # Senza i domini qui sotto la policy blocca gli script: si commenta la riga
+  # precedente e si toglie il commento a UNA di queste, che sono la policy
+  # completa (Cookiebot incluso) più i domini del servizio scelto. Attivandone
+  # più di uno, si uniscono le liste a mano in una sola riga.
   #
   # Google Analytics 4:
-  # Header always set Content-Security-Policy "default-src 'self'; img-src 'self' data: https://www.google-analytics.com https://*.googletagmanager.com; style-src 'self'; script-src 'self' https://*.googletagmanager.com; connect-src 'self' https://*.google-analytics.com https://*.analytics.google.com https://*.googletagmanager.com; form-action 'self'; frame-ancestors 'self'; base-uri 'self'"
+  # Header always set Content-Security-Policy "default-src 'self'; img-src 'self' data: https://imgsct.cookiebot.com https://imgsct.cookiebot.eu https://www.google-analytics.com https://*.googletagmanager.com; style-src 'self' 'unsafe-inline'; script-src 'self' https://consent.cookiebot.com https://consentcdn.cookiebot.com https://consent.cookiebot.eu https://consentcdn.cookiebot.eu https://*.googletagmanager.com; connect-src 'self' https://consent.cookiebot.com https://consentcdn.cookiebot.com https://consent.cookiebot.eu https://consentcdn.cookiebot.eu https://*.google-analytics.com https://*.analytics.google.com https://*.googletagmanager.com; frame-src https://consentcdn.cookiebot.com https://consentcdn.cookiebot.eu; form-action 'self'; frame-ancestors 'self'; base-uri 'self'"
   #
   # Meta Pixel (Facebook e Instagram):
-  # Header always set Content-Security-Policy "default-src 'self'; img-src 'self' data: https://www.facebook.com; style-src 'self'; script-src 'self' https://connect.facebook.net; connect-src 'self' https://www.facebook.com; form-action 'self'; frame-ancestors 'self'; base-uri 'self'"
+  # Header always set Content-Security-Policy "default-src 'self'; img-src 'self' data: https://imgsct.cookiebot.com https://imgsct.cookiebot.eu https://www.facebook.com; style-src 'self' 'unsafe-inline'; script-src 'self' https://consent.cookiebot.com https://consentcdn.cookiebot.com https://consent.cookiebot.eu https://consentcdn.cookiebot.eu https://connect.facebook.net; connect-src 'self' https://consent.cookiebot.com https://consentcdn.cookiebot.com https://consent.cookiebot.eu https://consentcdn.cookiebot.eu https://www.facebook.com; frame-src https://consentcdn.cookiebot.com https://consentcdn.cookiebot.eu; form-action 'self'; frame-ancestors 'self'; base-uri 'self'"
   #
   # LinkedIn Insight Tag:
-  # Header always set Content-Security-Policy "default-src 'self'; img-src 'self' data: https://px.ads.linkedin.com https://*.licdn.com; style-src 'self'; script-src 'self' https://snap.licdn.com; connect-src 'self' https://px.ads.linkedin.com; form-action 'self'; frame-ancestors 'self'; base-uri 'self'"
+  # Header always set Content-Security-Policy "default-src 'self'; img-src 'self' data: https://imgsct.cookiebot.com https://imgsct.cookiebot.eu https://px.ads.linkedin.com https://*.licdn.com; style-src 'self' 'unsafe-inline'; script-src 'self' https://consent.cookiebot.com https://consentcdn.cookiebot.com https://consent.cookiebot.eu https://consentcdn.cookiebot.eu https://snap.licdn.com; connect-src 'self' https://consent.cookiebot.com https://consentcdn.cookiebot.com https://consent.cookiebot.eu https://consentcdn.cookiebot.eu https://px.ads.linkedin.com; frame-src https://consentcdn.cookiebot.com https://consentcdn.cookiebot.eu; form-action 'self'; frame-ancestors 'self'; base-uri 'self'"
   Header always set Strict-Transport-Security "max-age=31536000"
   <FilesMatch "\.html$">
     Header set Cache-Control "public, max-age=300, must-revalidate"

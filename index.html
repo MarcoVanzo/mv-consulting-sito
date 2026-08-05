@@ -3,6 +3,18 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+
+<!-- Cookiebot: deve restare il primo script della pagina.
+     Il codice dopo data-cbid è l'identificativo del gruppo di domini, si copia
+     dal pannello Cookiebot (Impostazioni → Il tuo script). Va sostituito nelle
+     tre pagine del sito e nella dichiarazione dei cookie dell'informativa.
+     Non usiamo data-blockingmode="auto": il blocco automatico non convive bene
+     con la Content-Security-Policy del sito, e qui non serve — gli unici
+     strumenti da bloccare li carica assets/js/main.js, che chiede il permesso
+     a Cookiebot prima di partire. -->
+<script id="Cookiebot" src="https://consent.cookiebot.com/uc.js"
+        data-cbid="INSERIRE-CBID-COOKIEBOT" data-culture="IT" type="text/javascript"></script>
+
 <title>Software gestionale su misura, DPO e privacy — MV Consulting, Treviso</title>
 <meta name="description" content="Gestionali ed ERP costruiti sul vostro processo, DPO esterno e consulenza GDPR, formazione delle persone che useranno il software. MV Consulting, Zero Branco (Treviso).">
 <link rel="canonical" href="https://www.mv-consulting.it/">
@@ -690,7 +702,7 @@
     <div class="foot-col">
       <p class="foot-h">Documenti</p>
       <a href="/privacy-policy.html">Privacy &amp; Cookie Policy</a>
-      <button type="button" class="linkish" id="riapriConsenso">Preferenze cookie</button>
+      <button type="button" class="linkish" data-cookie-renew hidden>Preferenze cookie</button>
     </div>
   </div>
   <div class="w foot-end"><span>© <span id="anno">2026</span> MV Consulting S.r.l.s. Socio Unico · Tutti i diritti riservati</span></div>
@@ -702,21 +714,7 @@
   <a class="btn" href="#contatti" data-cta="barra">Parliamone <span class="arw">→</span></a>
 </div>
 
-<!-- Consenso: nessuno strumento di misurazione parte prima di una scelta esplicita.
-     Finché in main.js non è configurato alcun servizio, il banner non compare affatto. -->
-<div class="consent-bar" id="consentBar" role="dialog" aria-modal="false" aria-labelledby="consentTitolo" hidden>
-  <div class="consent-in">
-    <div>
-      <p class="consent-t" id="consentTitolo">Cookie di misurazione</p>
-      <p>Il sito funziona senza cookie. Con il vostro consenso usiamo strumenti di misurazione delle campagne, per capire quali annunci portano richieste davvero utili. Potete cambiare idea quando volete dal piè di pagina. <a href="/privacy-policy.html">Informativa</a>.</p>
-    </div>
-    <div class="consent-btns">
-      <button type="button" class="btn ghost" id="consentNo">Solo il necessario</button>
-      <button type="button" class="btn" id="consentSi">Accetto</button>
-    </div>
-  </div>
-</div>
-
+<script src="/assets/js/consenso.js" defer></script>
 <script src="/assets/js/main.js" defer></script>
 </body>
 </html>

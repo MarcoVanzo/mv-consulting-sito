@@ -5,12 +5,14 @@
   /* =======================================================================
      Misurazione delle campagne social.
 
-     Finché queste tre voci restano vuote il sito non carica alcuno script di
-     terze parti, non scrive nulla sul dispositivo e il banner del consenso
-     non compare. Per accendere la misurazione basta incollare qui l'identi-
-     ficativo del servizio; ricordarsi di aggiungere i domini corrispondenti
-     alla Content-Security-Policy nel file .htaccess (le righe sono già
-     pronte, commentate).
+     Finché queste tre voci restano vuote il sito non carica nessuno di questi
+     strumenti. Per accenderne uno basta incollare qui il suo identificativo;
+     poi vanno aggiunti i domini corrispondenti alla Content-Security-Policy
+     nel file .htaccess (le righe sono già pronte, commentate) e va verificato
+     che Cookiebot li abbia rilevati nella scansione del sito.
+
+     Il permesso lo dà Cookiebot, più in basso: qui si dichiara soltanto che
+     cosa esiste. -> statistics: GA4; marketing: Meta Pixel e LinkedIn.
      ======================================================================= */
   var MISURAZIONE = {
     ga4:       "",   // Google Analytics 4, es. "G-XXXXXXXXXX"
@@ -19,7 +21,6 @@
   };
 
   var attivi = Object.keys(MISURAZIONE).filter(function(k){ return MISURAZIONE[k]; });
-  var CHIAVE_CONSENSO = "mv-consenso";
 
   /* ---- rivelazione allo scroll ---- */
   var io = new IntersectionObserver(function(es){
@@ -282,22 +283,22 @@
   if(campoOrigine) campoOrigine.value = origine;
 
   /* =======================================================================
-     Consenso e misurazione.
+     Consenso: lo gestisce Cookiebot.
 
-     Nessuno script di terze parti viene caricato prima di una scelta
-     esplicita: il blocco è preventivo, non successivo. Se in cima al file non
-     è configurato alcun servizio, qui non succede niente e l'utente non vede
-     nemmeno il banner.
+     Il banner, la registrazione del consenso e la dichiarazione dei cookie
+     arrivano da Cookiebot (lo script in testa alla pagina). Qui ci limitiamo a
+     chiedergli il permesso prima di far partire qualcosa.
+
+     Blocco manuale e non automatico: il blocco automatico di Cookiebot
+     riscrive i tag <script> e la sua stessa documentazione avverte che non
+     convive bene con una Content-Security-Policy. Non ci serve — gli unici
+     strumenti da bloccare sono quelli qui sotto, che partono solo su consenso.
+
+     Corrispondenza fra categorie Cookiebot e strumenti:
+       statistics -> Google Analytics 4
+       marketing  -> Meta Pixel, LinkedIn Insight Tag
      ======================================================================= */
-  var barra = document.getElementById("consentBar");
-  var riapri = document.getElementById("riapriConsenso");
-
-  function leggiConsenso(){
-    try{ return localStorage.getItem(CHIAVE_CONSENSO); }catch(_){ return null; }
-  }
-  function scriviConsenso(v){
-    try{ localStorage.setItem(CHIAVE_CONSENSO, v + "|" + new Date().toISOString().slice(0,10)); }catch(_){}
-  }
+  var partiti = {};                                  // che cosa è già stato avviato
 
   function caricaScript(src){
     var s = document.createElement("script");
@@ -306,18 +307,19 @@
     return s;
   }
 
-  function avviaMisurazione(){
-    if(window.__mvMisurazione) return;
-    window.__mvMisurazione = true;
+  function avviaStatistiche(){
+    if(partiti.ga4 || !MISURAZIONE.ga4) return;
+    partiti.ga4 = true;
+    window.dataLayer = window.dataLayer || [];
+    window.gtag = function(){ window.dataLayer.push(arguments); };
+    window.gtag("js", new Date());
+    window.gtag("config", MISURAZIONE.ga4, {anonymize_ip:true});
+    caricaScript("https://www.googletagmanager.com/gtag/js?id=" + encodeURIComponent(MISURAZIONE.ga4));
+  }
 
-    if(MISURAZIONE.ga4){
-      window.dataLayer = window.dataLayer || [];
-      window.gtag = function(){ window.dataLayer.push(arguments); };
-      window.gtag("js", new Date());
-      window.gtag("config", MISURAZIONE.ga4, {anonymize_ip:true});
-      caricaScript("https://www.googletagmanager.com/gtag/js?id=" + encodeURIComponent(MISURAZIONE.ga4));
-    }
-    if(MISURAZIONE.metaPixel){
+  function avviaMarketing(){
+    if(!partiti.meta && MISURAZIONE.metaPixel){
+      partiti.meta = true;
       /* eslint-disable */
       !function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?
       n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;
@@ -328,7 +330,8 @@
       window.fbq("init", MISURAZIONE.metaPixel);
       window.fbq("track", "PageView");
     }
-    if(MISURAZIONE.linkedin){
+    if(!partiti.linkedin && MISURAZIONE.linkedin){
+      partiti.linkedin = true;
       window._linkedin_partner_id = MISURAZIONE.linkedin;
       window._linkedin_data_partner_ids = window._linkedin_data_partner_ids || [];
       window._linkedin_data_partner_ids.push(MISURAZIONE.linkedin);
@@ -336,34 +339,34 @@
     }
   }
 
-  /* Un evento solo, con lo stesso nome per tutti i servizi configurati:
-     i pulsanti del sito lo chiamano senza sapere che cosa c'è sotto. */
-  function evento(nome, dati){
-    if(!window.__mvMisurazione) return;
-    if(MISURAZIONE.ga4 && window.gtag) window.gtag("event", nome, dati || {});
-    if(MISURAZIONE.metaPixel && window.fbq) window.fbq("trackCustom", nome, dati || {});
+  function applicaConsenso(){
+    var c = window.Cookiebot && window.Cookiebot.consent;
+    if(!c) return;
+    if(c.statistics) avviaStatistiche();
+    if(c.marketing)  avviaMarketing();
+
+    // Consenso ritirato dopo che qualcosa era già in funzione: uno script
+    // caricato non si può scaricare, l'unico modo onesto è ripartire da capo.
+    var acceso = partiti.ga4 || partiti.meta || partiti.linkedin;
+    var permesso = (c.statistics && partiti.ga4) || (c.marketing && (partiti.meta || partiti.linkedin));
+    if(acceso && !permesso) window.location.reload();
   }
 
   if(attivi.length){
-    var scelta = leggiConsenso();
-    if(scelta && scelta.indexOf("si") === 0){
-      avviaMisurazione();
-    } else if(!scelta && barra){
-      barra.hidden = false;
-    }
-    if(barra){
-      var chiudiBarra = function(){ barra.hidden = true; };
-      document.getElementById("consentSi").addEventListener("click", function(){
-        scriviConsenso("si"); avviaMisurazione(); chiudiBarra();
-      });
-      document.getElementById("consentNo").addEventListener("click", function(){
-        scriviConsenso("no"); chiudiBarra();
-      });
-    }
-    if(riapri && barra) riapri.addEventListener("click", function(){ barra.hidden = false; });
-  } else if(riapri){
-    // nessuno strumento configurato: non c'è niente da preferire
-    riapri.hidden = true;
+    window.addEventListener("CookiebotOnConsentReady", applicaConsenso);
+    window.addEventListener("CookiebotOnAccept", applicaConsenso);
+    window.addEventListener("CookiebotOnDecline", applicaConsenso);
+    applicaConsenso();          // se Cookiebot ha già deciso prima di questo file
+  }
+
+  /* La voce «Preferenze cookie» del piè di pagina la gestisce consenso.js,
+     che serve anche alle pagine senza questo file. */
+
+  /* Un evento solo, con lo stesso nome per tutti i servizi avviati:
+     i pulsanti del sito lo chiamano senza sapere che cosa c'è sotto. */
+  function evento(nome, dati){
+    if(partiti.ga4 && window.gtag) window.gtag("event", nome, dati || {});
+    if(partiti.meta && window.fbq) window.fbq("trackCustom", nome, dati || {});
   }
 
   /* i richiami al contatto segnalano l'intenzione, non l'identità */

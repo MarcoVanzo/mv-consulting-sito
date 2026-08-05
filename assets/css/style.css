@@ -459,25 +459,22 @@ footer{border-top:1px solid var(--edge); padding:44px 0 34px;}
 }
 @media (prefers-reduced-motion:reduce){.cta-bar{transition:none;}}
 
-/* ---------- consenso ---------- */
-.consent-bar{
-  position:fixed; left:0; right:0; bottom:0; z-index:70; background:var(--panel);
-  border-top:1px solid var(--edge2); box-shadow:0 -20px 60px -30px rgba(0,0,0,.95);
-  padding:18px 0 calc(18px + env(safe-area-inset-bottom));
+/* ---------- dichiarazione dei cookie generata da Cookiebot ----------
+   Il riquadro arriva da cd.js con il suo stile chiaro: qui viene riportato
+   nei colori del sito, senza toccare la struttura che genera Cookiebot. */
+#CookiebotDeclaration{margin:6px 0 26px; font-size:14px;}
+.CookieDeclaration{color:var(--body);}
+.CookieDeclarationType{
+  background:var(--panel); border:1px solid var(--edge) !important; border-radius:10px;
+  padding:16px 18px; margin-bottom:14px;
 }
-.consent-in{
-  max-width:var(--maxw); margin:0 auto; padding:0 32px; display:flex; align-items:center;
-  gap:26px; justify-content:space-between; flex-wrap:wrap;
-}
-.consent-in p{font-size:13px; color:var(--dim); line-height:1.6; max-width:66ch;}
-.consent-t{font-size:10.5px; letter-spacing:.14em; text-transform:uppercase; color:var(--text); margin-bottom:6px;}
-.consent-in a{color:var(--brand); text-decoration:underline; text-underline-offset:2px;}
-.consent-btns{display:flex; gap:10px; flex:none;}
-@media (max-width:820px){
-  .consent-in{padding:0 20px; gap:16px;}
-  .consent-btns{width:100%;}
-  .consent-btns .btn{flex:1;}
-}
+.CookieDeclarationTypeHeader{color:var(--text); font-weight:600;}
+.CookieDeclarationTypeDescription{color:var(--dim); font-size:13.5px;}
+.CookieDeclarationTable{width:100%; font-size:12.5px;}
+.CookieDeclarationTableHeader{color:var(--dim); border-bottom:1px solid var(--edge) !important;}
+.CookieDeclarationTableCell{border-bottom:1px solid rgba(44,65,80,.55) !important; color:var(--body);}
+.CookieDeclarationDialogText, .CookieDeclarationIntro{color:var(--dim);}
+#CookiebotDeclaration a{color:var(--brand);}
 
 @media (max-width:960px){
   .areas{grid-template-columns:1fr 1fr;}
