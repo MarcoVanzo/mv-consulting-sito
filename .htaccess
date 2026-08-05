@@ -65,6 +65,6 @@ ErrorDocument 404 /404.html
 </IfModule>
 
 # --- File da non servire ----------------------------------------------------
-<FilesMatch "^(README\.md|\.gitignore)$">
+<FilesMatch "^(README\.md|CLAUDE\.md|\.gitignore)$">
   Require all denied
 </FilesMatch>

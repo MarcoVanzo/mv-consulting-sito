@@ -91,6 +91,28 @@ jobs:
             [ "$c" = "200" ] || { echo "::error::$p risponde $c"; exit 1; }
           done
 
+          # Il 200 dice che il file esiste, non che è quello appena caricato: se
+          # l'FTP ha saltato un file o il proxy serve una copia vecchia, la
+          # risposta è 200 lo stesso e il deploy sembrerebbe riuscito. Si
+          # confrontano i byte, con qualche tentativo perché la pubblicazione
+          # non è istantanea. Il parametro con lo sha rende l'indirizzo unico a
+          # ogni deploy, così si legge l'originale e non la cache.
+          confronta() {
+            atteso=$(sha256sum "$1" | cut -d' ' -f1)
+            for tentativo in 1 2 3 4 5; do
+              servito=$(curl -s --max-time 30 "https://www.mv-consulting.it/$1?v=${GITHUB_SHA}" | sha256sum | cut -d' ' -f1)
+              if [ "$servito" = "$atteso" ]; then echo "$1 -> identico"; return 0; fi
+              sleep 10
+            done
+            echo "::error::$1 online non corrisponde alla versione pubblicata (atteso ${atteso:0:12}, servito ${servito:0:12})"
+            return 1
+          }
+          esito=0
+          for f in index.html privacy-policy.html 404.html assets/css/style.css assets/js/main.js; do
+            confronta "$f" || esito=1
+          done
+          [ "$esito" -eq 0 ] || exit 1
+
           # Stato della cache pubblica: informativo, non fa fallire il deploy.
           cache=$(curl -sI https://www.mv-consulting.it/ | grep -i '^x-aruba-cache' | tr -d '\r')
           echo "Cache del proxy: ${cache:-non dichiarata}"
