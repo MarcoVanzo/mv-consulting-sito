@@ -70,9 +70,27 @@ jobs:
       - name: Controllo del sito pubblicato
         run: |
           sleep 5
-          codice=$(curl -s -o /tmp/home.html -w '%{http_code}' https://www.mv-consulting.it/)
+          # Il proxy di Aruba tiene le pagine in cache: si interroga l'origine
+          # con un parametro casuale, altrimenti si leggerebbe la copia vecchia
+          # e il controllo fallirebbe pur essendo andato tutto a buon fine.
+          url="https://www.mv-consulting.it/?deploy=${GITHUB_RUN_ID}"
+          codice=$(curl -s -o /tmp/home.html -w '%{http_code}' "$url")
           echo "HTTP $codice"
           [ "$codice" = "200" ] || { echo "::error::la home risponde $codice"; exit 1; }
           grep -q "Non esistono cose facili" /tmp/home.html \
-            || { echo "::error::la home risponde ma non è il sito nuovo — controllare che index.html abbia la precedenza su index.php"; exit 1; }
-          echo "Sito nuovo online."
+            || { echo "::error::la home risponde ma non serve il sito nuovo"; exit 1; }
+
+          for p in /assets/css/style.css /assets/js/main.js /privacy-policy.html; do
+            c=$(curl -s -o /dev/null -w '%{http_code}' "https://www.mv-consulting.it$p")
+            echo "$p -> $c"
+            [ "$c" = "200" ] || { echo "::error::$p risponde $c"; exit 1; }
+          done
+
+          # Stato della cache pubblica: informativo, non fa fallire il deploy.
+          cache=$(curl -sI https://www.mv-consulting.it/ | grep -i '^x-aruba-cache' | tr -d '\r')
+          echo "Cache del proxy: ${cache:-non dichiarata}"
+          if curl -s https://www.mv-consulting.it/ | grep -q "Non esistono cose facili"; then
+            echo "Sito nuovo online e servito anche dalla cache."
+          else
+            echo "::warning::il sito nuovo è pubblicato, ma il proxy di Aruba serve ancora la versione in cache. Svuotare la cache da Pannello > Velocità > Caching."
+          fi
