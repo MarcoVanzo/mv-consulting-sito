@@ -54,23 +54,50 @@ jobs:
           PULIZIA: ${{ inputs.pulizia_totale == true && '--delete' || '' }}
         run: |
           [ -n "$PULIZIA" ] && echo "::warning::pulizia totale attiva: i file remoti non presenti in questo repository verranno rimossi"
-          lftp -c "
-            set cmd:trace off;
-            set ftp:ssl-allow true;
-            set ssl:verify-certificate no;
-            set net:max-retries 3;
-            set net:timeout 20;
-            open -u '$FTP_USER','$FTP_PASS' '$FTP_HOST';
-            mirror --reverse --verbose --parallel=4 $PULIZIA \
-              --exclude-glob .git* \
-              --exclude .github/ \
-              --exclude .claude/ \
-              --exclude .anteprima/ \
-              --exclude README.md \
-              --exclude CLAUDE.md \
-              --exclude-glob .DS_Store \
-              ./ '$FTP_DIR'
-          "
+
+          # L'FTP di Aruba ogni tanto chiude il canale dati a metà: il file
+          # arriva tagliato (index.html si è già fermato due volte a 16384
+          # byte esatti) ma il server risponde comunque "226 transfer
+          # complete" e lftp non se ne accorge. Si carica in seriale — il
+          # sito sta in 64 KB, il parallelismo non fa guadagnare niente — e
+          # poi si ripassa con --ignore-time, che confronta le dimensioni
+          # invece delle date: chi è tagliato risulta diverso e riparte.
+          mirror() {
+            lftp -c "
+              set cmd:trace off;
+              set ftp:ssl-allow true;
+              set ssl:verify-certificate no;
+              set net:max-retries 3;
+              set net:timeout 20;
+              set xfer:clobber on;
+              open -u '$FTP_USER','$FTP_PASS' '$FTP_HOST';
+              mirror --reverse --parallel=1 $* $PULIZIA \
+                --exclude-glob .git* \
+                --exclude .github/ \
+                --exclude .claude/ \
+                --exclude .anteprima/ \
+                --exclude README.md \
+                --exclude CLAUDE.md \
+                --exclude-glob .DS_Store \
+                ./ '$FTP_DIR'
+            "
+          }
+
+          mirror --verbose
+
+          # Ogni ripassata ricarica i file di dimensione diversa e dice quali:
+          # quando non trasferisce più niente, il server ha tutto per intero.
+          completo=no
+          for tentativo in 1 2 3; do
+            esito=$(mirror --ignore-time --verbose)
+            echo "$esito"
+            if ! echo "$esito" | grep -q 'Transferring file'; then
+              completo=sì
+              break
+            fi
+            echo "::warning::giro $tentativo: alcuni file erano arrivati incompleti e sono stati ricaricati"
+          done
+          [ "$completo" = sì ] || { echo "::error::dopo tre tentativi il server continua a ricevere file incompleti"; exit 1; }
 
       - name: Controllo del sito pubblicato
         run: |
