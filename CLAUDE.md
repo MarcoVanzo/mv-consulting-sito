@@ -56,6 +56,12 @@ GitHub MCP — `mcp__github__actions_run_trigger` per avviarlo, `actions_list` /
 Il deploy è un'azione visibile all'esterno: **si chiede conferma prima di lanciarlo**,
 salvo che sia stata la richiesta esplicita dell'utente.
 
+**Il sito pubblicato non si vede da qui.** La rete in uscita della sessione può avere
+`www.mv-consulting.it` fuori dagli indirizzi consentiti: le richieste tornano 403 o
+non partono affatto. Non è un guasto del sito e non va riferito come tale — la verifica
+che conta è il passo «Controllo del sito pubblicato» dentro il workflow, che gira sui
+runner di GitHub. `controlla.sh --online` se ne accorge da solo e lo dice.
+
 ## Lavorare dal telefono
 
 Le sessioni partono spesso dall'app o dal browser del telefono, dove leggere è

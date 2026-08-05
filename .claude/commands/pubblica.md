@@ -17,6 +17,9 @@ Pubblicazione del sito. In ordine:
    se fallisce, leggi i log con `get_job_logs` e riferisci l'errore vero, non "il deploy
    è fallito".
 6. A deploy riuscito lancia `.claude/scripts/controlla.sh --online` e chiudi con l'esito.
+   Se dice che il sito non è raggiungibile da questa sessione, va bene così: riporta il
+   risultato del passo «Controllo del sito pubblicato» del workflow e dì chiaramente
+   che cosa resta non verificato, senza dare per riuscito quello che non hai visto.
 
 `gh` non esiste in questo ambiente: usa gli strumenti GitHub MCP. Non attivare mai
 l'opzione `pulizia_totale` di tua iniziativa: cancella la cartella remota.
