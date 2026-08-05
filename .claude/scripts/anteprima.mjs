@@ -10,6 +10,7 @@
 
 import { spawn } from 'node:child_process'
 import { mkdir, writeFile, readdir } from 'node:fs/promises'
+import { existsSync } from 'node:fs'
 import { join } from 'node:path'
 
 const [url, cartella, ...opzioni] = process.argv.slice(2)
@@ -24,9 +25,23 @@ const dispositivi = [
   { nome: 'schermo', width: 1440, height: 900, deviceScaleFactor: 1, mobile: false },
 ]
 
-const chromiumDir = (await readdir('/opt/pw-browsers')).find((d) => d.startsWith('chromium-'))
-if (!chromiumDir) throw new Error('Chromium non trovato in /opt/pw-browsers')
-const chromium = `/opt/pw-browsers/${chromiumDir}/chrome-linux/chrome`
+// Il Chromium sta in posti diversi a seconda di dove gira lo script: nella
+// sandbox Linux in /opt/pw-browsers, sul Mac nella cache di Playwright o, in
+// ultima istanza, nel Chrome installato a mano.
+const candidati = [
+  ['/opt/pw-browsers', (d) => `/opt/pw-browsers/${d}/chrome-linux/chrome`],
+  [`${process.env.HOME}/Library/Caches/ms-playwright`, (d) =>
+    `${process.env.HOME}/Library/Caches/ms-playwright/${d}/chrome-mac/Chromium.app/Contents/MacOS/Chromium`],
+]
+let chromium = ''
+for (const [dir, percorso] of candidati) {
+  const trovato = await readdir(dir).catch(() => []).then((l) => l.find((d) => d.startsWith('chromium-')))
+  if (trovato && existsSync(percorso(trovato))) { chromium = percorso(trovato); break }
+}
+if (!chromium && existsSync('/Applications/Google Chrome.app')) {
+  chromium = '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome'
+}
+if (!chromium) throw new Error('Chromium non trovato: né in /opt/pw-browsers, né nella cache di Playwright, né in /Applications')
 
 const browser = spawn(chromium, [
   '--headless=new',
