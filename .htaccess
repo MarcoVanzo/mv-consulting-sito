@@ -15,11 +15,14 @@ RewriteRule ^(.*)$ https://www.mv-consulting.it/$1 [R=301,L]
 # --- Vecchi indirizzi WordPress --------------------------------------------
 # Le pagine del vecchio sito confluiscono nelle sezioni della nuova home:
 # senza questi redirect i link esistenti e i risultati di ricerca finirebbero su 404.
-Redirect 301 /chi-siamo/       /#studio
-Redirect 301 /servizi/         /#aree
-Redirect 301 /partner/         /#progetti
-Redirect 301 /contatti/        /#contatti
-Redirect 301 /privacy-policy/  /privacy-policy.html
+# Si usa RewriteRule e non Redirect: quest'ultimo compone la destinazione con
+# lo schema visto dal server (http, perche' l'HTTPS termina sul proxy) e
+# riattacca la query string dopo l'ancora, producendo /#studio?x=1.
+RewriteRule ^chi-siamo/?$      https://www.mv-consulting.it/#studio          [R=301,L,QSD]
+RewriteRule ^servizi/?$        https://www.mv-consulting.it/#aree            [R=301,L,QSD]
+RewriteRule ^partner/?$        https://www.mv-consulting.it/#progetti        [R=301,L,QSD]
+RewriteRule ^contatti/?$       https://www.mv-consulting.it/#contatti        [R=301,L,QSD]
+RewriteRule ^privacy-policy/?$ https://www.mv-consulting.it/privacy-policy.html [R=301,L,QSD]
 
 # Residui dell'installazione WordPress: non esistono più, meglio dirlo subito
 RedirectMatch 410 ^/(wp-admin|wp-login\.php|wp-json|xmlrpc\.php|wp-content|wp-includes)
