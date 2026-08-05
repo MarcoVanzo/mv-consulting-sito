@@ -109,8 +109,10 @@ Da fare **solo dopo il backup**: cancella tutto ciò che c'è sul server.
 
 ## Accessibilità e privacy
 
-- Nessun cookie, nessun tracciamento, nessuna richiesta a domini terzi: non serve il
-  banner dei cookie. Se in futuro si aggiungono statistiche, va rivalutato.
+- Cookie tecnici del banner Cookiebot e, solo con il consenso, Google Analytics 4
+  (proprietà `MV Consulting`, ID `G-XJX17YKC6D`). Il banner è il primo script di ogni
+  pagina e blocca da solo gli script non consentiti.
 - Le animazioni si disattivano da sole con `prefers-reduced-motion`.
-- La `Content-Security-Policy` in `.htaccess` vieta ogni risorsa esterna: aggiungendo
-  script di terze parti va aggiornata, altrimenti verranno bloccati.
+- La `Content-Security-Policy` in `.htaccess` ammette solo Cookiebot e Google
+  Analytics: aggiungendo altri script di terze parti va aggiornata, altrimenti
+  verranno bloccati.

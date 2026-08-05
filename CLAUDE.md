@@ -9,12 +9,13 @@ deploy, verifiche dopo la pubblicazione. Questo file dice come lavorare nel repo
 
 ## Regole che non si violano
 
-- **Nessuna risorsa esterna.** La `Content-Security-Policy` in `.htaccess` vieta ogni
-  richiesta a domini terzi: niente font Google, niente CDN, niente script di analytics.
-  Se una modifica ne introduce uno, o si cambia la CSP consapevolmente o la risorsa
-  viene bloccata dal browser.
-- **Nessun cookie, nessun tracciamento.** È il motivo per cui il sito non ha il banner.
-  Prima di aggiungere statistiche, va rivalutato l'obbligo di informativa e consenso.
+- **Solo due domini esterni.** La `Content-Security-Policy` in `.htaccess` ammette
+  Cookiebot e Google Analytics e blocca tutto il resto: niente font Google, niente CDN,
+  nessun altro script. Se una modifica ne introduce uno, o si cambia la CSP
+  consapevolmente o la risorsa viene bloccata dal browser.
+- **I cookie non tecnici partono solo col consenso.** Il banner Cookiebot è il primo
+  script di ogni pagina e blocca Google Analytics finché il visitatore non accetta.
+  Aggiungendo altri strumenti vanno aggiornati la CSP, la cookie policy e il banner.
 - **Nessun passaggio di build.** Niente npm, niente bundler, niente preprocessori: lo
   stile sta tutto in `assets/css/style.css`, gli script in `assets/js/main.js`.
 - **Le animazioni rispettano `prefers-reduced-motion`.** Ogni nuova animazione va messa
