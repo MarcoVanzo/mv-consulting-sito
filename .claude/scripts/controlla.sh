@@ -45,6 +45,19 @@ done
 if [ "${1:-}" = "--online" ]; then
   echo "Sito pubblicato"
   base="https://www.mv-consulting.it"
+
+  # Le sessioni remote escono da un proxy che può avere il sito fuori dalla
+  # rete consentita: risponde 403 al CONNECT per qualunque indirizzo. Senza
+  # questo controllo il sito risulterebbe rotto quando è solo irraggiungibile
+  # da qui, e l'esito vero resta quello del passo di controllo del workflow.
+  sonda=$(curl -s -o /dev/null -w '%{http_code}' --max-time 15 "$base/?c=$$")
+  if [ "$sonda" = "000" ] || [ "$sonda" = "403" ]; then
+    echo "  — non verificabile da questa sessione: la rete in uscita risponde $sonda."
+    echo "    L'esito vero è il passo «Controllo del sito pubblicato» del workflow di deploy."
+    echo
+    if [ "$errori" -eq 0 ]; then echo "Repository a posto."; exit 0; else echo "$errori problemi."; exit 1; fi
+  fi
+
   for p in / /assets/css/style.css /assets/js/main.js /privacy-policy.html; do
     c=$(curl -s -o /dev/null -w '%{http_code}' --max-time 15 "$base$p?c=$$")
     if [ "$c" = "200" ]; then echo "  ✓ $p"; else segnala "$p risponde $c"; fi
