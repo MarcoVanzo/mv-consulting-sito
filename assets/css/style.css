@@ -527,6 +527,52 @@ footer .foot-in{
 .CookieDeclarationDialogText, .CookieDeclarationIntro{color:var(--dim);}
 #CookiebotDeclaration a{color:var(--brand);}
 
+/* ---------- banner del consenso (Cookiebot) ----------
+   Cookiebot disegna il banner con il proprio tema chiaro: qui viene riportato
+   nei colori del sito. Accetta e rifiuta hanno lo stesso peso visivo di
+   proposito — un pulsante pieno accanto a uno scarico è il classico modo di
+   spingere verso il consenso, e le autorità lo contestano.
+
+   Attenzione: questi identificativi sono il DOM interno di Cookiebot e possono
+   cambiare con i loro aggiornamenti. Se un giorno il banner torna chiaro, la
+   causa e' qui, non nel pannello. */
+#CybotCookiebotDialog{
+  background:var(--panel) !important; color:var(--body) !important;
+  border:1px solid var(--edge) !important; border-radius:14px !important;
+  box-shadow:0 40px 90px -40px rgba(0,0,0,.9) !important;
+  font-family:"Avenir Next", Avenir, "Segoe UI", system-ui, sans-serif !important;
+}
+#CybotCookiebotDialogBodyContentTitle{color:var(--text) !important; font-weight:600 !important;}
+#CybotCookiebotDialogBodyContentText, #CybotCookiebotDialogDetailBodyContentTextAbout{color:var(--dim) !important;}
+#CybotCookiebotDialogBodyContentText a, #CybotCookiebotDialogBodyLevelButtonLevelOptinAllowallSelection{color:var(--brand) !important;}
+#CybotCookiebotDialogPoweredByText, #CybotCookiebotDialogPoweredbyLink{opacity:.5 !important;}
+
+/* i tre pulsanti, identici fra loro */
+#CybotCookiebotDialogBodyLevelButtonLevelOptinAllowAll,
+#CybotCookiebotDialogBodyLevelButtonLevelOptinAllowallSelection,
+#CybotCookiebotDialogBodyButtonDecline,
+#CybotCookiebotDialogBodyLevelButtonAccept,
+#CybotCookiebotDialogBodyLevelButtonCustomize{
+  background:transparent !important; color:var(--text) !important;
+  border:1px solid var(--edge2) !important; border-radius:7px !important;
+  font-weight:600 !important; font-size:14px !important; min-height:44px !important;
+  padding:11px 20px !important; opacity:1 !important;
+}
+#CybotCookiebotDialogBodyLevelButtonLevelOptinAllowAll:hover,
+#CybotCookiebotDialogBodyLevelButtonLevelOptinAllowallSelection:hover,
+#CybotCookiebotDialogBodyButtonDecline:hover{
+  border-color:var(--brand) !important; color:var(--brand) !important;
+}
+
+/* schede delle categorie e caselle di spunta */
+#CybotCookiebotDialogNav, #CybotCookiebotDialogDetailBodyContentTabs{border-color:var(--edge) !important;}
+.CybotCookiebotDialogNavItemLink{color:var(--dim) !important; border-color:transparent !important;}
+.CybotCookiebotDialogNavItemLink.CybotCookiebotDialogActive{color:var(--text) !important; border-color:var(--brand) !important;}
+.CybotCookiebotDialogBodyLevelButtonDescription, #CybotCookiebotDialogDetailBodyContentCookieContainerTypes{color:var(--body) !important;}
+.CybotCookiebotDialogDetailBodyContentCookieTypeTable, .CybotCookiebotDialogDetailBodyContentCookieProvider{color:var(--body) !important;}
+input[type=checkbox].CybotCookiebotDialogBodyLevelButton{accent-color:var(--brand) !important;}
+#CybotCookiebotDialogBodyEdgeMoreDetails a{color:var(--brand) !important;}
+
 @media (max-width:960px){
   footer .foot-top{grid-template-columns:1fr 1fr; gap:34px 40px;}
   .foot-id{grid-column:1 / -1;}

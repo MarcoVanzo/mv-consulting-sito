@@ -181,17 +181,43 @@ richiamo al contatto, con la posizione) e `richiesta_inviata` (modulo spedito).
 Il consenso è gestito da **Cookiebot**. Lo script sta in testa a `index.html`,
 `privacy-policy.html` e `404.html` e deve restare **il primo script della pagina**.
 
-### Cosa fare per attivarlo
+### L'identificativo
 
-Serve l'identificativo del gruppo di domini (CBID), che si copia dal pannello Cookiebot.
-Compare in quattro punti, tutti marcati con lo stesso segnaposto:
+Il CBID è `abf0bc57-ae54-458d-bb39-ae97f9323b72`, cioè l'ID del gruppo di domini che si
+legge nell'indirizzo del pannello Cookiebot. Compare in quattro punti:
 
 ```bash
-grep -rn "INSERIRE-CBID-COOKIEBOT" .
+grep -rn "abf0bc57-ae54-458d-bb39-ae97f9323b72" -- *.html
 ```
 
 Sono i tre tag `<script id="Cookiebot">` nelle pagine e il tag `CookieDeclaration` dentro
 `privacy-policy.html`, che disegna l'elenco dei cookie aggiornato in automatico.
+
+### Quello che si fa solo dal pannello
+
+Il codice qui dentro non basta: queste voci vivono su
+[admin.cookiebot.com](https://admin.cookiebot.com/) e vanno controllate una volta.
+
+| voce | come deve stare | perché |
+|---|---|---|
+| Modello del banner | con la scelta **per categoria**, non il solo «OK» | il consenso dev'essere specifico per finalità |
+| Pulsante di rifiuto | presente nel primo livello, non nascosto dietro «Personalizza» | rifiutare dev'essere facile quanto accettare |
+| Scadenza del consenso | **6 mesi**, non i 12 di default | per l'Italia è la lettura prudente |
+| Lingua | italiano, o rilevamento automatico | il tag passa già `data-culture="IT"` |
+| Scansione | eseguita almeno una volta | senza, la tabella dell'informativa resta vuota |
+| Nomi delle categorie | quelli standard, niente etichette vaghe | il Garante ha contestato «cookie di esperienza» a un'altra azienda |
+
+I **colori** del banner non serve impostarli dal pannello: `assets/css/style.css` lo veste
+già con la palette del sito, in fondo al file. Quel blocco usa gli identificativi del DOM
+interno di Cookiebot (`#CybotCookiebotDialog…`), che possono cambiare con i loro
+aggiornamenti: se un giorno il banner torna chiaro, la causa è lì.
+
+Accetta e rifiuta hanno di proposito lo **stesso peso visivo**. Un pulsante pieno accanto a
+uno scarico è il modo classico di spingere verso il consenso, e le autorità lo contestano:
+se dal pannello si sceglie un tema che li differenzia, il CSS lo riporta pari.
+
+Resta fuori dal codice anche l'**accordo ex art. 28** con Usercentrics A/S, che è il
+responsabile del trattamento per la raccolta del consenso. L'informativa lo cita già.
 
 ### Blocco manuale, non automatico
 
