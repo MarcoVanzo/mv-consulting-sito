@@ -9,12 +9,17 @@ deploy, verifiche dopo la pubblicazione. Questo file dice come lavorare nel repo
 
 ## Regole che non si violano
 
-- **Solo due domini esterni.** La `Content-Security-Policy` in `.htaccess` ammette
-  Cookiebot e Google Analytics e blocca tutto il resto: niente font Google, niente CDN,
-  nessun altro script. Se una modifica ne introduce uno, o si cambia la CSP
-  consapevolmente o la risorsa viene bloccata dal browser.
+- **Solo quattro domini esterni.** La `Content-Security-Policy` in `.htaccess` ammette
+  Cookiebot, Google Analytics, il pixel di Meta e l'Insight Tag di LinkedIn, e blocca
+  tutto il resto: niente font Google, niente CDN, nessun altro script. Se una modifica
+  ne introduce uno, o si cambia la CSP consapevolmente o la risorsa viene bloccata dal
+  browser.
 - **I cookie non tecnici partono solo col consenso.** Il banner Cookiebot è il primo
   script di ogni pagina e blocca Google Analytics finché il visitatore non accetta.
+  I due pixel sono marcati `type="text/plain" data-cookieconsent="marketing"`: restano
+  inerti finché non arriva il consenso della categoria marketing, che è separata da
+  quella statistica. I frammenti `<noscript>` con l'immagine, che Meta e LinkedIn
+  includono nei loro snippet, sono volutamente omessi: partirebbero senza consenso.
   Aggiungendo altri strumenti vanno aggiornati la CSP, la cookie policy e il banner.
 - **Nessun passaggio di build.** Niente npm, niente bundler, niente preprocessori: lo
   stile sta tutto in `assets/css/style.css`, gli script in `assets/js/main.js`.
