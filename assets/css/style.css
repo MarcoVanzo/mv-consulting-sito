@@ -131,7 +131,10 @@ input[type=range]::-moz-range-thumb{
 .demo-note{margin-top:11px; font-size:12px; color:var(--dim);}
 
 /* ---------- sezioni ---------- */
-section{padding:88px 0;}
+/* `clip` e non `hidden`: taglia quello che sborda (l'alone dei progetti arriva a
+   14vw oltre il testo) senza rendere la sezione un contenitore di scorrimento,
+   che romperebbe l'header sticky. */
+section{padding:88px 0; overflow-x:clip;}
 .sec-head{display:flex; justify-content:space-between; align-items:flex-end; gap:30px; flex-wrap:wrap; margin-bottom:40px;}
 .kicker{font-size:10.5px; letter-spacing:.16em; text-transform:uppercase; color:var(--brand); margin-bottom:14px;}
 .sec-head h2{font-size:clamp(26px,3.3vw,38px); line-height:1.12; max-width:19ch;}

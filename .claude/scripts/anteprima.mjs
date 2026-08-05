@@ -124,26 +124,30 @@ for (const d of dispositivi) {
   const valuta = async (expression) =>
     (await invia('Runtime.evaluate', { expression, awaitPromise: true, returnByValue: true }, sessionId)).result.value
 
-  if (intera) {
-    await valuta(`(async () => {
-      const passo = innerHeight * 0.8
-      for (let y = 0; y < document.body.scrollHeight; y += passo) {
-        scrollTo(0, y)
-        await new Promise((r) => setTimeout(r, 60))
-      }
-      scrollTo(0, 0)
-      await new Promise((r) => setTimeout(r, 250))
-    })()`)
-  }
+  // La passata si fa sempre, non solo a pagina intera: appena sotto la piega la
+  // pagina è tutta da rivelare, e una foto scattata prima mostrerebbe il vuoto.
+  // Alla fine si torna dove serve — sull'ancora se l'indirizzo ne ha una.
+  await valuta(`(async () => {
+    const passo = innerHeight * 0.8
+    for (let y = 0; y < document.body.scrollHeight; y += passo) {
+      scrollTo(0, y)
+      await new Promise((r) => setTimeout(r, 60))
+    }
+    const ancora = location.hash && document.querySelector(location.hash)
+    if (ancora) ancora.scrollIntoView()
+    else scrollTo(0, 0)
+    await new Promise((r) => setTimeout(r, 400))
+  })()`)
   await pausa(600)
 
   // Lo sbordamento si misura provando a scorrere, non confrontando scrollWidth
   // con la finestra: con `overflow-x:hidden` sul body scrollWidth resta più
   // largo della finestra anche quando la pagina è perfettamente a posto.
   const misure = await valuta(`(() => {
-    scrollTo(200, 0)
+    const y = scrollY
+    scrollTo(200, y)
     const scorre = Math.round(scrollX)
-    scrollTo(0, 0)
+    scrollTo(0, y)   // si rimette com'era: la prova non deve spostare l'inquadratura
     return JSON.stringify({ scorre, altezza: document.body.scrollHeight, viewport: innerWidth })
   })()`)
   const { scorre, altezza, viewport } = JSON.parse(misure)
