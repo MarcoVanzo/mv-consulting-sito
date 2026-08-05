@@ -131,7 +131,13 @@ input[type=range]::-moz-range-thumb{
 .demo-note{margin-top:11px; font-size:12px; color:var(--dim);}
 
 /* ---------- sezioni ---------- */
-section{padding:88px 0;}
+/* `clip` e non `hidden`: taglia quello che sborda (l'alone dei progetti arriva a
+   14vw oltre il testo) senza rendere la sezione un contenitore di scorrimento,
+   che romperebbe l'header sticky. */
+section{padding:88px 0; overflow-x:clip;}
+/* L'header bloccato è alto 71 px: senza questo margine il titolo della sezione
+   finisce sotto la barra ogni volta che si tocca una voce del menu. */
+section[id], main[id]{scroll-margin-top:90px;}
 .sec-head{display:flex; justify-content:space-between; align-items:flex-end; gap:30px; flex-wrap:wrap; margin-bottom:40px;}
 .kicker{font-size:10.5px; letter-spacing:.16em; text-transform:uppercase; color:var(--brand); margin-bottom:14px;}
 .sec-head h2{font-size:clamp(26px,3.3vw,38px); line-height:1.12; max-width:19ch;}

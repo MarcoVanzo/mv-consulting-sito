@@ -5,7 +5,9 @@ on:
     branches: [main]
     paths-ignore:
       - 'README.md'
+      - 'CLAUDE.md'
       - '.gitignore'
+      - '.claude/**'
   workflow_dispatch:
     inputs:
       pulizia_totale:
@@ -62,7 +64,10 @@ jobs:
             mirror --reverse --verbose --parallel=4 $PULIZIA \
               --exclude-glob .git* \
               --exclude .github/ \
+              --exclude .claude/ \
+              --exclude .anteprima/ \
               --exclude README.md \
+              --exclude CLAUDE.md \
               --exclude-glob .DS_Store \
               ./ '$FTP_DIR'
           "
