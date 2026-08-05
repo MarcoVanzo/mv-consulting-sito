@@ -34,23 +34,38 @@ jobs:
             exit 1
           fi
 
+      # Si usa lftp e non un'action pronta: il server FTP di Aruba rifiuta i
+      # percorsi assoluti che FTP-Deploy-Action usa per creare le sottocartelle
+      # ("550 Can't change directory to /assets"). lftp lavora in modo relativo
+      # e crea l'albero senza problemi.
+      - name: Installa lftp
+        run: sudo apt-get update -qq && sudo apt-get install -y -qq lftp
+
       - name: Carica via FTP
-        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
-        with:
-          server: ${{ secrets.FTP_SERVER }}
-          username: ${{ secrets.FTP_USERNAME }}
-          password: ${{ secrets.FTP_PASSWORD }}
-          # Cartella pubblica sul server. Su Aruba di norma è la radice della
-          # connessione FTP; se invece i file vanno in /www, impostare la
-          # variabile FTP_DIR (Settings > Variables) a  /www/
-          server-dir: ${{ vars.FTP_DIR || './' }}
-          local-dir: ./
-          dangerous-clean-slate: ${{ inputs.pulizia_totale == true }}
-          exclude: |
-            **/.git*
-            **/.git*/**
-            **/README.md
-            **/.DS_Store
+        env:
+          FTP_HOST: ${{ secrets.FTP_SERVER }}
+          FTP_USER: ${{ secrets.FTP_USERNAME }}
+          FTP_PASS: ${{ secrets.FTP_PASSWORD }}
+          # Cartella pubblica sul server: su questo hosting è la radice della
+          # connessione FTP. Se cambiasse, impostare la variabile FTP_DIR.
+          FTP_DIR: ${{ vars.FTP_DIR || '/' }}
+          PULIZIA: ${{ inputs.pulizia_totale == true && '--delete' || '' }}
+        run: |
+          [ -n "$PULIZIA" ] && echo "::warning::pulizia totale attiva: i file remoti non presenti in questo repository verranno rimossi"
+          lftp -c "
+            set cmd:trace off;
+            set ftp:ssl-allow true;
+            set ssl:verify-certificate no;
+            set net:max-retries 3;
+            set net:timeout 20;
+            open -u '$FTP_USER','$FTP_PASS' '$FTP_HOST';
+            mirror --reverse --verbose --parallel=4 $PULIZIA \
+              --exclude-glob .git* \
+              --exclude .github/ \
+              --exclude README.md \
+              --exclude-glob .DS_Store \
+              ./ '$FTP_DIR'
+          "
 
       - name: Controllo del sito pubblicato
         run: |
