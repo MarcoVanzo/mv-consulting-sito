@@ -11,7 +11,7 @@ Sostituisce il precedente sito WordPress (tema `marcovanzo`, Contact Form 7).
 index.html              home, pagina unica con ancore (#aree #progetti #insegniamo #studio #domande #contatti)
 privacy-policy.html     informativa, testo ripreso integralmente dal sito precedente
 404.html                pagina di errore
-contatti.php            ricezione del modulo, invia via mail() a marco@mv-consulting.it
+contatti.php            ricezione del modulo, invia via mail() a info@mv-consulting.it
 .htaccess               HTTPS, redirect dai vecchi indirizzi, cache, intestazioni di sicurezza
 robots.txt sitemap.xml  indicizzazione
 assets/css/style.css    tutto lo stile
@@ -71,6 +71,10 @@ aggiungere anche la variabile (non segreta) `FTP_DIR` con valore `/www/`.
    ed esportare il database dal pannello Aruba. È l'unico modo per tornare indietro.
 2. Verificare che esista la casella o l'alias `no-reply@mv-consulting.it`: è il mittente
    usato da `contatti.php` e Aruba rifiuta le mail con mittente esterno al dominio.
+3. Verificare che `info@mv-consulting.it` sia **presidiata**: è l'unico recapito del sito.
+   Ci arrivano i messaggi del modulo di contatto (`DESTINATARIO` in `contatti.php`), ed è
+   l'indirizzo indicato nell'informativa per l'esercizio dei diritti degli interessati —
+   dove i termini di risposta corrono comunque, anche se nessuno apre la casella.
 
 ### Deploy
 

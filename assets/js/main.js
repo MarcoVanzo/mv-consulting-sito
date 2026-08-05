@@ -397,7 +397,7 @@
         })
         .catch(function(){
           msg.className = "form-msg ko";
-          msg.innerHTML = 'Non siamo riusciti a inviare il messaggio. Scriveteci a <a href="mailto:marco@mv-consulting.it">marco@mv-consulting.it</a>.';
+          msg.innerHTML = 'Non siamo riusciti a inviare il messaggio. Scriveteci a <a href="mailto:info@mv-consulting.it">info@mv-consulting.it</a>.';
         })
         .then(function(){ btn.disabled = false; btn.textContent = "Invia il messaggio"; });
     });

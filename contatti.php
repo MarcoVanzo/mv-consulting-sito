@@ -6,7 +6,7 @@
  */
 declare(strict_types=1);
 
-const DESTINATARIO = 'marco@mv-consulting.it';
+const DESTINATARIO = 'info@mv-consulting.it';
 const MITTENTE     = 'no-reply@mv-consulting.it';   // deve essere una casella del dominio
 const MAX_LUNGHEZZA = 5000;
 
