@@ -30,10 +30,11 @@ done
 echo "  ✓ $visti riferimenti verificati"
 
 echo "Risorse esterne (vietate dalla CSP)"
-# facebook.com è un link di navigazione, non una risorsa caricata: la CSP non
-# tocca i link, e senza `navigate-to` non c'è direttiva che li limiti.
+# facebook.com e garanteprivacy.it sono link di navigazione, non risorse
+# caricate: la CSP non tocca i link, e senza `navigate-to` non c'è direttiva che
+# li limiti. Quello al Garante, poi, l'informativa lo deve avere.
 if esterne=$(grep -rnoE '(href|src)="https?://[^"]+"' -- *.html 2>/dev/null \
-  | grep -vE 'mv-consulting\.it|schema\.org|www\.w3\.org|www\.facebook\.com'); then
+  | grep -vE 'mv-consulting\.it|schema\.org|www\.w3\.org|www\.facebook\.com|www\.garanteprivacy\.it'); then
   # niente pipe verso il while: nella sotto-shell l'incremento di $errori
   # andrebbe perso e il controllo passerebbe pur avendo stampato le righe.
   while read -r riga; do segnala "$riga"; done <<< "$esterne"
