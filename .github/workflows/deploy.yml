@@ -80,10 +80,20 @@ jobs:
           # sito sta in 64 KB, il parallelismo non fa guadagnare niente — e
           # poi si ripassa con --ignore-time, che confronta le dimensioni
           # invece delle date: chi è tagliato risulta diverso e riparte.
+          #
+          # Quel 16384 non è un numero a caso: è la dimensione massima di un
+          # record TLS. Il canale dati cifrato di Aruba si chiude dopo il
+          # primo record, così ogni file più grande di 16 KB arriva tagliato
+          # lì — e tre deploy di fila si sono fermati proprio per questo,
+          # lasciando online una og.jpg di 16384 byte su 64623. Si cifra
+          # quindi il solo canale di controllo, quello su cui viaggiano
+          # utente e password: i dati sono file pubblici del sito, che il
+          # visitatore scaricherà comunque in chiaro dal browser.
           mirror() {
             lftp -c "
               set cmd:trace off;
               set ftp:ssl-allow true;
+              set ftp:ssl-protect-data false;
               set ssl:verify-certificate no;
               set net:max-retries 3;
               set net:timeout 20;
@@ -152,8 +162,13 @@ jobs:
             echo "::error::$1 online non corrisponde alla versione pubblicata (atteso ${atteso:0:12}, servito ${servito:0:12})"
             return 1
           }
+          # Le immagini erano fuori da questo confronto, e per tre deploy di
+          # fila nessuno si è accorto che og.jpg online era ferma a 16384
+          # byte: le anteprime su WhatsApp e LinkedIn uscivano tagliate a
+          # metà. Sono file grandi quanto basta a incappare nel troncamento,
+          # quindi si controllano anche loro.
           esito=0
-          for f in index.html privacy-policy.html 404.html assets/css/style.css assets/js/main.js; do
+          for f in index.html privacy-policy.html 404.html assets/css/style.css assets/js/main.js assets/img/*; do
             confronta "$f" || esito=1
           done
           [ "$esito" -eq 0 ] || exit 1
