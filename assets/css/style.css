@@ -1,21 +1,27 @@
 /* MV Consulting - mv-consulting.it
    Colori del marchio: #429DDA blu, #66879E ardesia. */
 
+/* I fondi sono grigio carbone quasi neutro, non blu: il blu del marchio deve
+   restare un accento che si nota: se lo si mette anche sotto, su ogni pannello e
+   in ogni bordo, non risalta più niente e la pagina diventa fredda e piatta.
+   Il calore torna dal testo (bianco appena avorio) e dall'ambra, usata solo per
+   segnare il «prima», il lato del problema. */
 :root{
   --img-logo-neg:url("../img/logo-negativo.svg");
-  --bg:#101A22;
-  --bg2:#131E27;
-  --panel:#1A2731;
-  --panel2:#22323D;
-  --edge:#2C4150;
-  --edge2:#3A5464;
-  --text:#DDE8EF;
-  --dim:#8CA5B7;
-  --body:#B4C8D6;
+  --bg:#101315;
+  --bg2:#14181B;
+  --panel:#191E22;
+  --panel2:#232A2F;
+  --edge:#2E363C;
+  --edge2:#3F484F;
+  --text:#E9E7E3;
+  --dim:#98A1A6;
+  --body:#C3C8CB;
   --brand:#429DDA;
   --brand-d:#2E7BB0;
   --ink:#08131B;
-  --ard:#66879E;
+  --ard:#7E888F;
+  --warm:#D8A46A;
   --ok:#4FBFA0;
   --maxw:1180px;
   --ease:cubic-bezier(.22,.68,.24,1);
@@ -32,6 +38,15 @@ body{
   font-size:16px; line-height:1.55; -webkit-font-smoothing:antialiased;
   overflow-x:hidden;
 }
+/* Una grana appena percettibile sopra tutto: su fondi così scuri il colore
+   piatto legge come una superficie di plastica, il pulviscolo gli dà materia e
+   nasconde le bande dei gradienti. Sta sopra il contenuto ma non intercetta i
+   clic, e non entra nella stampa. */
+body::after{
+  content:""; position:fixed; inset:0; z-index:100; pointer-events:none; opacity:.05;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+@media print{body::after{display:none;}}
 body.locked{overflow:hidden;}
 a{color:inherit; text-decoration:none;}
 h1,h2,h3,h4{margin:0; font-weight:600; letter-spacing:-.025em; text-wrap:balance;}
@@ -64,7 +79,7 @@ img{max-width:100%; height:auto; display:block;}
 
 /* ---------- navigazione ---------- */
 header.nav{
-  position:sticky; top:0; z-index:50; background:rgba(16,26,34,.82);
+  position:sticky; top:0; z-index:50; background:rgba(16,19,21,.85);
   backdrop-filter:saturate(140%) blur(14px); -webkit-backdrop-filter:saturate(140%) blur(14px);
   border-bottom:1px solid transparent; transition:border-color .3s, padding .3s;
 }
@@ -107,7 +122,7 @@ header.nav.stuck .brand{width:150px; height:30px;}
 .burger[aria-expanded=true] span:nth-child(2){opacity:0;}
 .burger[aria-expanded=true] span:nth-child(3){transform:translateY(-6.5px) rotate(-45deg);}
 .menu{
-  position:fixed; inset:var(--navh) 0 0; z-index:45; background:rgba(16,26,34,.97);
+  position:fixed; inset:var(--navh) 0 0; z-index:45; background:rgba(16,19,21,.97);
   backdrop-filter:blur(18px); -webkit-backdrop-filter:blur(18px);
   overflow-y:auto; overscroll-behavior:contain;
   opacity:0; transition:opacity .25s var(--ease);
@@ -133,9 +148,14 @@ header.nav.stuck .brand{width:150px; height:30px;}
 
 /* ---------- hero ---------- */
 .hero{padding:74px 0 84px; position:relative; overflow:hidden;}
+/* Due aloni invece di uno: il blu resta dietro il titolo, un'ambra molto diluita
+   scalda l'angolo opposto. Basta a togliere l'effetto «monocromo freddo» senza
+   che si veda un secondo colore. */
 .hero::before{
   content:""; position:absolute; inset:-30% 0 auto -10%; height:620px; pointer-events:none;
-  background:radial-gradient(60% 60% at 30% 40%, rgba(66,157,218,.16), transparent 70%);
+  background:
+    radial-gradient(60% 60% at 30% 40%, rgba(66,157,218,.13), transparent 70%),
+    radial-gradient(42% 48% at 88% 8%, rgba(216,164,106,.07), transparent 72%);
 }
 /* la colonna del testo era più stretta della scheda: il titolo andava a sei righe
    e accanto restava un vuoto. Ora il peso delle due colonne è invertito. */
@@ -178,9 +198,9 @@ header.nav.stuck .brand{width:150px; height:30px;}
 .demo-stage canvas{display:block; width:100%; height:100%;}
 .demo-tags{position:absolute; inset:0; pointer-events:none;}
 .demo-tag{position:absolute; top:14px; font-size:10px; letter-spacing:.13em; text-transform:uppercase;
-  padding:4px 10px; border-radius:4px; background:rgba(16,26,34,.55);
+  padding:4px 10px; border-radius:4px; background:rgba(16,19,21,.55);
   transition:opacity .45s var(--ease), transform .45s var(--ease);}
-.demo-tag.a{left:16px; color:var(--ard); border:1px solid rgba(102,135,158,.4);}
+.demo-tag.a{left:16px; color:var(--warm); border:1px solid rgba(216,164,106,.34);}
 .demo-tag.b{right:16px; color:var(--brand); border:1px solid rgba(66,157,218,.45);}
 /* sotto i 560px le due etichette si accavallavano: la seconda scende in basso */
 @media (max-width:560px){
@@ -206,7 +226,13 @@ input[type=range]::-moz-range-thumb{
 .demo-note{margin-top:11px; font-size:12px; color:var(--dim);}
 
 /* ---------- sezioni ---------- */
-section{padding:88px 0;}
+/* `clip` e non `hidden`: taglia quello che sborda (l'alone dei progetti arriva a
+   14vw oltre il testo) senza rendere la sezione un contenitore di scorrimento,
+   che romperebbe l'header sticky. */
+section{padding:88px 0; overflow-x:clip;}
+/* L'header bloccato è alto 71 px: senza questo margine il titolo della sezione
+   finisce sotto la barra ogni volta che si tocca una voce del menu. */
+section[id], main[id]{scroll-margin-top:90px;}
 .sec-head{display:flex; justify-content:space-between; align-items:flex-end; gap:30px; flex-wrap:wrap; margin-bottom:40px;}
 .kicker{font-size:10.5px; letter-spacing:.16em; text-transform:uppercase; color:var(--brand); margin-bottom:14px;}
 .sec-head h2{font-size:clamp(26px,3.3vw,38px); line-height:1.12; max-width:19ch;}
@@ -255,20 +281,24 @@ section{padding:88px 0;}
 .pal .lab{font-size:10px; letter-spacing:.13em; text-transform:uppercase; color:var(--dim);}
 .pal .sw{display:flex; gap:7px;}
 .pal .sw i{width:19px; height:19px; border-radius:5px; display:block; box-shadow:inset 0 0 0 1px rgba(255,255,255,.14);}
+.case-logo{display:block; height:36px; width:auto; max-width:min(100%,210px); margin:0 0 18px;}
+/* uno stemma quasi quadrato a 36 px sarebbe illeggibile: gli si dà l'altezza
+   che serve perché pesi quanto un logotipo disteso. */
+.case-logo.stemma{height:56px;}
 .case h3{font-size:clamp(25px,3vw,33px); line-height:1.1; margin-bottom:10px;}
 .case .role{color:var(--dim); font-size:14.5px; margin-bottom:26px;}
 .spec{border-top:1px solid var(--edge);}
 /* prima era un flex senza min-width: su telefono i valori lunghi uscivano dalla scheda */
 .spec div{display:grid; grid-template-columns:auto minmax(0,1fr); gap:14px; align-items:baseline;
-  padding:9px 0; border-bottom:1px solid rgba(44,65,80,.55); font-size:12.5px;}
+  padding:9px 0; border-bottom:1px solid rgba(46,54,60,.6); font-size:12.5px;}
 .spec span{color:var(--dim);}
 .spec b{font-weight:600; font-variant-numeric:tabular-nums; text-align:right; min-width:0; overflow-wrap:break-word;}
 .ba{display:grid; grid-template-columns:1fr 1fr; gap:0; border:1px solid var(--edge); border-radius:12px; overflow:hidden; margin-bottom:26px;}
 .ba > div{padding:20px 22px;}
-.ba .before{background:rgba(102,135,158,.07); border-right:1px solid var(--edge);}
+.ba .before{background:linear-gradient(180deg, rgba(216,164,106,.06), transparent 60%), var(--bg2); border-right:1px solid var(--edge);}
 .ba .after{background:linear-gradient(180deg, var(--tint), transparent), var(--panel);}
 .ba h4{font-size:10px; letter-spacing:.16em; text-transform:uppercase; margin-bottom:10px;}
-.ba .before h4{color:var(--ard);} .ba .after h4{color:var(--p);}
+.ba .before h4{color:var(--warm);} .ba .after h4{color:var(--p);}
 .ba p{font-size:13.5px; line-height:1.6; color:var(--body);}
 .case-body > p{font-size:15.5px; line-height:1.7; color:var(--body); margin-bottom:18px; max-width:64ch;}
 .viz{margin-top:26px; background:var(--panel); border:1px solid var(--edge); border-radius:12px; overflow:hidden;}
@@ -354,7 +384,7 @@ section{padding:88px 0;}
 .portrait{position:relative; margin:0; border-radius:12px; overflow:hidden; background:#000; aspect-ratio:1/1;}
 .portrait img{width:100%; height:100%; object-fit:cover; object-position:center top;}
 .portrait::after{content:""; position:absolute; inset:0; pointer-events:none;
-  background:linear-gradient(200deg, rgba(66,157,218,.16), transparent 55%);}
+  background:linear-gradient(200deg, rgba(66,157,218,.10), transparent 55%);}
 @media (max-width:820px){.portrait{max-width:380px;}}
 .founder blockquote{margin:0 0 20px; font-size:20px; line-height:1.5; color:var(--text); border-left:2px solid var(--brand); padding-left:20px;}
 .founder p{color:var(--dim); font-size:15.5px; line-height:1.7; margin-bottom:14px; max-width:56ch;}
@@ -394,7 +424,7 @@ section{padding:88px 0;}
 /* chiusura */
 .end{position:relative; overflow:hidden;}
 .end::before{content:""; position:absolute; inset:auto -20% -60% 20%; height:520px;
-  background:radial-gradient(50% 50% at 50% 50%, rgba(66,157,218,.15), transparent 70%); pointer-events:none;}
+  background:radial-gradient(50% 50% at 50% 50%, rgba(66,157,218,.12), transparent 70%); pointer-events:none;}
 .end-in{position:relative; display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1.05fr); gap:48px; align-items:center;}
 .end h2{font-size:clamp(27px,3.8vw,46px); line-height:1.1; max-width:17ch;}
 .end p{color:var(--body); margin-top:18px; max-width:44ch;}
@@ -428,35 +458,56 @@ section{padding:88px 0;}
 .form-msg.ko{display:block; color:#FF8A8A;}
 @media (max-width:820px){.form .row{grid-template-columns:1fr;}}
 
-footer{border-top:1px solid var(--edge); padding:44px 0 34px;}
-.foot-in{display:grid; grid-template-columns:1.5fr 1fr 1fr 1fr; gap:32px; font-size:13px; color:var(--dim);}
-.foot-col{display:flex; flex-direction:column; align-items:flex-start; gap:9px;}
-.foot-col p{line-height:1.7;}
-.foot-h{font-size:10.5px; letter-spacing:.14em; text-transform:uppercase; color:var(--text); margin-bottom:3px;}
-.foot-col a, .linkish{color:var(--dim); transition:color .2s;}
-.linkish{background:none; border:0; padding:0; font:inherit; font-size:13px; cursor:pointer; text-align:left;}
-@media (hover:hover){.foot-col a:hover, .linkish:hover{color:var(--brand);}}
-.foot-brand{background-image:var(--img-logo-neg); background-size:contain; background-repeat:no-repeat;
-  width:150px; height:30px; margin-bottom:4px; flex:none;}
-/* piè di pagina ridotto delle pagine interne (informativa, errore) */
-.foot-in.simple{display:flex; align-items:center; justify-content:space-between; gap:22px; flex-wrap:wrap;}
-.foot-in.simple a{color:var(--dim);}
-.foot-end{margin-top:34px; padding-top:20px; border-top:1px solid var(--edge); font-size:12px; color:var(--dim);}
+footer{border-top:1px solid var(--edge); background:var(--bg2); padding:52px 0 30px; margin-top:10px;}
+/* la spaziatura verticale va scritta con la specificità di `footer .foo`: le
+   colonne sono anche `.w`, e la regola `.w{padding:0 20px}` sotto gli 820 px
+   azzererebbe un padding verticale dichiarato con la sola classe. */
+footer .foot-top{display:grid; grid-template-columns:1.55fr 1fr 1.25fr 1.15fr; gap:44px; padding-bottom:34px;}
+.foot-brand{display:block; background-image:var(--img-logo-neg); background-size:contain; background-repeat:no-repeat; width:158px; height:32px;}
+.foot-id p{margin-top:14px; max-width:34ch;}
+.foot-col{font-size:13.5px; line-height:1.7; color:var(--body); min-width:0;}
+.foot-col h4{font-size:10.5px; letter-spacing:.14em; text-transform:uppercase; color:var(--dim); margin-bottom:13px;}
+.foot-col a{color:var(--body); border-bottom:1px solid var(--edge2); transition:color .2s, border-color .2s;}
+.foot-col a:hover{color:var(--brand); border-color:var(--brand);}
+.foot-col p + p{margin-top:11px;}
+.foot-dl{margin:0; display:grid; gap:8px;}
+.foot-dl div{display:flex; justify-content:space-between; align-items:baseline; gap:14px;}
+.foot-dl dt{color:var(--dim); font-size:12.5px; flex:none;}
+.foot-dl dd{margin:0; text-align:right; font-size:13px;}
+.foot-social{
+  display:inline-flex; align-items:center; gap:9px; margin-top:18px;
+  border:1px solid var(--edge); border-bottom-color:var(--edge); border-radius:999px;
+  padding:8px 15px; font-size:13px; color:var(--body);
+  transition:border-color .2s, color .2s, transform .2s var(--ease);
+}
+.foot-col a.foot-social:hover{border-color:var(--brand); color:var(--brand); transform:translateY(-1px);}
+.foot-social svg{width:15px; height:15px; fill:currentColor; flex:none;}
+footer .foot-in{
+  display:flex; justify-content:space-between; align-items:center; gap:22px; flex-wrap:wrap;
+  border-top:1px solid var(--edge); padding-top:22px; font-size:12.5px; color:var(--dim);
+}
+.foot-in a{color:var(--dim); text-decoration:underline; text-underline-offset:3px; text-decoration-color:var(--edge2);}
+.foot-in a:hover{color:var(--brand);}
+/* «Preferenze cookie»: è un <button> perché deve chiamare Cookiebot, ma nel piè
+   di pagina deve leggersi come gli altri collegamenti accanto a cui sta. */
+.linkish{
+  background:none; border:0; padding:0; font:inherit; cursor:pointer; text-align:left;
+  color:var(--dim); text-decoration:underline; text-underline-offset:3px;
+  text-decoration-color:var(--edge2);
+}
+.linkish:hover{color:var(--brand);}
 
 /* ---------- richiamo fisso sul telefono ---------- */
 .cta-bar{
   position:fixed; left:0; right:0; bottom:0; z-index:44; display:none; align-items:center; gap:14px;
   justify-content:space-between; padding:12px 20px calc(12px + env(safe-area-inset-bottom));
-  background:rgba(19,30,39,.94); backdrop-filter:blur(14px); -webkit-backdrop-filter:blur(14px);
+  background:rgba(20,24,27,.94); backdrop-filter:blur(14px); -webkit-backdrop-filter:blur(14px);
   border-top:1px solid var(--edge); transform:translateY(110%); transition:transform .35s var(--ease);
 }
 .cta-bar.show{transform:none;}
 .cta-bar span{font-size:13.5px; color:var(--dim); line-height:1.35;}
 .cta-bar .btn{flex:none; padding:11px 17px;}
-@media (max-width:820px){
-  .cta-bar{display:flex;}
-  body{padding-bottom:0;}
-}
+@media (max-width:820px){.cta-bar{display:flex;}}
 @media (prefers-reduced-motion:reduce){.cta-bar{transition:none;}}
 
 /* ---------- dichiarazione dei cookie generata da Cookiebot ----------
@@ -472,9 +523,19 @@ footer{border-top:1px solid var(--edge); padding:44px 0 34px;}
 .CookieDeclarationTypeDescription{color:var(--dim); font-size:13.5px;}
 .CookieDeclarationTable{width:100%; font-size:12.5px;}
 .CookieDeclarationTableHeader{color:var(--dim); border-bottom:1px solid var(--edge) !important;}
-.CookieDeclarationTableCell{border-bottom:1px solid rgba(44,65,80,.55) !important; color:var(--body);}
+.CookieDeclarationTableCell{border-bottom:1px solid rgba(46,54,60,.6) !important; color:var(--body);}
 .CookieDeclarationDialogText, .CookieDeclarationIntro{color:var(--dim);}
 #CookiebotDeclaration a{color:var(--brand);}
+
+@media (max-width:960px){
+  footer .foot-top{grid-template-columns:1fr 1fr; gap:34px 40px;}
+  .foot-id{grid-column:1 / -1;}
+}
+@media (max-width:560px){
+  footer .foot-top{grid-template-columns:1fr;}
+  .foot-dl div{justify-content:flex-start;}
+  .foot-dl dd{text-align:left;}
+}
 
 @media (max-width:960px){
   .areas{grid-template-columns:1fr 1fr;}
@@ -509,4 +570,129 @@ footer{border-top:1px solid var(--edge); padding:44px 0 34px;}
   .brand{width:140px; height:28px;}
   header.nav.stuck .brand{width:124px; height:25px;}
   .nav-in{gap:12px;}
+}
+
+/* ---------- documenti legali (informativa privacy, cookie) ----------
+   Un'informativa si legge per cercare una cosa sola: chi tratta i dati, per
+   quanto tempo, come si cancellano. Quindi non un muro di testo ma un
+   documento con un sommario sempre visibile, sezioni numerate e tabelle:
+   il contenuto è giuridico, l'impaginato deve renderlo consultabile. */
+.doc-wrap{max-width:var(--maxw); margin:0 auto; padding:0 32px 96px;}
+.doc-hero{position:relative; padding:56px 0 40px; overflow:hidden;}
+.doc-hero::before{
+  content:""; position:absolute; inset:-60% 0 auto -20%; height:520px; pointer-events:none;
+  background:radial-gradient(46% 56% at 26% 46%, rgba(66,157,218,.11), transparent 70%);
+}
+.doc-hero > *{position:relative;}
+.doc-hero h1{font-size:clamp(30px,4.4vw,46px); line-height:1.06; margin-bottom:16px;}
+.doc-hero .lede{color:var(--dim); font-size:17px; line-height:1.62; max-width:56ch;}
+.doc-meta{
+  display:flex; flex-wrap:wrap; gap:10px 26px; margin-top:26px; padding-top:20px;
+  border-top:1px solid var(--edge); font-size:12.5px; color:var(--dim);
+}
+.doc-meta b{color:var(--text); font-weight:600;}
+
+.doc-layout{display:grid; grid-template-columns:236px minmax(0,1fr); gap:56px; align-items:start;}
+
+/* sommario */
+.toc{position:sticky; top:96px; font-size:13px; line-height:1.5;}
+.toc h2{font-size:10.5px; letter-spacing:.14em; text-transform:uppercase; color:var(--dim); margin-bottom:14px;}
+.toc ol{list-style:none; margin:0; padding:0; counter-reset:toc; display:grid; gap:2px;}
+.toc li{counter-increment:toc;}
+.toc a{
+  display:block; padding:6px 10px 6px 30px; border-radius:7px; color:var(--body); position:relative;
+  transition:background .2s, color .2s;
+}
+.toc a::before{
+  content:counter(toc); position:absolute; left:10px; top:6px;
+  font-size:11px; color:var(--dim); font-variant-numeric:tabular-nums;
+}
+.toc a:hover{background:var(--panel); color:var(--text);}
+.toc a.on{background:rgba(66,157,218,.10); color:var(--brand);}
+.toc a.on::before{color:var(--brand);}
+
+/* corpo */
+.doc-body{counter-reset:sec; max-width:72ch;}
+.doc-body > section{padding-top:8px; margin-bottom:44px; scroll-margin-top:100px;}
+.doc-body > section > h2{
+  counter-increment:sec; font-size:21px; line-height:1.25; margin:0 0 16px;
+  padding-bottom:12px; border-bottom:1px solid var(--edge); display:flex; gap:14px; align-items:baseline;
+}
+.doc-body > section > h2::before{
+  content:counter(sec,decimal-leading-zero); font-size:12px; color:var(--brand);
+  font-variant-numeric:tabular-nums; letter-spacing:.06em; flex:none;
+}
+.doc-body h3{font-size:15.5px; margin:26px 0 8px; color:var(--text);}
+.doc-body p, .doc-body li{color:var(--body); font-size:15px; line-height:1.74;}
+.doc-body p{margin:0 0 14px;}
+.doc-body ul{margin:0 0 18px; padding-left:0; list-style:none; display:grid; gap:9px;}
+.doc-body ul li{position:relative; padding-left:20px;}
+.doc-body ul li::before{
+  content:""; position:absolute; left:2px; top:11px; width:5px; height:5px;
+  border-radius:50%; background:var(--brand); opacity:.7;
+}
+.doc-body a{color:var(--brand); text-decoration:underline; text-underline-offset:3px; text-decoration-color:rgba(66,157,218,.4);}
+.doc-body a:hover{text-decoration-color:var(--brand);}
+.doc-body b, .doc-body strong{color:var(--text); font-weight:600;}
+
+/* riquadro in evidenza: la sintesi in cima e le note che cambiano una decisione */
+.doc-note{
+  background:var(--panel); border:1px solid var(--edge); border-left:2px solid var(--brand);
+  border-radius:12px; padding:20px 22px; margin:0 0 30px;
+}
+.doc-note.warm{border-left-color:var(--warm);}
+.doc-note h3{margin-top:0; font-size:11px; letter-spacing:.14em; text-transform:uppercase; color:var(--dim);}
+.doc-note p:last-child, .doc-note ul:last-child{margin-bottom:0;}
+
+/* tabella dei trattamenti */
+.doc-table{width:100%; overflow-x:auto; margin:0 0 24px; border:1px solid var(--edge); border-radius:12px; background:var(--panel);}
+.doc-table table{width:100%; border-collapse:collapse; font-size:13.5px; min-width:560px;}
+.doc-table th, .doc-table td{padding:13px 16px; text-align:left; vertical-align:top; border-bottom:1px solid var(--edge);}
+.doc-table th{
+  font-size:10.5px; letter-spacing:.13em; text-transform:uppercase; color:var(--dim);
+  font-weight:600; background:var(--bg2); white-space:nowrap;
+}
+.doc-table tbody tr:last-child td{border-bottom:0;}
+.doc-table td{color:var(--body); line-height:1.6;}
+.doc-table td b{color:var(--text); font-weight:600;}
+
+/* elenco dei diritti */
+.rights{display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:12px; margin:0 0 20px;}
+.rights div{background:var(--panel); border:1px solid var(--edge); border-radius:10px; padding:15px 17px;}
+.rights dt{font-size:13.5px; font-weight:600; color:var(--text); margin-bottom:5px;}
+.rights dd{margin:0; font-size:13px; line-height:1.6; color:var(--dim);}
+
+/* navigazione di ritorno */
+.doc-back{
+  display:inline-flex; align-items:center; gap:8px; font-size:12.5px; color:var(--dim);
+  margin-bottom:26px; transition:color .2s;
+}
+.doc-back:hover{color:var(--brand);}
+
+@media (max-width:900px){
+  .doc-layout{grid-template-columns:1fr; gap:0;}
+  /* Senza colonna laterale il sommario diventa un blocco in testa al documento:
+     su due colonne, altrimenti dodici voci spingono il testo sotto la piega. */
+  .toc{position:static; border:1px solid var(--edge); background:var(--panel); border-radius:12px;
+       padding:18px 16px; margin-bottom:34px;}
+  .toc ol{grid-template-columns:repeat(2,minmax(0,1fr)); gap:2px 10px;}
+  .rights{grid-template-columns:1fr;}
+}
+@media (max-width:560px){
+  .toc ol{grid-template-columns:1fr;}
+  .toc a{padding:5px 8px 5px 26px; font-size:12.5px;}
+  .toc a::before{left:8px; top:5px;}
+}
+@media (max-width:820px){
+  .doc-wrap{padding:0 20px 68px;}
+  .doc-hero{padding:36px 0 28px;}
+}
+@media print{
+  header.nav, footer, .toc, .doc-back{display:none;}
+  .doc-hero::before{display:none;}
+  body{background:#fff; color:#000;}
+  .doc-body p, .doc-body li, .doc-table td{color:#111;}
+  .doc-layout{display:block;}
+  .doc-body{max-width:none;}
+  .doc-note, .doc-table, .rights div{background:#fff; border-color:#bbb;}
 }

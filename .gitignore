@@ -1,3 +1,11 @@
 .DS_Store
 *.log
-.claude/
+.anteprima/
+
+# La configurazione di Claude sta nel repository: le sessioni dal telefono
+# partono da un clone pulito, quello che non è committato non esiste. Restano
+# fuori le impostazioni personali e i file di sessione.
+.claude/*
+!.claude/settings.json
+!.claude/commands/
+!.claude/scripts/

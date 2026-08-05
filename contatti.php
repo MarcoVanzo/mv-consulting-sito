@@ -42,7 +42,9 @@ $email     = $campo('email');
 $telefono  = $campo('telefono');
 $messaggio = $campo('messaggio');
 $origine   = $campo('origine');                   // campagna di provenienza, riempita dalla pagina
-$consenso  = ($_POST['consenso'] ?? '') === '1';
+// Non è un consenso al trattamento (la base giuridica è la richiesta stessa,
+// art. 6.1.b GDPR): è la conferma di aver potuto leggere l'informativa.
+$presaVisione = ($_POST['consenso'] ?? '') === '1';
 
 if ($nome === '' || $messaggio === '') {
     esci(false, 'nome e messaggio sono obbligatori');
@@ -50,8 +52,8 @@ if ($nome === '' || $messaggio === '') {
 if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
     esci(false, 'indirizzo email non valido');
 }
-if (!$consenso) {
-    esci(false, 'serve il consenso al trattamento dei dati');
+if (!$presaVisione) {
+    esci(false, 'conferma di aver letto l\'informativa privacy');
 }
 // niente a capo nei campi che finiscono nelle intestazioni: evita header injection
 if (preg_match('/[\r\n]/', $nome . $email)) {

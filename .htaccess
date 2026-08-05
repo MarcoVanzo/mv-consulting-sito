@@ -18,11 +18,15 @@ RewriteRule ^(.*)$ https://www.mv-consulting.it/$1 [R=301,L]
 # Si usa RewriteRule e non Redirect: quest'ultimo compone la destinazione con
 # lo schema visto dal server (http, perche' l'HTTPS termina sul proxy) e
 # riattacca la query string dopo l'ancora, producendo /#studio?x=1.
-RewriteRule ^chi-siamo/?$      https://www.mv-consulting.it/#studio          [R=301,L,QSD]
-RewriteRule ^servizi/?$        https://www.mv-consulting.it/#aree            [R=301,L,QSD]
-RewriteRule ^partner/?$        https://www.mv-consulting.it/#progetti        [R=301,L,QSD]
-RewriteRule ^contatti/?$       https://www.mv-consulting.it/#contatti        [R=301,L,QSD]
-RewriteRule ^privacy-policy/?$ https://www.mv-consulting.it/privacy-policy.html [R=301,L,QSD]
+RewriteRule ^chi-siamo/?$      https://www.mv-consulting.it/#studio          [R=301,L,QSD,NE]
+RewriteRule ^servizi/?$        https://www.mv-consulting.it/#aree            [R=301,L,QSD,NE]
+RewriteRule ^partner/?$        https://www.mv-consulting.it/#progetti        [R=301,L,QSD,NE]
+RewriteRule ^contatti/?$       https://www.mv-consulting.it/#contatti        [R=301,L,QSD,NE]
+RewriteRule ^privacy-policy/?$ https://www.mv-consulting.it/privacy-policy.html [R=301,L,QSD,NE]
+# La cookie policy è una sezione dell'informativa: chi cerca l'indirizzo storico
+# o quello che ci si aspetta di trovare finisce direttamente su quella sezione.
+RewriteRule ^cookie-policy/?$  https://www.mv-consulting.it/privacy-policy.html#cookie [R=301,L,QSD,NE]
+RewriteRule ^privacy/?$        https://www.mv-consulting.it/privacy-policy.html [R=301,L,QSD,NE]
 
 # Residui dell'installazione WordPress: non esistono più, meglio dirlo subito
 RedirectMatch 410 ^/(wp-admin|wp-login\.php|wp-json|xmlrpc\.php|wp-content|wp-includes)
@@ -95,6 +99,6 @@ ErrorDocument 404 /404.html
 </IfModule>
 
 # --- File da non servire ----------------------------------------------------
-<FilesMatch "^(README\.md|\.gitignore)$">
+<FilesMatch "^(README\.md|CLAUDE\.md|\.gitignore)$">
   Require all denied
 </FilesMatch>

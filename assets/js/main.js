@@ -182,16 +182,17 @@
       var h = (it.w0*1.38) + (it.h1 - it.w0*1.38)*p;
       ctx.save();
       ctx.translate(x,y); ctx.rotate(ang);
-      // allo 0% i documenti restavano quasi invisibili: la scheda sembrava vuota
-      var al = 0.52 + 0.44*p;
+      var al = 0.30 + 0.62*p;
+      // il disordine di partenza è ambra spenta, l'ordine di arrivo è blu: il
+      // colore racconta il passaggio da solo, senza bisogno di leggere le targhe
       if(p < 0.5){
-        ctx.fillStyle = "rgba(102,135,158," + (0.34 + 0.3*p) + ")";
-        ctx.strokeStyle = "rgba(102,135,158,0.6)";
+        ctx.fillStyle = "rgba(168,146,120," + (0.26 + 0.3*p) + ")";
+        ctx.strokeStyle = "rgba(168,146,120,0.45)";
       } else {
         var q = (p-0.5)*2;
         ctx.fillStyle = it.lit
           ? "rgba(66,157,218," + (0.28 + 0.55*q) + ")"
-          : "rgba(102,135,158," + (0.30 + 0.14*q) + ")";
+          : "rgba(146,152,156," + (0.30 + 0.14*q) + ")";
         ctx.strokeStyle = "rgba(66,157,218," + (0.18*q) + ")";
       }
       ctx.globalAlpha = al;
