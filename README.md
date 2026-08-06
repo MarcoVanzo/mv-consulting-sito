@@ -11,8 +11,11 @@ Sostituisce il precedente sito WordPress (tema `marcovanzo`, Contact Form 7).
 index.html              home, pagina unica con ancore (#aree #progetti #insegniamo #studio #domande #contatti)
 privacy-policy.html     informativa, testo ripreso integralmente dal sito precedente
 404.html                pagina di errore
-contatti.php            ricezione del modulo, invia via mail() a info@mv-consulting.it
+contatti.php            ricezione del modulo, spedisce a info@mv-consulting.it
                         (campo esca contro i robot, cinque invii l'ora per indirizzo)
+invio-smtp.php          client SMTP minimo: `mail()` su Aruba resta appesa, vedi sotto
+config-smtp.esempio.php modello del file con la password della casella, che sta
+                        solo sul server e non nel repository
 .htaccess               HTTPS, redirect dai vecchi indirizzi, cache, intestazioni di sicurezza
 robots.txt sitemap.xml  indicizzazione
 assets/css/style.css    tutto lo stile
@@ -49,8 +52,9 @@ cambiare i colori.
 ## Pubblicazione
 
 Il deploy gira su **GitHub Actions** (`.github/workflows/deploy.yml`) e carica via FTP
-sull'hosting Aruba, che supporta PHP: `contatti.php` funziona senza configurazione.
-Ogni push su `main` pubblica; il workflow si può anche lanciare a mano.
+sull'hosting Aruba, che supporta PHP. Ogni push su `main` pubblica; il workflow si può
+anche lanciare a mano. Il modulo di contatto ha però una configurazione che il deploy
+non porta con sé: vedi «Il modulo di contatto» più sotto.
 
 Il repository è **pubblico** di proposito: contiene solo il sito, che è già pubblico, e
 sui repo pubblici i minuti di Actions non si consumano — quelli del piano sono già
@@ -121,6 +125,39 @@ Da fare **solo dopo il backup**: cancella tutto ciò che c'è sul server.
   e **non restano archiviati da nessuna parte**. È una scelta, non una dimenticanza:
   niente dati di contatto conservati sul server. Se un giorno servisse uno storico, va
   aggiunto qui e citato nell'informativa.
+
+## Il modulo di contatto
+
+**Su questo hosting `mail()` non si può usare.** Non fallisce: resta appesa. Consegna il
+messaggio a `/usr/sbin/sendmail` e non torna più indietro — il 6 agosto 2026 una richiesta
+valida ha ricevuto un 504 del proxy dopo 300 secondi, mentre chi aveva compilato il modulo
+guardava «Invio in corso...» per tutto il tempo. Il punto è isolato: tutto ciò che sta
+prima, validazione e contatore degli invii compresi, risponde in tre decimi di secondo.
+
+Si spedisce quindi parlando direttamente col server di posta di Aruba, `smtps.aruba.it`
+sulla porta 465 in SSL, che risponde in trenta millisecondi e dichiara `AUTH LOGIN`. Il
+client sta in `invio-smtp.php`: sono sei comandi in fila, nessuna libreria. Il guadagno
+vero non è la consegna ma il **timeout**: `mail()` non si può interrompere, un socket sì.
+Dieci secondi, e comunque vada chi ha scritto riceve una risposta invece di aspettare.
+
+### Il file con la password
+
+Le credenziali stanno in `config-smtp.php`, accanto a `contatti.php` **sul server**.
+Non è nel repository (`.gitignore` lo esclude) e il deploy non lo carica: si mette a
+mano via FTP una volta sola, sul modello di `config-smtp.esempio.php`.
+
+1. Copiare `config-smtp.esempio.php` in `config-smtp.php`.
+2. Scriverci la password della casella `info@mv-consulting.it` — l'utente è l'indirizzo
+   completo, non la sola parte prima della chiocciola.
+3. Caricarlo via FTP nella stessa cartella di `contatti.php`.
+
+Il deploy carica e non cancella, quindi il file sopravvive alle pubblicazioni. **Una sola
+cosa lo porta via: l'opzione `pulizia_totale` del workflow**, che svuota la cartella
+remota. Dopo averla usata, va ricaricato, altrimenti il modulo smette di spedire.
+
+Se il file manca o l'accesso viene rifiutato, il modulo non finge: risponde subito e dice
+di scrivere a `info@mv-consulting.it`. Il motivo tecnico — codice SMTP, nome del server —
+finisce nel log del server, non davanti al visitatore.
 
 ## Promozione sui social
 

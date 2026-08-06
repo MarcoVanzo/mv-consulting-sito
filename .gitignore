@@ -10,3 +10,6 @@
 !.claude/settings.json
 !.claude/commands/
 !.claude/scripts/
+
+# Le credenziali della casella di posta vivono solo sul server.
+config-smtp.php

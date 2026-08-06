@@ -31,6 +31,19 @@ RewriteRule ^privacy/?$        https://www.mv-consulting.it/privacy-policy.html 
 # Residui dell'installazione WordPress: non esistono più, meglio dirlo subito
 RedirectMatch 410 ^/(wp-admin|wp-login\.php|wp-json|xmlrpc\.php|wp-content|wp-includes)
 
+# --- File che nessuno deve chiedere dal browser ------------------------------
+# config-smtp.php contiene la password della casella di posta. Finché PHP
+# funziona non uscirebbe comunque niente — un .php viene eseguito, non mostrato
+# — ma il giorno in cui l'hosting perde il gestore PHP i .php diventano file di
+# testo, e quella password sarebbe pubblica. Questa riga costa nulla e copre
+# proprio quel giorno. invio-smtp.php dichiara solo funzioni: chiamarlo da fuori
+# non fa danni, ma non ha senso.
+# Si passa da mod_alias e non da <Files>/Require: la direttiva giusta cambia
+# fra Apache 2.2 e 2.4, e sbagliarla qui significa un 500 su tutto il sito.
+# Un RedirectMatch vale ovunque e riguarda solo le richieste dal browser: il
+# require di contatti.php legge dal disco e non passa di qui.
+RedirectMatch 404 ^/(config-smtp\.php|config-smtp\.esempio\.php|invio-smtp\.php)$
+
 # --- Pagina di errore -------------------------------------------------------
 ErrorDocument 404 /404.html
 
