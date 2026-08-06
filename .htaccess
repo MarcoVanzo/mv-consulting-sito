@@ -43,8 +43,15 @@ ErrorDocument 404 /404.html
 # --- Cache ------------------------------------------------------------------
 <IfModule mod_expires.c>
   ExpiresActive On
-  ExpiresByType text/css                "access plus 1 year"
-  ExpiresByType application/javascript  "access plus 1 year"
+  # CSS e JS stanno in cache una settimana, non un anno. Gli indirizzi portano
+  # gia' l'impronta del file, quindi una versione nuova arriva subito comunque e
+  # accorciare non costa velocita'. Costa invece tenerli un anno: il 6 agosto
+  # 2026 il proxy di Aruba ha memorizzato la copia precedente di style.css sotto
+  # l'indirizzo versionato nuovo — bastano pochi secondi di disallineamento fra
+  # il file caricato e la prima lettura — e quella copia sarebbe rimasta servita
+  # per dodici mesi. Con una settimana lo stesso incidente si riassorbe da solo.
+  ExpiresByType text/css                "access plus 1 week"
+  ExpiresByType application/javascript  "access plus 1 week"
   ExpiresByType image/svg+xml           "access plus 1 year"
   ExpiresByType image/jpeg              "access plus 1 year"
   ExpiresByType image/webp              "access plus 1 year"
