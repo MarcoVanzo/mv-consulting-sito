@@ -7,7 +7,11 @@
 declare(strict_types=1);
 
 const DESTINATARIO = 'info@mv-consulting.it';
-const MITTENTE     = 'no-reply@mv-consulting.it';   // deve essere una casella del dominio
+// Il mittente deve essere una casella che esiste davvero sul dominio: Aruba
+// rifiuta le mail spedite da un indirizzo esterno, e un no-reply@ inventato le
+// farebbe scartare in silenzio. Si spedisce dalla stessa casella che riceve —
+// a rispondere ci pensa il Reply-To, che porta all'indirizzo di chi ha scritto.
+const MITTENTE     = 'info@mv-consulting.it';
 const MAX_LUNGHEZZA = 5000;
 // Freno agli invii a raffica: l'esca qui sotto ferma i robot che compilano ogni
 // campo, questo ferma chi la evita e ripete. Cinque messaggi in un'ora bastano

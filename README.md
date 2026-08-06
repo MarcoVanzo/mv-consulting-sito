@@ -74,12 +74,13 @@ aggiungere anche la variabile (non segreta) `FTP_DIR` con valore `/www/`.
 
 1. **Backup**: scaricare una copia completa della cartella pubblica attuale (WordPress)
    ed esportare il database dal pannello Aruba. È l'unico modo per tornare indietro.
-2. Verificare che esista la casella o l'alias `no-reply@mv-consulting.it`: è il mittente
-   usato da `contatti.php` e Aruba rifiuta le mail con mittente esterno al dominio.
-3. Verificare che `info@mv-consulting.it` sia **presidiata**: è l'unico recapito del sito.
-   Ci arrivano i messaggi del modulo di contatto (`DESTINATARIO` in `contatti.php`), ed è
-   l'indirizzo indicato nell'informativa per l'esercizio dei diritti degli interessati —
-   dove i termini di risposta corrono comunque, anche se nessuno apre la casella.
+2. Verificare che `info@mv-consulting.it` sia **presidiata**: è l'unico recapito del sito.
+   Ci arrivano i messaggi del modulo di contatto ed è anche la casella da cui partono
+   (`DESTINATARIO` e `MITTENTE` in `contatti.php` sono lo stesso indirizzo: Aruba rifiuta
+   le mail con mittente esterno al dominio, e un `no-reply@` che non esiste le farebbe
+   scartare in silenzio). È inoltre l'indirizzo indicato nell'informativa per l'esercizio
+   dei diritti degli interessati — dove i termini di risposta corrono comunque, anche se
+   nessuno apre la casella.
 
 ### Deploy
 
