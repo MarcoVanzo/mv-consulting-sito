@@ -8,14 +8,16 @@ declare(strict_types=1);
 
 require __DIR__ . '/invio-smtp.php';
 
+// Dove arrivano i messaggi. È un alias, e va benissimo: la posta in entrata
+// non chiede credenziali a nessuno.
 const DESTINATARIO = 'info@mv-consulting.it';
-// Il mittente deve essere una casella che esiste davvero sul dominio: Aruba
-// rifiuta le mail spedite da un indirizzo esterno, e un no-reply@ inventato le
-// farebbe scartare in silenzio. Si spedisce dalla stessa casella che riceve —
-// a rispondere ci pensa il Reply-To, che porta all'indirizzo di chi ha scritto.
-const MITTENTE     = 'info@mv-consulting.it';
-// Le credenziali della casella stanno fuori dal repository: vedi
-// config-smtp.esempio.php per come si prepara il file sul server.
+// Il mittente invece non può essere un alias: l'SMTP vuole l'autenticazione, e
+// un alias non ha una password. Ci si presenta con la casella vera che sta
+// dietro — quella con cui si entra in webmail — e si spedisce da quella. Aruba
+// rifiuta comunque un mittente diverso dall'account autenticato, quindi le due
+// cose coincidono per forza: l'indirizzo sta in config-smtp.php, accanto alla
+// password. A rispondere ci pensa il Reply-To, che porta a chi ha scritto.
+// Le credenziali stanno fuori dal repository: vedi config-smtp.esempio.php.
 const CONFIG_SMTP  = __DIR__ . '/config-smtp.php';
 const MAX_LUNGHEZZA = 5000;
 // Freno agli invii a raffica: l'esca qui sotto ferma i robot che compilano ogni
@@ -115,16 +117,6 @@ $corpo = "Nuovo messaggio dal sito mv-consulting.it\n\n"
     . "IP:        " . ($_SERVER['REMOTE_ADDR'] ?? '-') . "\n\n"
     . "Messaggio:\n{$messaggio}\n";
 
-$intestazioni = [
-    'From: MV Consulting <' . MITTENTE . '>',
-    // Il nome va codificato come l'oggetto: un cognome accentato in chiaro
-    // dentro un'intestazione rende la mail malformata.
-    'Reply-To: =?UTF-8?B?' . base64_encode($nome) . '?= <' . $email . '>',
-    'Content-Type: text/plain; charset=UTF-8',
-    'Content-Transfer-Encoding: 8bit',
-    'X-Mailer: mv-consulting.it',
-];
-
 // si conta solo ciò che sarebbe partito davvero: i tentativi respinti perché
 // incompleti non devono consumare il credito di chi sta ancora scrivendo
 if (troppiInvii()) {
@@ -141,9 +133,23 @@ if (!is_readable(CONFIG_SMTP)) {
     esci(false, 'non siamo riusciti a spedire il messaggio. Scriveteci a ' . DESTINATARIO);
 }
 
+$accesso = require CONFIG_SMTP;
+// Il mittente è la casella autenticata: è l'unico che il server accetti.
+$mittente = (string)($accesso['utente'] ?? '');
+
+$intestazioni = [
+    'From: MV Consulting <' . $mittente . '>',
+    // Il nome va codificato come l'oggetto: un cognome accentato in chiaro
+    // dentro un'intestazione rende la mail malformata.
+    'Reply-To: =?UTF-8?B?' . base64_encode($nome) . '?= <' . $email . '>',
+    'Content-Type: text/plain; charset=UTF-8',
+    'Content-Transfer-Encoding: 8bit',
+    'X-Mailer: mv-consulting.it',
+];
+
 [$inviata, $motivo] = spedisciSmtp(
-    require CONFIG_SMTP,
-    MITTENTE,
+    $accesso,
+    $mittente,
     DESTINATARIO,
     '=?UTF-8?B?' . base64_encode('Sito: messaggio da ' . $nome) . '?=',
     $corpo,

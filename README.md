@@ -79,11 +79,10 @@ aggiungere anche la variabile (non segreta) `FTP_DIR` con valore `/www/`.
 1. **Backup**: scaricare una copia completa della cartella pubblica attuale (WordPress)
    ed esportare il database dal pannello Aruba. È l'unico modo per tornare indietro.
 2. Verificare che `info@mv-consulting.it` sia **presidiata**: è l'unico recapito del sito.
-   Ci arrivano i messaggi del modulo di contatto ed è anche la casella da cui partono
-   (`DESTINATARIO` e `MITTENTE` in `contatti.php` sono lo stesso indirizzo: Aruba rifiuta
-   le mail con mittente esterno al dominio, e un `no-reply@` che non esiste le farebbe
-   scartare in silenzio). È inoltre l'indirizzo indicato nell'informativa per l'esercizio
-   dei diritti degli interessati — dove i termini di risposta corrono comunque, anche se
+   Ci arrivano i messaggi del modulo di contatto (è un alias: `DESTINATARIO` in
+   `contatti.php`, mentre il mittente è la casella autenticata — vedi «Il modulo di
+   contatto»). È inoltre l'indirizzo indicato nell'informativa per l'esercizio dei
+   diritti degli interessati — dove i termini di risposta corrono comunque, anche se
    nessuno apre la casella.
 
 ### Deploy
@@ -147,9 +146,16 @@ Non è nel repository (`.gitignore` lo esclude) e il deploy non lo carica: si me
 mano via FTP una volta sola, sul modello di `config-smtp.esempio.php`.
 
 1. Copiare `config-smtp.esempio.php` in `config-smtp.php`.
-2. Scriverci la password della casella `info@mv-consulting.it` — l'utente è l'indirizzo
-   completo, non la sola parte prima della chiocciola.
+2. Scriverci **la casella vera e la sua password**, con l'indirizzo completo e non la
+   sola parte prima della chiocciola.
 3. Caricarlo via FTP nella stessa cartella di `contatti.php`.
+
+`info@mv-consulting.it` è un **alias**: riceve la posta ma non ha una password, e l'SMTP
+l'autenticazione la pretende. Ci si presenta quindi con la casella che sta dietro l'alias,
+e quella diventa anche il mittente dei messaggi del modulo — Aruba rifiuta un mittente
+diverso dall'account autenticato. Il destinatario resta `info@`, quindi la posta continua
+ad arrivare dove arrivava. Chi scrive dal sito non vede nulla di tutto questo: nella mail
+il `Reply-To` è il suo indirizzo, e a rispondere si risponde a lui.
 
 Il deploy carica e non cancella, quindi il file sopravvive alle pubblicazioni. **Una sola
 cosa lo porta via: l'opzione `pulizia_totale` del workflow**, che svuota la cartella
