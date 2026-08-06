@@ -28,7 +28,9 @@ stato unito in `main` — prima quell'indirizzo non esiste ancora.
 
 I PDF sì: Publer scarica dall'URL solo immagini e video, e un documento lo
 ignora senza segnalare nulla. I post con un PDF vanno aperti dopo l'import e il
-file va allegato dal disco, uno per uno.
+file va allegato dal disco, uno per uno. Dopo averlo scelto la miniatura resta
+su «Elaborazione» per un minuto: è la conversione nelle pagine sfogliabili, non
+un errore. Si salva quando compare la copertina.
 
 Servizio e piano in uso: Publer Professional, tre account social, fatturazione
 annuale, attivato il 6 agosto 2026.
