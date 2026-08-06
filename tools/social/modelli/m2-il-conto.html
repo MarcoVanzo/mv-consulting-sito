@@ -1,0 +1,148 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<link rel="stylesheet" href="base.css">
+<style>
+  /* Documento sfogliabile di LinkedIn: sei pagine 1080x1350 (4:5), il formato
+     che occupa più schermo nel feed. La stampa via Chrome vuole la misura in
+     pollici: 1080/96 = 11.25in, 1350/96 = 14.0625in. */
+  @page{size:11.25in 14.0625in; margin:0;}
+  body{background:#fff;}
+  .p{
+    width:1080px; height:1350px; padding:88px 84px; background:var(--bg); color:var(--text);
+    display:flex; flex-direction:column; justify-content:space-between;
+    position:relative; overflow:hidden; page-break-after:always; break-after:page;
+  }
+  .p:last-child{page-break-after:auto; break-after:auto;}
+  .p::before{
+    content:""; position:absolute; right:-20%; top:-24%; width:78%; aspect-ratio:1;
+    background:radial-gradient(circle, rgba(66,157,218,.15), transparent 62%);
+    pointer-events:none;
+  }
+  .marchio{height:44px;}
+  .num{
+    position:absolute; right:84px; bottom:74px;
+    font-size:20px; color:var(--dim); letter-spacing:.14em;
+  }
+  h1{font-size:78px; line-height:1.1; font-weight:600; letter-spacing:-.02em;}
+  h2{font-size:52px; line-height:1.16; font-weight:600; letter-spacing:-.015em; margin-bottom:34px;}
+  p{font-size:30px; line-height:1.5; color:var(--body); margin-bottom:26px;}
+  p.grande{font-size:34px; color:var(--text);}
+  .eti{
+    font-size:19px; letter-spacing:.18em; text-transform:uppercase;
+    color:var(--brand); font-weight:600; margin-bottom:22px;
+  }
+  ol{list-style:none; counter-reset:d;}
+  ol li{
+    counter-increment:d; position:relative; padding:26px 0 26px 78px;
+    border-bottom:1px solid var(--edge); font-size:31px; line-height:1.4; color:var(--body);
+  }
+  ol li::before{
+    content:counter(d); position:absolute; left:0; top:26px;
+    width:48px; height:48px; border-radius:50%; border:1px solid var(--brand);
+    color:var(--brand); font-size:24px; display:flex; align-items:center; justify-content:center;
+  }
+  ol li b{display:block; color:var(--text); font-size:33px; margin-bottom:6px;}
+  .conto{
+    background:var(--panel); border:1px solid var(--edge); border-radius:20px;
+    padding:36px 40px; margin-bottom:30px;
+  }
+  .conto .r{
+    display:flex; justify-content:space-between; align-items:baseline;
+    padding:20px 0; border-bottom:1px solid var(--edge); font-size:30px; color:var(--body);
+  }
+  .conto .r:last-child{border-bottom:0; padding-bottom:0;}
+  .conto .r.tot{color:var(--warm); font-size:38px; font-weight:600; padding-top:28px;}
+  .conto .r span:last-child{color:var(--text); font-weight:600;}
+  .conto .r.tot span:last-child{color:var(--warm);}
+  .avvertenza{
+    border-left:3px solid var(--warm); padding-left:28px;
+    font-size:28px; line-height:1.45; color:var(--body);
+  }
+  .chiusa{font-size:26px; color:var(--dim); letter-spacing:.03em;}
+</style>
+</head>
+<body>
+
+<!-- 1 — copertina -->
+<section class="p">
+  <img class="marchio" src="/Users/marcovanzo/Sviluppo/MV-Consulting/mv-consulting-sito/assets/img/logo-negativo.svg" alt="">
+  <div>
+    <p class="eti">Quattro numeri che avete già in azienda</p>
+    <h1>Il conto<br>che nessuno fa.</h1>
+    <p style="margin-top:38px; max-width:820px;">Quanto costa il processo così com'è oggi. Sei pagine, nessun modello complicato, niente da scaricare.</p>
+  </div>
+  <p class="chiusa">mv-consulting.it</p>
+</section>
+
+<!-- 2 — perché -->
+<section class="p">
+  <img class="marchio" src="/Users/marcovanzo/Sviluppo/MV-Consulting/mv-consulting-sito/assets/img/logo-negativo.svg" alt="">
+  <div>
+    <h2>Il costo del software si vede.<br>Quello del processo attuale no.</h2>
+    <p>Uno sta su un preventivo, con una cifra e una data. L'altro è sparso: mezz'ora qui, una telefonata là, un file rifatto perché due versioni non tornavano.</p>
+    <p>Nessuno lo mette a bilancio, e quindi nella testa di chi decide vale zero. Il confronto diventa «spendere» contro «non spendere».</p>
+    <p class="grande">Ma il confronto vero è fra due costi: quello nuovo, dichiarato in anticipo, e quello vecchio, che continua a scorrere.</p>
+  </div>
+  <span class="num">2 / 6</span>
+</section>
+
+<!-- 3 — i quattro numeri -->
+<section class="p">
+  <img class="marchio" src="/Users/marcovanzo/Sviluppo/MV-Consulting/mv-consulting-sito/assets/img/logo-negativo.svg" alt="">
+  <div>
+    <h2>I quattro numeri</h2>
+    <ol>
+      <li><b>Quante persone</b>toccano il processo, anche solo per un passaggio.</li>
+      <li><b>Quante volte</b>alla settimana ognuna ci mette mano.</li>
+      <li><b>Quanti minuti</b>ogni volta: quelli veri, non quelli del mansionario.</li>
+      <li><b>Quanto costa un'ora</b>in azienda, costo pieno, non lordo in busta.</li>
+    </ol>
+  </div>
+  <span class="num">3 / 6</span>
+</section>
+
+<!-- 4 — il calcolo -->
+<section class="p">
+  <img class="marchio" src="/Users/marcovanzo/Sviluppo/MV-Consulting/mv-consulting-sito/assets/img/logo-negativo.svg" alt="">
+  <div>
+    <h2>Il calcolo, con numeri<br>di esempio</h2>
+    <div class="conto">
+      <div class="r"><span>Persone coinvolte</span><span>3</span></div>
+      <div class="r"><span>Minuti al giorno, a testa</span><span>20</span></div>
+      <div class="r"><span>Giorni lavorativi in un anno</span><span>220</span></div>
+      <div class="r"><span>Costo orario aziendale</span><span>il vostro</span></div>
+      <div class="r tot"><span>Ore all'anno</span><span>220</span></div>
+    </div>
+    <p>Tre persone per venti minuti fanno un'ora al giorno. Duecentoventi giorni fanno duecentoventi ore. La cifra la ottenete in dieci secondi con la calcolatrice del telefono.</p>
+  </div>
+  <span class="num">4 / 6</span>
+</section>
+
+<!-- 5 — cosa farne -->
+<section class="p">
+  <img class="marchio" src="/Users/marcovanzo/Sviluppo/MV-Consulting/mv-consulting-sito/assets/img/logo-negativo.svg" alt="">
+  <div>
+    <h2>Che cosa farne</h2>
+    <p>Quelle ore non sono tempo perso: sono tempo pagato. E si ripetono l'anno prossimo, con l'aumento contrattuale sopra.</p>
+    <p>Il numero serve a due cose. La prima è metterlo accanto al preventivo, così il confronto è fra due costi.</p>
+    <p class="grande">La seconda è più utile: quasi sempre il conto rivela che il collo di bottiglia non è dove pensavate.</p>
+  </div>
+  <span class="num">5 / 6</span>
+</section>
+
+<!-- 6 — limiti e contatto -->
+<section class="p">
+  <img class="marchio" src="/Users/marcovanzo/Sviluppo/MV-Consulting/mv-consulting-sito/assets/img/logo-negativo.svg" alt="">
+  <div>
+    <h2>Due limiti,<br>dichiarati subito</h2>
+    <p class="avvertenza">È una stima, non una perizia: serve a decidere se vale la pena guardare meglio, non a chiudere il bilancio.</p>
+    <p class="avvertenza" style="margin-top:34px;">In parecchi casi il conto porta alla conclusione che il software non serve: serve togliere un passaggio. Va bene lo stesso — anzi, è il risultato migliore.</p>
+    <p style="margin-top:46px;">Se dopo il calcolo volete un parere su cosa guardare per primo, il modulo sul sito arriva direttamente a noi.</p>
+  </div>
+  <p class="chiusa">mv-consulting.it — processi · software su misura · privacy e DPO · formazione</p>
+</section>
+
+</body>
+</html>

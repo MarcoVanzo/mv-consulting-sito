@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<link rel="stylesheet" href="base.css">
+<style>
+  .tela{width:1200px; height:1200px; padding:78px 84px; justify-content:space-between;}
+  h1{font-size:52px; line-height:1.16; font-weight:600; letter-spacing:-.015em; margin-top:26px;}
+  .griglia{display:grid; grid-template-columns:1fr 64px 1fr; align-items:stretch; gap:0; margin-top:6px;}
+  .col{background:var(--panel); border:1px solid var(--edge); border-radius:18px; padding:30px 32px;}
+  .col h2{
+    font-size:19px; letter-spacing:.16em; text-transform:uppercase; font-weight:600;
+    color:var(--dim); padding-bottom:18px; border-bottom:1px solid var(--edge);
+  }
+  .col.b h2{color:var(--brand);}
+  .col.w h2{color:var(--warm);}
+  .col ul{list-style:none;}
+  .col li{
+    font-size:29px; line-height:1.3; padding:25px 0; border-bottom:1px solid var(--edge);
+    color:var(--body);
+  }
+  .col li:last-child{border-bottom:0; padding-bottom:4px;}
+  .frecce{display:flex; flex-direction:column; justify-content:center; gap:0; padding-top:78px;}
+  .frecce span{
+    flex:1; display:flex; align-items:center; justify-content:center;
+    color:var(--edge2); font-size:32px;
+  }
+  .nota{
+    margin-top:34px; padding-top:26px; border-top:1px solid var(--edge);
+    font-size:27px; line-height:1.45; color:var(--body);
+  }
+</style>
+</head>
+<body>
+<div class="tela">
+  <div>
+    <img class="marchio" src="/Users/marcovanzo/Sviluppo/MV-Consulting/mv-consulting-sito/assets/img/logo-negativo.svg" alt="">
+    <h1>Le stesse quattro domande,<br>scritte due volte.</h1>
+  </div>
+
+  <div class="griglia">
+    <div class="col b">
+      <h2>Schema dati</h2>
+      <ul>
+        <li>Quali colonne contiene la tabella</li>
+        <li>A che cosa serve ogni campo</li>
+        <li>Che cosa cancella, e quando</li>
+        <li>Chi ha il permesso di leggerla</li>
+      </ul>
+    </div>
+    <div class="frecce"><span>→</span><span>→</span><span>→</span><span>→</span></div>
+    <div class="col w">
+      <h2>Registro dei trattamenti</h2>
+      <ul>
+        <li>Quali dati personali trattiamo</li>
+        <li>Con quale finalità</li>
+        <li>Per quanto tempo li conserviamo</li>
+        <li>Chi vi accede</li>
+      </ul>
+    </div>
+  </div>
+
+  <p class="nota">Quando le due colonne le compilano persone diverse che non si parlano, il registro dice ventiquattro mesi e il database non cancella dal 2014.</p>
+
+  <div class="piede">
+    <span>mv-consulting.it</span>
+    <span>privacy e DPO</span>
+  </div>
+</div>
+</body>
+</html>

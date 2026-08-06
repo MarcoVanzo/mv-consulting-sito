@@ -1,0 +1,36 @@
+/* Stessa palette e stessa famiglia tipografica del sito: gli asset social devono
+   sembrare la stessa cosa della home, non un tema a parte. */
+:root{
+  --bg:#101315; --panel:#191E22; --edge:#2E363C; --edge2:#3F484F;
+  --text:#E9E7E3; --dim:#98A1A6; --body:#C3C8CB;
+  --brand:#429DDA; --warm:#D8A46A;
+}
+*{box-sizing:border-box; margin:0; padding:0;}
+body{
+  background:var(--bg); color:var(--text);
+  font-family:"Avenir Next", Avenir, "Segoe UI", system-ui, sans-serif;
+  -webkit-font-smoothing:antialiased;
+}
+.tela{
+  position:relative; display:flex; flex-direction:column;
+  overflow:hidden; background:var(--bg);
+}
+/* Alone freddo in alto a destra: rompe il fondo piatto senza aggiungere immagini. */
+.tela::before{
+  content:""; position:absolute; right:-18%; top:-22%; width:75%; aspect-ratio:1;
+  background:radial-gradient(circle, rgba(66,157,218,.16), transparent 62%);
+  pointer-events:none;
+}
+/* Il logo ha viewBox 3463x687: senza align-self l'immagine si stira a tutta la
+   colonna flex e il marchio finisce centrato dentro il vuoto. */
+.marchio{height:52px; width:auto; align-self:flex-start; flex:none; opacity:.95;}
+.kicker{
+  font-size:20px; letter-spacing:.18em; text-transform:uppercase;
+  color:var(--brand); font-weight:600;
+}
+.piede{
+  display:flex; justify-content:space-between; align-items:flex-end;
+  color:var(--dim); font-size:22px; letter-spacing:.04em;
+}
+.riga{height:1px; background:var(--edge); border:0;}
+b, strong{color:var(--text); font-weight:600;}

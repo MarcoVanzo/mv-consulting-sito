@@ -1,0 +1,156 @@
+Date,Text,Link,Media URL,Title,Label,Alt text(s),Comment(s),"Pin board, FB album, or Google category",Post subtype,CTA,Reminder
+2026/09/01 08:15,"Ho imparato a diffidare dei miei preventivi complicati.
+
+Quando la soluzione che sto proponendo ha tre eccezioni, due passaggi manuali e una nota a piè di pagina, il problema non è il cliente che ha un'azienda strana. Sono io che non ho ancora capito il processo.
+
+Allora torno indietro. Rileggo cosa succede davvero nei reparti, non cosa è stato raccontato in riunione.
+
+Quasi sempre salta fuori la stessa cosa: due passaggi esistono per coprire un errore che nasce altrove. Togli l'errore a monte e i passaggi spariscono da soli.
+
+Il preventivo si accorcia. Anche il mio lavoro. Va bene così: mi paghi per risolvere, non per restare.
+
+Non è generosità. È che un software costruito sopra un processo confuso lo paghi due volte, la seconda quando nessuno lo usa.
+
+Se hai in mano un preventivo che non riesci a spiegare a un collega, mandamelo: ti dico quali domande farei al fornitore.
+
+#softwaregestionale #pmi",,,,"mvc-2026-09,mv-w1-02",,,,,,
+2026/09/03 08:15,"Un capannone, un lunedì mattina, un quaderno.
+
+Il primo giorno in un'azienda nuova non apro il computer. Cammino. Guardo chi tocca cosa, chiedo perché, scrivo a mano.
+
+Il quaderno serve a una cosa sola: costringermi a mettere giù il processo come è, non come lo racconta l'organigramma.
+
+Le due versioni non coincidono quasi mai. E un software scritto sulla versione dell'organigramma non lo usa nessuno: le persone continuano con il loro Excel, che almeno rispecchia il lavoro vero.
+
+Poi si passa allo schema. Poi al codice. Mai prima.
+
+È la parte del lavoro che nessuno vede in un preventivo, ed è quella che decide se il resto reggerà.
+
+Se stai per commissionare un gestionale, chiedi al fornitore quante ore passerà in azienda prima di scrivere la prima riga di codice. La risposta ti dice quasi tutto.
+
+#analisideiprocessi #pmi",,https://raw.githubusercontent.com/MarcoVanzo/mv-consulting-sito/main/tools/social/2026-09/media/m6-prima-la-mappa.png,,"mvc-2026-09,mv-w1-03","Tre riquadri numerati su fondo scuro: «Prima la mappa — il processo come è, non come lo racconta l'organigramma», «Poi lo schema — le tabelle, i permessi, i tempi di conservazione», «Poi il codice — mai prima». In alto il titolo «L'ordine non è negoziabile».",,,,,
+2026/09/08 08:15,"Venti minuti al giorno non li mette a bilancio nessuno.
+
+Facciamo il conto insieme, con numeri di esempio che puoi sostituire con i tuoi.
+
+Tre persone. Venti minuti al giorno a testa passati a cercare la versione giusta di un file, a rifare un dato già inserito altrove, a chiedere per email una conferma che il sistema non dà.
+
+Venti minuti per tre persone fa un'ora al giorno. Duecentoventi giorni lavorativi fanno duecentoventi ore l'anno. Al costo aziendale che conosci meglio di me, la cifra la ottieni in dieci secondi con la calcolatrice del telefono.
+
+Ora la parte scomoda: quelle ore non sono tempo perso. Sono tempo pagato. E si ripetono l'anno prossimo, con l'aumento contrattuale sopra.
+
+Non sto dicendo che serve un software. Sto dicendo che finché quel numero non ce l'hai scritto da qualche parte, la decisione la stai prendendo alla cieca.
+
+Fallo per il tuo processo peggiore e guarda il risultato. Se ti esce un numero che non ti aspettavi, scrivimelo.
+
+#pmi #processiaziendali",,,,"mvc-2026-09,mv-w2-01",,,,,,
+2026/09/09 08:15,"Quattro numeri che hai già in azienda, e un conto che di solito nessuno fa.
+
+Ho messo in sei pagine il calcolo del costo di un processo così com'è oggi. Non è un modello complicato: sono quattro dati che chiunque in amministrazione trova in mezza giornata.
+
+Quante persone toccano il processo. Quante volte alla settimana. Quanti minuti ogni volta. Quanto costa un'ora in azienda.
+
+Il documento serve a fare due cose. La prima è ottenere un numero da mettere accanto al preventivo, così il confronto è fra due costi e non fra spendere e non spendere. La seconda è più utile: quasi sempre il conto rivela che il collo di bottiglia non è dove pensavi.
+
+Un limite dichiarato subito: è una stima, non una perizia. Serve a decidere se vale la pena guardare meglio, non a chiudere il bilancio.
+
+Sfoglia le sei pagine qui sotto. Se il numero che ti esce ti sembra sbagliato, di solito è perché è più alto del previsto.
+
+#pmi #digitalizzazione #processiaziendali",,https://raw.githubusercontent.com/MarcoVanzo/mv-consulting-sito/main/tools/social/2026-09/media/m2-il-conto.pdf,Il conto che nessuno fa,"mvc-2026-09,mv-w2-02","Documento di sei pagine intitolato «Il conto che nessuno fa»: una pagina di introduzione, quattro pagine con i quattro dati da raccogliere e una pagina con il calcolo di esempio.",,,PDF,,
+2026/09/11 08:15,"Tre casi in cui ti dico di non far scrivere software.
+
+Primo: il processo cambia ogni tre mesi perché il mercato è ancora incerto. Un gestionale su misura fotografa un processo. Se la foto è mossa, aspetta.
+
+Secondo: esiste un pacchetto che copre l'ottanta per cento e il venti restante non fa male a nessuno. Comprarlo costa meno e lo aggiorna qualcun altro. Il su misura serve quando quel venti per cento è esattamente il motivo per cui i clienti scelgono te.
+
+Terzo: il problema non è il sistema, è che due reparti non si parlano. Nessun software risolve una riunione che non si fa. La automatizza soltanto, con i suoi errori dentro.
+
+Lo scrivo perché mi capita di dirlo in prima riunione e vedere una faccia sollevata. E perché il conto di cui parlavo ieri, a volte, dice proprio questo.
+
+Se sei in uno di questi tre casi e qualcuno ti sta preventivando uno sviluppo, chiedi che ti scriva perché il pacchetto non basta.
+
+#softwaregestionale #pmi",,,,"mvc-2026-09,mv-w2-03",,,,,,
+2026/09/16 08:15,"Un processo che regge su una persona sola non è un problema di quella persona.
+
+È un problema di chi non se n'è accorto prima.
+
+Lo vedo quasi sempre nello stesso modo. C'è qualcuno bravissimo che ha costruito negli anni il suo metodo: un foglio fatto bene, due controlli a memoria, un ordine di operazioni che funziona. Tutti si fidano, e giustamente.
+
+Poi quella persona va in ferie, cambia ruolo o si ammala, e per due settimane l'azienda va avanti a domande.
+
+La reazione istintiva è chiedere una procedura scritta. Serve a poco: descrive i passaggi, non i motivi, e invecchia in tre mesi. Quello che serve è capire perché quei controlli esistono. Quasi sempre coprono un errore che nasce altrove, e allora si toglie l'errore invece di documentare la toppa.
+
+Non è una questione di software. È che finché il metodo sta nella testa di uno, non è un processo aziendale: è una consuetudine fortunata.
+
+Pensate all'ultima volta che avete detto «questo lo sa fare solo lui». Quello è il processo da guardare per primo. Scrivetemi qual è.
+
+#pmi #processiaziendali",,,,"mvc-2026-09,mv-w3-01",,,,,,
+2026/09/17 08:15,"Il file di riconciliazione è il sintomo più affidabile che conosco.
+
+È quel foglio che non produce niente: serve solo a far tornare due sistemi che dovrebbero già essere d'accordo. Lo riconosci perché ha un nome tipo «controllo», «quadratura» o le iniziali di chi lo tiene.
+
+Quando lo trovo, smetto di guardare il software e vado a monte. Un file di riconciliazione dice sempre la stessa cosa: la stessa informazione entra due volte, in due momenti, con due criteri.
+
+La tentazione è automatizzare la quadratura. È il modo più veloce per rendere permanente un errore, e per rendere anche più difficile accorgersene quando si romperà.
+
+La cosa noiosa e giusta è togliere il doppio inserimento. Costa una discussione fra reparti. Poi il file sparisce da solo, e nessuno lo rimpiange.
+
+Cerca in azienda un file che serve solo a far tornare altri due file. Se lo trovi, hai trovato il punto di partenza.
+
+#processiaziendali #pmi",,,,"mvc-2026-09,mv-w3-02",,,,,,
+2026/09/19 08:15,"Per anni ho messo la formazione alla fine. Sbagliavo.
+
+Sembrava ordinato: prima finiamo il sistema, poi insegniamo a usarlo. In realtà è il modo più sicuro per raccogliere le osservazioni utili quando è tardi.
+
+Al collaudo le persone vedono il software per la prima volta e commentano l'aspetto, perché non hanno ancora idea di come ci lavoreranno. Le osservazioni vere arrivano tre settimane dopo, quando il lavoro è cominciato davvero. E a quel punto una modifica che al momento giusto sarebbe costata un'ora ne costa dieci.
+
+Adesso la formazione la metto in mezzo. Le persone toccano il sistema quando c'è ancora tempo per cambiarlo, e quello che dicono vale molto di più.
+
+C'è anche un motivo meno nobile. Se il cliente non sa modificare da solo le cose piccole, ogni mia svista diventa un mio ticket a pagamento. Non voglio quel modello di ricavo: rende comodo sbagliare.
+
+Se stai per firmare uno sviluppo, chiedi in che settimana è prevista la formazione. Se la risposta è «alla fine», discutila.
+
+#formazioneaziendale #pmi",,,,"mvc-2026-09,mv-w3-03",,,,,,
+2026/09/24 08:15,"Il registro dice ventiquattro mesi. Il database non cancella dal 2014.
+
+È la scena che trovo più spesso quando entro come DPO in un'azienda che ha già fatto le carte.
+
+Il registro dei trattamenti è compilato, spesso bene. Dice quali dati, per quale finalità, per quanto tempo. Poi apri il gestionale e scopri che nessuna procedura applica quei tempi, perché il registro l'ha scritto un consulente che il database non l'ha mai aperto.
+
+Quando succede, non riscrivo il registro. Faccio la cosa opposta: prendo lo schema dati e ci scrivo accanto, tabella per tabella, chi accede e quando si cancella. Quello che ne esce è il registro vero. Poi si confrontano le due versioni, e la distanza fra loro è esattamente il piano di lavoro.
+
+È noioso. È anche l'unica parte che regge davanti a una richiesta di accesso o a un'ispezione, perché è l'unica che descrive quello che succede davvero.
+
+Se hai un registro, aprilo e cerca una sola voce: i tempi di conservazione. Poi chiedi chi li applica tecnicamente.
+
+#gdpr #dpo",,,,"mvc-2026-09,mv-w4-01",,,,,,
+2026/09/25 08:15,"Il registro dei trattamenti non si compila: si legge da un altro documento.
+
+Quando lo scrivo, non parto dal modello. Parto dallo schema dati e faccio quattro domande a ogni tabella.
+
+Quali dati personali contiene davvero, comprese le colonne che nessuno chiama così. Perché li conserviamo, in una frase che regga se la legge il diretto interessato. Per quanto tempo, e chi esegue la cancellazione. Chi vi accede oggi, non chi dovrebbe.
+
+La quarta è quella che fa emergere le sorprese: quasi sempre gli accessi reali sono più larghi di quelli previsti, perché a qualcuno serviva una cosa una volta e il permesso è rimasto lì.
+
+Quattro domande per tabella. Su un gestionale di media grandezza sono un paio di giorni di lavoro noioso, e alla fine il registro è scritto da solo.
+
+Se invece parti dal modello Word, ottieni un documento che descrive un'azienda plausibile. Non la tua.
+
+Prova con una tabella sola, quella dei clienti. Se la quarta domanda ti dà una risposta imbarazzante, non sei un'eccezione.
+
+#gdpr #dpo #pmi",,https://raw.githubusercontent.com/MarcoVanzo/mv-consulting-sito/main/tools/social/2026-09/media/m5-schema-registro.png,,"mvc-2026-09,mv-w4-02","Due colonne affiancate su fondo chiaro. A sinistra le voci di uno schema dati: tabella, colonna, cancellazione, permessi. A destra le voci di un registro dei trattamenti: dati trattati, finalità, tempo di conservazione, chi accede. Le righe si corrispondono.",,,,,
+2026/09/28 08:15,"Il campo note libero è il posto più pericoloso del tuo gestionale.
+
+Lo trovo in ogni azienda in cui entro. Una casella di testo accanto all'anagrafica, senza regole, nata per annotare l'orario di consegna preferito.
+
+Poi, con gli anni, dentro ci finisce altro. Che il titolare è in malattia. Che quel cliente ha avuto problemi di pagamento per una separazione. Che un dipendente ha una certa condizione di salute e va gestito in un certo modo.
+
+Sono dati particolari, scritti in un campo che nessuno ha classificato, che nessun registro descrive, che non ha una scadenza e a cui accede chiunque abbia l'anagrafica aperta. Compreso lo stagista di settembre.
+
+La soluzione non è vietare il campo note: ci hanno provato in tanti e le persone lo ricreano nel campo indirizzo. La soluzione è dargli una struttura per le cose che servono davvero, un permesso più stretto, e una scadenza.
+
+E poi, una volta, andare a leggere cosa c'è già dentro. È sempre la parte peggiore.
+
+Apri il gestionale e leggi dieci campi note a caso. Se trovi una sola informazione sulla salute di qualcuno, hai un trattamento non mappato.
+
+#gdpr #dpo #pmi",,,,"mvc-2026-09,mv-w4-03",,,,,,
