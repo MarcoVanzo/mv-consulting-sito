@@ -51,12 +51,25 @@ JSON non esiste su disco. Con `--ramo <nome>` punta a un ramo diverso da `main`.
 Il file per canale non è un vezzo: l'import di Publer assegna tutti i post del CSV agli
 account selezionati in quel momento, quindi tre account vogliono tre file.
 
+## Il PDF non passa dall'import
+
+Verificato a settembre 2026: **Publer scarica dall'URL solo immagini e video.** Un PDF
+viene ignorato in silenzio — nessun errore, il post arriva senza allegato. Vale sia per
+la colonna `Media URL` del CSV sia per il campo «URL esterno» della finestra *Allega
+Media*. L'unica strada è caricare il file dal disco, post per post.
+
+Quindi: **ogni post documento costa un passaggio manuale a Marco.** Se un mese ne ha
+più di due, conviene ripensarlo — una carosello di immagini rende quanto un PDF e si
+programma da sola. Quando un documento resta, dopo l'import va detto chiaramente quali
+post aprire e quale file allegare.
+
 ## Prima di consegnare
 
 1. Rileggi i CSV: date tutte nel futuro, nessun buco nel calendario, nessuna domenica.
 2. Verifica che le immagini siano davvero nel repository e con il nome giusto — dopo il
    merge, Publer le scarica da `raw.githubusercontent.com`: un nome sbagliato è un post
-   senza immagine.
+   senza immagine. Dopo l'import, ricontrolla il calendario: la miniatura sulla scheda
+   del post è la prova che il media è arrivato davvero.
 3. Committa su un ramo di lavoro e apri la pull request. **Le immagini vanno su `main`
    prima dell'import**, altrimenti l'URL non esiste ancora.
 4. Consegna a Marco: quali post, in che giorni, e le tre righe di istruzioni per
