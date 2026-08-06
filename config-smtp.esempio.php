@@ -20,7 +20,14 @@ declare(strict_types=1);
 return [
     'host'     => 'smtps.aruba.it',
     'porta'    => 465,
-    // L'indirizzo completo, non la sola parte prima della chiocciola.
-    'utente'   => 'info@mv-consulting.it',
+    // La casella **vera**, quella con cui si entra in webmail, con l'indirizzo
+    // completo e non la sola parte prima della chiocciola.
+    //
+    // `info@mv-consulting.it` è un alias: riceve, ma non ha una password, e
+    // l'SMTP l'autenticazione la pretende. Si entra quindi con la casella che
+    // sta dietro l'alias. Questo indirizzo diventa anche il mittente delle
+    // mail del modulo — Aruba rifiuta un mittente diverso dall'account
+    // autenticato — mentre il destinatario resta `info@`, come prima.
+    'utente'   => 'la-casella-vera@mv-consulting.it',
     'password' => 'QUI-LA-PASSWORD-DELLA-CASELLA',
 ];
