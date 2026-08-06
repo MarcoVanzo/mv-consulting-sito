@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<link rel="stylesheet" href="base.css">
+<style>
+  .tela{width:1200px; height:1200px; padding:88px 84px; justify-content:space-between;}
+  h1{font-size:52px; line-height:1.16; font-weight:600; letter-spacing:-.015em; margin-top:26px;}
+  .passi{display:flex; flex-direction:column; gap:26px;}
+  .passo{
+    display:flex; align-items:center; gap:34px;
+    background:var(--panel); border:1px solid var(--edge); border-radius:18px;
+    padding:34px 38px;
+  }
+  .passo .n{
+    flex:none; width:64px; height:64px; border-radius:50%;
+    border:1px solid var(--brand); color:var(--brand);
+    display:flex; align-items:center; justify-content:center; font-size:28px;
+  }
+  .passo .t{display:block; font-size:42px; font-weight:600; letter-spacing:-.01em;}
+  .passo .d{display:block; font-size:26px; line-height:1.35; color:var(--dim); margin-top:8px;}
+  .passo.ultimo .n{border-color:var(--warm); color:var(--warm);}
+  .nota{
+    padding-top:28px; border-top:1px solid var(--edge);
+    font-size:28px; line-height:1.45; color:var(--body);
+  }
+</style>
+</head>
+<body>
+<div class="tela">
+  <div>
+    <img class="marchio" src="/Users/marcovanzo/Sviluppo/MV-Consulting/mv-consulting-sito/assets/img/logo-negativo.svg" alt="">
+    <h1>L'ordine non è negoziabile.</h1>
+  </div>
+
+  <div class="passi">
+    <div class="passo">
+      <span class="n">1</span>
+      <span><span class="t">Prima la mappa</span><span class="d">il processo come è, non come lo racconta l'organigramma</span></span>
+    </div>
+    <div class="passo">
+      <span class="n">2</span>
+      <span><span class="t">Poi lo schema</span><span class="d">le tabelle, i permessi, i tempi di conservazione</span></span>
+    </div>
+    <div class="passo ultimo">
+      <span class="n">3</span>
+      <span><span class="t">Poi il codice</span><span class="d">mai prima: un software scritto sulla mappa sbagliata non lo usa nessuno</span></span>
+    </div>
+  </div>
+
+  <p class="nota">È la parte del lavoro che nessuno vede in un preventivo, ed è quella che decide se il resto reggerà.</p>
+
+  <div class="piede">
+    <span>mv-consulting.it</span>
+    <span>analisi dei processi</span>
+  </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<link rel="stylesheet" href="base.css">
+<style>
+  /* Copertina pagina LinkedIn: 1128x191. Su mobile LinkedIn ritaglia i lati e
+     copre l'angolo in basso a sinistra con il logo della pagina: il testo sta
+     al centro e non scende sotto la metà. */
+  .tela{width:1128px; height:191px; padding:0 64px; flex-direction:row; align-items:center; justify-content:space-between;}
+  .tela::before{right:-8%; top:-160%; width:46%;}
+  h1{font-size:34px; line-height:1.15; font-weight:600; letter-spacing:-.01em;}
+  .mestieri{
+    display:flex; gap:26px; align-items:center;
+    font-size:17px; letter-spacing:.14em; text-transform:uppercase; color:var(--dim);
+  }
+  .mestieri i{width:5px; height:5px; border-radius:50%; background:var(--brand); font-style:normal;}
+  .destra{display:flex; flex-direction:column; align-items:flex-end; gap:14px;}
+  .marchio{height:38px;}
+  .sito{font-size:18px; color:var(--dim); letter-spacing:.05em;}
+</style>
+</head>
+<body>
+<div class="tela">
+  <div>
+    <h1>Quattro mestieri, un solo interlocutore.</h1>
+    <div class="mestieri" style="margin-top:16px;">
+      <span>processi</span><i></i><span>software su misura</span><i></i><span>privacy e DPO</span><i></i><span>formazione</span>
+    </div>
+  </div>
+  <div class="destra">
+    <img class="marchio" src="/Users/marcovanzo/Sviluppo/MV-Consulting/mv-consulting-sito/assets/img/logo-negativo.svg" alt="">
+    <span class="sito">mv-consulting.it</span>
+  </div>
+</div>
+</body>
+</html>
