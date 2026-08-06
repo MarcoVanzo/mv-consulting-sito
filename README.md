@@ -1,6 +1,6 @@
 # mv-consulting.it
 
-Sito vetrina di MV Consulting S.r.l.s. Socio Unico. **HTML statico + un file PHP**
+Sito vetrina di MV Consulting S.r.l. **HTML statico + un file PHP**
 per il modulo di contatto: nessun database, nessun CMS, nessuna dipendenza esterna.
 
 Sostituisce il precedente sito WordPress (tema `marcovanzo`, Contact Form 7).

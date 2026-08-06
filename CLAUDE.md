@@ -1,6 +1,6 @@
 # mv-consulting.it — istruzioni per Claude
 
-Sito vetrina di MV Consulting S.r.l.s. **HTML statico + un file PHP** (`contatti.php`).
+Sito vetrina di MV Consulting S.r.l. **HTML statico + un file PHP** (`contatti.php`).
 Nessun database, nessun CMS, nessuna libreria, nessun passaggio di build: i file del
 repository *sono* il sito. Si modifica un file, si fa push, il workflow pubblica.
 
