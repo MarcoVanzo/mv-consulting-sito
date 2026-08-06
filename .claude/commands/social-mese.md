@@ -53,10 +53,19 @@ account selezionati in quel momento, quindi tre account vogliono tre file.
 
 ## Il PDF non passa dall'import
 
-Verificato a settembre 2026: **Publer scarica dall'URL solo immagini e video.** Un PDF
+Verificato ad agosto 2026: **Publer scarica dall'URL solo immagini e video.** Un PDF
 viene ignorato in silenzio — nessun errore, il post arriva senza allegato. Vale sia per
 la colonna `Media URL` del CSV sia per il campo «URL esterno» della finestra *Allega
 Media*. L'unica strada è caricare il file dal disco, post per post.
+
+Il resto del CSV però arriva: il sottotipo `PDF` spunta da solo la casella «Pubblica
+foto come documento PDF» e la colonna `Title` riempie il titolo del documento. Manca
+solo il file.
+
+Caricandolo dal disco la miniatura resta su **«Elaborazione» per un minuto abbondante**:
+Publer sta convertendo il PDF nelle immagini che LinkedIn usa per lo sfogliabile. Non è
+bloccato — si aspetta, e si salva solo quando compare la copertina. Va detto a Marco
+prima che lo faccia, perché la prima volta sembra un caricamento fallito.
 
 Quindi: **ogni post documento costa un passaggio manuale a Marco.** Se un mese ne ha
 più di due, conviene ripensarlo — una carosello di immagini rende quanto un PDF e si
