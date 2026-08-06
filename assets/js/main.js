@@ -194,7 +194,11 @@
   var form = document.getElementById("contatto"), msg = document.getElementById("formMsg");
   if(form){
     form.addEventListener("submit", function(e){
-      if(!form.checkValidity()) return;          // il browser mostra i suoi messaggi
+      // Il modulo ha novalidate: il browser non mostra i suoi messaggi da solo e
+      // senza questo blocco un campo mancante faceva partire l'invio classico,
+      // che rimanda alla home con un parametro che nessuna pagina legge — la
+      // pagina si ricaricava e basta. Si chiede al browser di dirlo lui.
+      if(!form.checkValidity()){ e.preventDefault(); form.reportValidity(); return; }
       e.preventDefault();
       var btn = form.querySelector("button");
       btn.disabled = true; btn.textContent = "Invio in corso...";
@@ -202,14 +206,22 @@
       fetch(form.action, {method:"POST", body:new FormData(form), headers:{"Accept":"application/json"}})
         .then(function(r){ return r.json().catch(function(){ throw new Error("risposta non valida"); }); })
         .then(function(j){
-          if(!j.ok) throw new Error(j.error || "invio non riuscito");
+          if(!j.ok){
+            // il motivo arriva dal server ed è rivolto a chi scrive ("indirizzo
+            // email non valido"): va mostrato, non sostituito da un generico
+            var er = new Error(j.error || "invio non riuscito"); er.dalServer = true; throw er;
+          }
           form.reset();
           msg.className = "form-msg ok";
           msg.textContent = "Messaggio inviato. Vi rispondiamo entro un giorno lavorativo.";
         })
-        .catch(function(){
+        .catch(function(err){
           msg.className = "form-msg ko";
-          msg.innerHTML = 'Non siamo riusciti a inviare il messaggio. Scriveteci a <a href="mailto:marco@mv-consulting.it">marco@mv-consulting.it</a>.';
+          if(err && err.dalServer){
+            msg.textContent = "Messaggio non inviato: " + err.message + ".";
+          } else {
+            msg.innerHTML = 'Non siamo riusciti a inviare il messaggio. Scriveteci a <a href="mailto:marco@mv-consulting.it">marco@mv-consulting.it</a>.';
+          }
         })
         .then(function(){ btn.disabled = false; btn.textContent = "Invia il messaggio"; });
     });
