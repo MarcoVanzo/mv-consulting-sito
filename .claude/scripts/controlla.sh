@@ -70,7 +70,7 @@ if [ "${1:-}" = "--online" ]; then
     c=$(curl -s -o /dev/null -w '%{http_code}' --max-time 15 "$base$p?c=$$")
     if [ "$c" = "200" ]; then echo "  ✓ $p"; else segnala "$p risponde $c"; fi
   done
-  for vecchio in /chi-siamo/ /privacy-policy/; do
+  for vecchio in /chi-siamo/ /contatti/ /servizi/ /partner/ /privacy-policy/ /cookie-policy/; do
     c=$(curl -s -o /dev/null -w '%{http_code}' --max-time 15 "$base$vecchio")
     case "$c" in 30*) echo "  ✓ $vecchio reindirizza ($c)" ;; *) segnala "$vecchio risponde $c invece di un redirect" ;; esac
   done
