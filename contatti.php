@@ -6,7 +6,7 @@
  */
 declare(strict_types=1);
 
-const DESTINATARIO = 'marco@mv-consulting.it';
+const DESTINATARIO = 'info@mv-consulting.it';
 const MITTENTE     = 'no-reply@mv-consulting.it';   // deve essere una casella del dominio
 const MAX_LUNGHEZZA = 5000;
 
@@ -41,6 +41,7 @@ $azienda   = $campo('azienda');
 $email     = $campo('email');
 $telefono  = $campo('telefono');
 $messaggio = $campo('messaggio');
+$origine   = $campo('origine');                   // campagna di provenienza, riempita dalla pagina
 // Non è un consenso al trattamento (la base giuridica è la richiesta stessa,
 // art. 6.1.b GDPR): è la conferma di aver potuto leggere l'informativa.
 $presaVisione = ($_POST['consenso'] ?? '') === '1';
@@ -64,6 +65,7 @@ $corpo = "Nuovo messaggio dal sito mv-consulting.it\n\n"
     . "Azienda:   " . ($azienda !== '' ? $azienda : '-') . "\n"
     . "Email:     {$email}\n"
     . "Telefono:  " . ($telefono !== '' ? $telefono : '-') . "\n"
+    . "Origine:   " . ($origine !== '' ? $origine : 'diretta') . "\n"
     . "Data:      " . date('d/m/Y H:i') . "\n"
     . "IP:        " . ($_SERVER['REMOTE_ADDR'] ?? '-') . "\n\n"
     . "Messaggio:\n{$messaggio}\n";

@@ -63,6 +63,72 @@
   }
   window.addEventListener("scroll", onScroll, {passive:true}); onScroll();
 
+  /* ---- altezza reale della barra fissa ----
+     Serve a due cose: far fermare le ancore sotto la barra invece che dietro,
+     e far partire il menu del telefono esattamente dal suo bordo inferiore.
+     La barra si restringe allo scroll, quindi va rimisurata. */
+  function misuraNav(){
+    document.documentElement.style.setProperty("--navh", Math.round(nav.getBoundingClientRect().height) + "px");
+  }
+  misuraNav();
+  window.addEventListener("resize", misuraNav);
+  window.addEventListener("scroll", misuraNav, {passive:true});
+
+  /* ---- menu del telefono ---- */
+  var burger = document.getElementById("burger"), menu = document.getElementById("menu");
+  if(burger && menu){
+    var apri = function(){
+      menu.hidden = false;
+      requestAnimationFrame(function(){ menu.classList.add("open"); });
+      burger.setAttribute("aria-expanded","true");
+      burger.setAttribute("aria-label","Chiudi il menu");
+      document.body.classList.add("locked");
+    };
+    var chiudi = function(torna){
+      menu.classList.remove("open");
+      burger.setAttribute("aria-expanded","false");
+      burger.setAttribute("aria-label","Apri il menu");
+      document.body.classList.remove("locked");
+      setTimeout(function(){ menu.hidden = true; }, reduce ? 0 : 250);
+      if(torna) burger.focus();
+    };
+    burger.addEventListener("click", function(){
+      burger.getAttribute("aria-expanded") === "true" ? chiudi(false) : apri();
+    });
+    menu.addEventListener("click", function(e){
+      if(e.target.closest("a")) chiudi(false);      // scelta una voce, il menu se ne va
+    });
+    document.addEventListener("keydown", function(e){
+      if(e.key === "Escape" && burger.getAttribute("aria-expanded") === "true") chiudi(true);
+    });
+    // tornando al desktop il menu non deve restare aperto sopra la pagina
+    window.matchMedia("(min-width:901px)").addEventListener("change", function(e){
+      if(e.matches && burger.getAttribute("aria-expanded") === "true") chiudi(false);
+    });
+  }
+
+  /* ---- richiamo fisso in basso sul telefono ----
+     Compare quando la hero è passata e si toglie di mezzo sul modulo. */
+  var ctaBar = document.getElementById("ctaBar");
+  if(ctaBar){
+    var oltreHero = false, suModulo = false;
+    var aggiornaBarra = function(){
+      var mostra = oltreHero && !suModulo;
+      ctaBar.hidden = false;
+      ctaBar.classList.toggle("show", mostra);
+    };
+    new IntersectionObserver(function(es){
+      oltreHero = !es[0].isIntersecting; aggiornaBarra();
+    }, {threshold:0}).observe(document.querySelector(".hero"));
+    new IntersectionObserver(function(es){
+      suModulo = es[0].isIntersecting; aggiornaBarra();
+    }, {threshold:0}).observe(document.getElementById("contatti"));
+  }
+
+  /* ---- anno nel piè di pagina ---- */
+  var anno = document.getElementById("anno");
+  if(anno) anno.textContent = String(new Date().getFullYear());
+
   /* ---- demo: documenti che diventano dati ---- */
   var cv = document.getElementById("cv"), ctx = cv.getContext("2d");
   var scrub = document.getElementById("sc"), pct = document.getElementById("demoPct");
@@ -190,6 +256,56 @@
     rt = setTimeout(function(){ build(); paint(); }, 160);
   });
 
+  /* =======================================================================
+     Provenienza della visita, senza cookie.
+
+     Chi arriva da un annuncio porta i parametri utm_* (o gclid/fbclid) nell'
+     indirizzo. Li leggiamo una sola volta, li teniamo in una variabile — non
+     sul dispositivo dell'utente — e li accodiamo al messaggio del modulo.
+     Così si sa quale campagna ha prodotto la richiesta anche senza consenso
+     e senza alcuno strumento di tracciamento.
+     ======================================================================= */
+  var origine = (function(){
+    var q = new URLSearchParams(window.location.search), pezzi = [];
+    ["utm_source","utm_medium","utm_campaign","utm_content","utm_term","gclid","fbclid","li_fat_id"]
+      .forEach(function(k){ if(q.get(k)) pezzi.push(k.replace("utm_","") + "=" + q.get(k).slice(0,80)); });
+    if(!pezzi.length && document.referrer){
+      try{
+        var host = new URL(document.referrer).hostname;
+        if(host && host !== window.location.hostname) pezzi.push("da=" + host);
+      }catch(_){}
+    }
+    return pezzi.join(" · ");
+  })();
+  var campoOrigine = document.getElementById("f-origine");
+  if(campoOrigine) campoOrigine.value = origine;
+
+  /* =======================================================================
+     Consenso.
+
+     Il permesso lo gestisce Cookiebot, e gli strumenti li carica direttamente
+     l'HTML: i tag di Analytics, Meta e LinkedIn in testa alla pagina sono
+     marcati "type=text/plain data-cookieconsent=..." e Cookiebot li accende
+     solo per le categorie accettate. Qui non serve replicare quel meccanismo:
+     serve solo poter mandare qualche evento a chi e' gia' partito.
+     ======================================================================= */
+
+  /* La voce «Preferenze cookie» del piè di pagina la gestisce consenso.js,
+     che serve anche alle pagine senza questo file. */
+
+  /* Un evento solo, con lo stesso nome per tutti i servizi avviati:
+     i pulsanti del sito lo chiamano senza sapere che cosa c'è sotto. */
+  function evento(nome, dati){
+    if(window.gtag) window.gtag("event", nome, dati || {});
+    if(window.fbq)  window.fbq("trackCustom", nome, dati || {});
+  }
+
+  /* i richiami al contatto segnalano l'intenzione, non l'identità */
+  document.addEventListener("click", function(e){
+    var el = e.target.closest("[data-cta]");
+    if(el) evento("contatto_cta", {posizione: el.getAttribute("data-cta")});
+  });
+
   /* ---- invio del modulo senza ricaricare la pagina ---- */
   var form = document.getElementById("contatto"), msg = document.getElementById("formMsg");
   if(form){
@@ -212,15 +328,18 @@
             var er = new Error(j.error || "invio non riuscito"); er.dalServer = true; throw er;
           }
           form.reset();
+          if(campoOrigine) campoOrigine.value = origine;   // reset() svuota anche i campi nascosti
           msg.className = "form-msg ok";
           msg.textContent = "Messaggio inviato. Vi rispondiamo entro un giorno lavorativo.";
+          msg.focus && msg.focus();
+          evento("richiesta_inviata", {origine: origine || "diretta"});
         })
         .catch(function(err){
           msg.className = "form-msg ko";
           if(err && err.dalServer){
             msg.textContent = "Messaggio non inviato: " + err.message + ".";
           } else {
-            msg.innerHTML = 'Non siamo riusciti a inviare il messaggio. Scriveteci a <a href="mailto:marco@mv-consulting.it">marco@mv-consulting.it</a>.';
+            msg.innerHTML = 'Non siamo riusciti a inviare il messaggio. Scriveteci a <a href="mailto:info@mv-consulting.it">info@mv-consulting.it</a>.';
           }
         })
         .then(function(){ btn.disabled = false; btn.textContent = "Invia il messaggio"; });

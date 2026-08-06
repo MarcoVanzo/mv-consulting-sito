@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<title>MV Consulting — grafiche per i social</title>
+<!--
+  Modelli delle immagini da usare nelle inserzioni e nei post.
+
+  Come si usa senza installare niente: aprire questo file nel browser, scegliere
+  il riquadro, farne uno screenshot alla dimensione indicata (in Chrome:
+  strumenti per sviluppatori, tasto destro sul nodo .card, «Capture node
+  screenshot»). Il testo si cambia direttamente qui sotto.
+
+  Le immagini già pronte stanno in assets/img/ e sono quelle citate nei meta
+  della pagina: og.jpg (1200x630), social-quadrata.jpg (1200x1200) e
+  social-storia.jpg (1080x1920).
+-->
+<style>
+  *{box-sizing:border-box;}
+  body{background:#0B1219; margin:0; padding:40px; display:flex; flex-wrap:wrap; gap:40px;
+    font-family:"Avenir Next", Avenir, "Segoe UI", system-ui, sans-serif;}
+  .card{
+    position:relative; overflow:hidden; background:#101A22; color:#DDE8EF;
+    display:flex; flex-direction:column; justify-content:center; flex:none;
+  }
+  /* l'onda scura in basso a destra, come nell'immagine di condivisione esistente */
+  .card::after{
+    content:""; position:absolute; right:-22%; top:-30%; width:110%; height:150%;
+    border-radius:50%; background:radial-gradient(closest-side, #16283A, #101A22 78%);
+  }
+  .in{position:relative; z-index:1;}
+  .logo{display:block;}
+  .claim{font-weight:600; letter-spacing:-.03em; line-height:1.06; margin:0;
+    border-left:4px solid #429DDA;}
+  .claim em{font-style:normal; color:#429DDA;}
+  .sub{color:#8CA5B7; font-weight:600; margin:0;}
+  .site{color:#66879E; letter-spacing:.14em; text-transform:uppercase; margin:0;}
+
+  /* 1200 x 1200 — post quadrato per Instagram, Facebook e LinkedIn */
+  .q{width:1200px; height:1200px; padding:96px 92px;}
+  .q .logo{width:420px; margin-bottom:96px;}
+  .q .claim{font-size:82px; padding-left:34px; margin-bottom:44px;}
+  .q .sub{font-size:31px; padding-left:38px; line-height:1.45; margin-bottom:96px;}
+  .q .site{font-size:23px; padding-left:38px;}
+
+  /* 1080 x 1920 — storia verticale */
+  .s{width:1080px; height:1920px; padding:150px 88px;}
+  .s .logo{width:400px; margin-bottom:120px;}
+  .s .claim{font-size:88px; padding-left:34px; margin-bottom:52px;}
+  .s .sub{font-size:33px; padding-left:38px; line-height:1.45;}
+  .s .site{font-size:24px; padding-left:38px; margin-top:130px;}
+</style>
+</head>
+<body>
+
+<div class="card q" id="quadrata">
+  <div class="in">
+    <img class="logo" src="../assets/img/logo-negativo.svg" alt="MV Consulting">
+    <p class="claim">Non esistono cose facili o difficili.<br>Solo cose che <em>sai fare</em>.</p>
+    <p class="sub">Gestionali su misura, DPO e privacy, formazione.<br>Poi ve lo insegniamo.</p>
+    <p class="site">mv-consulting.it</p>
+  </div>
+</div>
+
+<div class="card s" id="storia">
+  <div class="in">
+    <img class="logo" src="../assets/img/logo-negativo.svg" alt="MV Consulting">
+    <p class="claim">Quello che in azienda sembra <em>complicato</em> quasi sempre non lo è.</p>
+    <p class="sub">È solo qualcosa che lì dentro nessuno ha ancora imparato a fare. Noi lo sappiamo fare — e poi ve lo insegniamo.</p>
+    <p class="site">mv-consulting.it</p>
+  </div>
+</div>
+
+</body>
+</html>
