@@ -151,30 +151,26 @@ tempo della visita. Funziona anche con `gclid` e `fbclid`.
 Le ancore utili come destinazione di un annuncio: `/#contatti` (il modulo),
 `/#progetti` (i casi), `/#domande` (le obiezioni frequenti), `/#klubia` (il prodotto).
 
-### 3. Pixel e statistiche, se e quando servono
+### 3. Pixel e statistiche
 
-L'infrastruttura c'è ma è spenta. In cima ad `assets/js/main.js`:
+Sono attivi e configurati direttamente in testa alle pagine, non da JavaScript:
 
-```js
-var MISURAZIONE = {
-  ga4:       "",   // es. "G-XXXXXXXXXX"   -> categoria "statistics"
-  metaPixel: "",   // es. "123456789012345" -> categoria "marketing"
-  linkedin:  ""    // es. "1234567"         -> categoria "marketing"
-};
-```
+| strumento | identificativo | categoria Cookiebot |
+|---|---|---|
+| Google Analytics 4 | `G-XJX17YKC6D` | `statistics` |
+| Meta Pixel | `2091002778460176` | `marketing` |
+| LinkedIn Insight Tag | `9453514` | `marketing` |
 
-Finché i tre campi sono vuoti il sito non carica nessuno di questi strumenti. Appena si
-compila un identificativo:
+Ogni tag e' marcato `type="text/plain" data-cookieconsent="..."`: Cookiebot lo accende
+solo per le categorie accettate. **Il blocco e' dichiarativo di proposito**, non affidato
+al solo `data-blockingmode="auto"`: se `consent.cookiebot.com` non risponde — capita con
+un adblocker — l'auto-blocking non entra in funzione, e un tag non marcato partirebbe
+comunque. Aggiungendone altri, vanno marcati allo stesso modo e i loro domini aggiunti
+alla CSP nel `.htaccess`.
 
-1. lo strumento parte **solo** se Cookiebot ha registrato il consenso per la sua
-   categoria (vedi sotto);
-2. va tolto il commento alla riga di `Content-Security-Policy` corrispondente in
-   `.htaccess`, altrimenti la policy blocca lo script;
-3. va rilanciata la scansione dal pannello Cookiebot, così il nuovo cookie compare
-   nell'elenco dell'informativa.
-
-Due eventi sono già cablati e partono solo dopo il consenso: `contatto_cta` (clic su un
-richiamo al contatto, con la posizione) e `richiesta_inviata` (modulo spedito).
+Due eventi sono cablati in `main.js` e partono solo se lo strumento e' gia' stato
+avviato da Cookiebot: `contatto_cta` (clic su un richiamo al contatto, con la posizione)
+e `richiesta_inviata` (modulo spedito).
 
 ## Cookie e consenso: Cookiebot
 
@@ -219,29 +215,30 @@ se dal pannello si sceglie un tema che li differenzia, il CSS lo riporta pari.
 Resta fuori dal codice anche l'**accordo ex art. 28** con Usercentrics A/S, che è il
 responsabile del trattamento per la raccolta del consenso. L'informativa lo cita già.
 
-### Blocco manuale, non automatico
+### Come sono bloccati gli strumenti
 
-Il tag **non** ha `data-blockingmode="auto"`, ed è voluto. Il blocco automatico di
-Cookiebot funziona riscrivendo i tag `<script>` della pagina, e la documentazione di
-Cookiebot stessa avverte che non convive bene con una Content-Security-Policy: per farlo
-funzionare bisognerebbe aggiungere `'unsafe-inline'` a `script-src`, cioè smontare la
-protezione più utile della policy.
+Due cinture, non una.
 
-Qui non serve: gli unici strumenti da bloccare sono quelli dichiarati in `MISURAZIONE`,
-che li carica `assets/js/main.js` chiedendo prima il permesso a Cookiebot:
+Il tag Cookiebot ha `data-blockingmode="auto"`: riscrive lui i tag `<script>` della
+pagina prima che partano. Perché funzioni, `script-src` nella CSP ha `'unsafe-inline'` —
+è il prezzo dell'auto-blocking, e la documentazione di Cookiebot avverte che i due non
+convivono bene.
 
-| categoria Cookiebot | strumenti |
-|---|---|
-| `statistics` | Google Analytics 4 |
-| `marketing` | Meta Pixel, LinkedIn Insight Tag |
+Per questo ogni tag di misurazione è **anche** marcato a mano:
 
-Se il consenso viene ritirato dopo che uno strumento era già partito, la pagina si
-ricarica: uno script caricato non si può scaricare, ed è l'unico modo onesto di fermarlo.
+```html
+<script type="text/plain" data-cookieconsent="statistics" ...>
+```
 
-**Attenzione**: se un giorno si incolla uno script di terze parti direttamente nell'HTML,
-questo *non* verrà bloccato da solo. Va marcato a mano secondo la documentazione di
-Cookiebot (`type="text/plain" data-cookieconsent="marketing"`), oppure caricato da
-`main.js` come gli altri.
+Non è ridondanza inutile. Se `consent.cookiebot.com` non risponde — un adblocker lo
+blocca spesso, e il loro CDN può essere lento — l'auto-blocking non entra mai in
+funzione, e un tag non marcato parte comunque, prima di qualunque consenso. Con la
+marcatura, un tag che non viene esplicitamente acceso resta `text/plain`, cioè testo
+inerte che il browser non esegue.
+
+**Ogni script di terze parti che si aggiunge va marcato allo stesso modo**, e il suo
+dominio aggiunto alla CSP nel `.htaccess`. Vale anche per quelli incollati da un
+fornitore: il commento «basta l'auto-blocking» non regge alla prova dell'adblocker.
 
 ### La voce «Preferenze cookie»
 
@@ -253,22 +250,16 @@ invece di non fare niente quando la si tocca.
 
 ## Accessibilità e privacy
 
-- Finché la misurazione resta spenta, gli unici cookie del sito sono quelli tecnici di
-  Cookiebot (`CookieConsent`), necessari a conservare la prova della scelta.
+- Cookie tecnici del banner Cookiebot e, solo con il consenso, due categorie
+  separate: **statistica** con Google Analytics 4 (proprietà `MV Consulting`, ID
+  `G-XJX17YKC6D`) e **marketing** con il pixel di Meta (ID `2091002778460176`,
+  portfolio `MV Consulting Srl`) e l'Insight Tag di LinkedIn (Partner ID `9453514`,
+  account `550280115`). Il banner è il primo script di ogni pagina e blocca da solo
+  gli script non consentiti.
 - Le animazioni si disattivano da sole con `prefers-reduced-motion`.
-- La `Content-Security-Policy` in `.htaccess` elenca i domini ammessi. `style-src` ha
-  `'unsafe-inline'` perché serve: i colori dei tre progetti arrivano da un attributo
-  `style="--p:..."` e le pagine interne hanno un blocco `<style>` — senza, in produzione
-  i progetti uscivano tutti dello stesso blu e i campioni di palette erano invisibili.
-  `script-src` invece resta senza: nessuna pagina ha JavaScript in linea, e va tenuto
-  così.
-- Menu del telefono, collegamento «Vai al contenuto», aree toccabili da 44px, ancore che
-  si fermano sotto la barra fissa.
-
-## Dati strutturati
-
-`index.html` contiene un unico blocco JSON-LD con cinque nodi collegati fra loro:
-`ProfessionalService`/`Organization` (con l'elenco dei servizi), `Person` (il founder),
-`WebSite`, `WebPage` e `FAQPage`. Le domande del JSON-LD **devono restare identiche** a
-quelle della sezione «Domande frequenti» della pagina: se si cambia un testo lì, va
-cambiato anche nel JSON-LD, altrimenti Google scarta il rich result.
+- La `Content-Security-Policy` in `.htaccess` ammette solo Cookiebot, Google
+  Analytics, Meta e LinkedIn: aggiungendo altri script di terze parti va aggiornata,
+  altrimenti verranno bloccati.
+- Aggiungendo o togliendo uno strumento vanno rifatti tre passaggi insieme: la CSP,
+  l'informativa in `privacy-policy.html` e la riscansione del sito su Cookiebot, che
+  rigenera la dichiarazione dei cookie e ripropone il banner a chi aveva già scelto.

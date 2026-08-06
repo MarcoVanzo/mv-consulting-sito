@@ -70,8 +70,16 @@ img{max-width:100%; height:auto; display:block;}
 /* rivelazione allo scroll */
 .rv{opacity:0; transform:translateY(18px); transition:opacity .7s var(--ease), transform .7s var(--ease);}
 .rv.in{opacity:1; transform:none;}
+
+/* Rivelazione allo scroll. Il contenuto si nasconde solo se c'e' un JS che poi
+   lo rivela: la classe "js" la mette lo script in testa a index.html e la
+   toglie se main.js non e' partito entro pochi secondi. Senza quella classe la
+   pagina resta visibile — un errore o un blocco dello script non deve mai
+   lasciare lo schermo vuoto. */
+.js .rv{opacity:0; transform:translateY(18px); transition:opacity .7s var(--ease), transform .7s var(--ease);}
+.js .rv.in{opacity:1; transform:none;}
 @media (prefers-reduced-motion:reduce){
-  .rv{opacity:1; transform:none; transition:none;}
+  .js .rv{opacity:1; transform:none; transition:none;}
 }
 
 /* ---------- barra di avanzamento pagina ---------- */

@@ -3,20 +3,71 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-
-<!-- Cookiebot: deve restare il primo script della pagina.
-     Il codice dopo data-cbid è l'identificativo del gruppo di domini, si copia
-     dal pannello Cookiebot (Impostazioni → Il tuo script). Va sostituito nelle
-     tre pagine del sito e nella dichiarazione dei cookie dell'informativa.
-     Non usiamo data-blockingmode="auto": il blocco automatico non convive bene
-     con la Content-Security-Policy del sito, e qui non serve — gli unici
-     strumenti da bloccare li carica assets/js/main.js, che chiede il permesso
-     a Cookiebot prima di partire. -->
-<script id="Cookiebot" src="https://consent.cookiebot.com/uc.js"
-        data-cbid="abf0bc57-ae54-458d-bb39-ae97f9323b72" data-culture="IT" type="text/javascript"></script>
-
-<title>Software gestionale su misura, DPO e privacy — MV Consulting, Treviso</title>
-<meta name="description" content="Gestionali ed ERP costruiti sul vostro processo, DPO esterno e consulenza GDPR, formazione delle persone che useranno il software. MV Consulting, Zero Branco (Treviso).">
+<!-- Consenso cookie: deve restare il primo script della pagina, blocca gli altri finché non c'è il consenso -->
+<script id="Cookiebot" src="https://consent.cookiebot.com/uc.js" data-cbid="abf0bc57-ae54-458d-bb39-ae97f9323b72" data-blockingmode="auto" type="text/javascript"></script>
+<!-- Rete di sicurezza per le animazioni: la classe "js" abilita lo stato nascosto
+     di .rv, che main.js poi rivela. Se tre secondi dopo che la pagina è davvero
+     sotto gli occhi non è stato rivelato niente — script bloccato, errore, o un
+     IntersectionObserver che non è mai scattato — la classe se ne va e il
+     contenuto compare comunque. La pagina non deve mai restare vuota.
+     data-cookieconsent="ignore": non tocca cookie, non va bloccato. -->
+<script data-cookieconsent="ignore">
+  (function(){
+    var d = document.documentElement;
+    d.className += " js";
+    function controlla(){
+      if(document.visibilityState !== "visible") return;
+      document.removeEventListener("visibilitychange", controlla);
+      setTimeout(function(){
+        if(!document.querySelector(".rv.in")) d.className = d.className.replace(/\bjs\b/, "");
+      }, 3000);
+    }
+    document.addEventListener("visibilitychange", controlla);
+    controlla();
+  })();
+</script>
+<!-- Google Analytics 4: statistiche, parte solo con il consenso.
+     Il blocco è dichiarativo come per Meta e LinkedIn, non affidato al solo
+     auto-blocking: se consent.cookiebot.com non risponde — capita con un
+     adblocker, e capita che il loro CDN sia lento — l'auto-blocking non entra
+     in funzione e senza queste marcature Analytics partirebbe comunque, prima
+     di qualunque consenso. -->
+<script type="text/plain" data-cookieconsent="statistics" async src="https://www.googletagmanager.com/gtag/js?id=G-XJX17YKC6D"></script>
+<script type="text/plain" data-cookieconsent="statistics">
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-XJX17YKC6D');
+</script>
+<!-- Pixel di Meta: marketing, parte solo con il consenso -->
+<script type="text/plain" data-cookieconsent="marketing">
+!function(f,b,e,v,n,t,s)
+{if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+n.queue=[];t=b.createElement(e);t.async=!0;
+t.src=v;s=b.getElementsByTagName(e)[0];
+s.parentNode.insertBefore(t,s)}(window,document,'script',
+'https://connect.facebook.net/en_US/fbevents.js');
+fbq('init', '2091002778460176');
+fbq('track', 'PageView');
+</script>
+<!-- Insight Tag di LinkedIn: marketing, parte solo con il consenso -->
+<script type="text/plain" data-cookieconsent="marketing">
+_linkedin_partner_id = "9453514";
+window._linkedin_data_partner_ids = window._linkedin_data_partner_ids || [];
+window._linkedin_data_partner_ids.push(_linkedin_partner_id);
+(function(l) {
+if (!l){window.lintrk = function(a,b){window.lintrk.q.push([a,b])};
+window.lintrk.q=[]}
+var s = document.getElementsByTagName("script")[0];
+var b = document.createElement("script");
+b.type = "text/javascript";b.async = true;
+b.src = "https://snap.licdn.com/li.lms-analytics/insight.min.js";
+s.parentNode.insertBefore(b, s);})(window.lintrk);
+</script>
+<title>MV Consulting - software su misura, privacy e DPO</title>
+<meta name="description" content="Software su misura, consulenza privacy e DPO, formazione. MV Consulting costruisce i gestionali che mandano avanti l'azienda e insegna a usarli.">
 <link rel="canonical" href="https://www.mv-consulting.it/">
 <meta name="author" content="MV Consulting S.r.l.s. Socio Unico">
 <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1">
@@ -676,7 +727,7 @@
           <input type="hidden" name="origine" id="f-origine" value="">
           <label class="consent">
             <input type="checkbox" name="consenso" value="1" required>
-            <span>Ho letto l'<a href="/privacy-policy.html">informativa privacy</a>: i dati servono solo a rispondere a questa richiesta e restano 24 mesi. Nessuna newsletter, nessun cookie.</span>
+            <span>Ho letto l'<a href="/privacy-policy.html">informativa privacy</a>: i dati servono solo a rispondere a questa richiesta e restano 24 mesi. Nessuna newsletter, nessuna cessione a terzi.</span>
           </label>
           <button type="submit" data-cta="form">Invia il messaggio</button>
           <p class="form-msg" id="formMsg" role="status"></p>

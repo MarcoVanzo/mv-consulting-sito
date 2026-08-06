@@ -43,6 +43,24 @@ jobs:
       - name: Installa lftp
         run: sudo apt-get update -qq && sudo apt-get install -y -qq lftp
 
+      # Il proxy di Aruba tiene CSS e JS per un anno (.htaccess). Con un
+      # indirizzo fisso, una copia sbagliata resta servita per un anno anche
+      # se sul server il file è integro: è già successo con uno style.css che
+      # il proxy ha letto mentre l'FTP lo stava riscrivendo, memorizzandolo
+      # tagliato a metà. Aggiungendo l'impronta del file all'indirizzo, ogni
+      # versione ha un URL suo e la cache non può servire quella precedente.
+      # Si tocca solo la copia che va sul server: i file del repository
+      # restano quelli che si modificano a mano.
+      - name: Versiona i riferimenti a CSS e JS
+        run: |
+          for asset in assets/css/style.css assets/js/main.js; do
+            v=$(sha256sum "$asset" | cut -c1-8)
+            grep -rl "/$asset" --include='*.html' --include='*.php' . \
+              | xargs -r sed -i "s#/$asset\([\"']\)#/$asset?v=$v\1#g"
+            echo "/$asset -> ?v=$v"
+          done
+          grep -ohE '/assets/[^"]+\.(css|js)\?v=[0-9a-f]+' ./*.html | sort -u
+
       - name: Carica via FTP
         env:
           FTP_HOST: ${{ secrets.FTP_SERVER }}
@@ -54,23 +72,60 @@ jobs:
           PULIZIA: ${{ inputs.pulizia_totale == true && '--delete' || '' }}
         run: |
           [ -n "$PULIZIA" ] && echo "::warning::pulizia totale attiva: i file remoti non presenti in questo repository verranno rimossi"
-          lftp -c "
-            set cmd:trace off;
-            set ftp:ssl-allow true;
-            set ssl:verify-certificate no;
-            set net:max-retries 3;
-            set net:timeout 20;
-            open -u '$FTP_USER','$FTP_PASS' '$FTP_HOST';
-            mirror --reverse --verbose --parallel=4 $PULIZIA \
-              --exclude-glob .git* \
-              --exclude .github/ \
-              --exclude .claude/ \
-              --exclude .anteprima/ \
-              --exclude README.md \
-              --exclude CLAUDE.md \
-              --exclude-glob .DS_Store \
-              ./ '$FTP_DIR'
-          "
+
+          # L'FTP di Aruba ogni tanto chiude il canale dati a metà: il file
+          # arriva tagliato (index.html si è già fermato due volte a 16384
+          # byte esatti) ma il server risponde comunque "226 transfer
+          # complete" e lftp non se ne accorge. Si carica in seriale — il
+          # sito sta in 64 KB, il parallelismo non fa guadagnare niente — e
+          # poi si ripassa con --ignore-time, che confronta le dimensioni
+          # invece delle date: chi è tagliato risulta diverso e riparte.
+          #
+          # Quel 16384 non è un numero a caso: è la dimensione massima di un
+          # record TLS. Il canale dati cifrato di Aruba si chiude dopo il
+          # primo record, così ogni file più grande di 16 KB arriva tagliato
+          # lì — e tre deploy di fila si sono fermati proprio per questo,
+          # lasciando online una og.jpg di 16384 byte su 64623. Si cifra
+          # quindi il solo canale di controllo, quello su cui viaggiano
+          # utente e password: i dati sono file pubblici del sito, che il
+          # visitatore scaricherà comunque in chiaro dal browser.
+          mirror() {
+            lftp -c "
+              set cmd:trace off;
+              set ftp:ssl-allow true;
+              set ftp:ssl-protect-data false;
+              set ssl:verify-certificate no;
+              set net:max-retries 3;
+              set net:timeout 20;
+              set xfer:clobber on;
+              open -u '$FTP_USER','$FTP_PASS' '$FTP_HOST';
+              mirror --reverse --parallel=1 $* $PULIZIA \
+                --exclude-glob .git* \
+                --exclude .github/ \
+                --exclude .claude/ \
+                --exclude .anteprima/ \
+                --exclude README.md \
+                --exclude CLAUDE.md \
+                --exclude-glob .DS_Store \
+                ./ '$FTP_DIR'
+            "
+          }
+
+          mirror --verbose
+
+          # Ogni ripassata ricarica i file di dimensione diversa e dice quali:
+          # quando non trasferisce più niente, il server ha tutto per intero.
+          completo=no
+          for tentativo in 1 2 3; do
+            esito=$(mirror --ignore-time --verbose)
+            echo "$esito"
+            if ! echo "$esito" | grep -q 'Transferring file'; then
+              completo=sì
+              break
+            fi
+            echo "::warning::giro $tentativo: alcuni file erano arrivati incompleti e sono stati ricaricati"
+          done
+          [ "$completo" = sì ] || { echo "::error::dopo tre tentativi il server continua a ricevere file incompleti"; exit 1; }
 
       - name: Controllo del sito pubblicato
         run: |
@@ -107,11 +162,31 @@ jobs:
             echo "::error::$1 online non corrisponde alla versione pubblicata (atteso ${atteso:0:12}, servito ${servito:0:12})"
             return 1
           }
+          # Le immagini erano fuori da questo confronto, e per tre deploy di
+          # fila nessuno si è accorto che og.jpg online era ferma a 16384
+          # byte: le anteprime su WhatsApp e LinkedIn uscivano tagliate a
+          # metà. Sono file grandi quanto basta a incappare nel troncamento,
+          # quindi si controllano anche loro.
           esito=0
-          for f in index.html privacy-policy.html 404.html assets/css/style.css assets/js/main.js; do
+          for f in index.html privacy-policy.html 404.html assets/css/style.css assets/js/main.js assets/img/*; do
             confronta "$f" || esito=1
           done
           [ "$esito" -eq 0 ] || exit 1
+
+          # Il confronto qui sopra usa un parametro e quindi raggiunge
+          # l'origine: dice che il file è arrivato intero sul server, non che
+          # il visitatore lo riceve intero. Si rifà allora il giro come lo fa
+          # un browser — si legge la home e si scarica ogni foglio di stile e
+          # script all'indirizzo esatto che vi compare, quello versionato —
+          # perché è lì che la cache di Aruba può servire una copia sbagliata.
+          esito_cache=0
+          for u in $(grep -ohE '/assets/[^"]+\.(css|js)(\?[^"]*)?' /tmp/home.html | sort -u); do
+            atteso=$(wc -c < ".${u%%\?*}")
+            servito=$(curl -s --max-time 30 "https://www.mv-consulting.it$u" | wc -c)
+            echo "$u -> $servito byte (attesi $atteso)"
+            [ "$servito" = "$atteso" ] || { echo "::error::$u arriva al visitatore in versione sbagliata ($servito byte invece di $atteso): svuotare la cache da Pannello Aruba > Velocità > Caching"; esito_cache=1; }
+          done
+          [ "$esito_cache" -eq 0 ] || exit 1
 
           # Stato della cache pubblica: informativo, non fa fallire il deploy.
           cache=$(curl -sI https://www.mv-consulting.it/ | grep -i '^x-aruba-cache' | tr -d '\r')

@@ -30,16 +30,14 @@ done
 echo "  ✓ $visti riferimenti verificati"
 
 echo "Risorse esterne (vietate dalla CSP)"
-# facebook.com e garanteprivacy.it sono link di navigazione, non risorse
-# caricate: la CSP non tocca i link, e senza `navigate-to` non c'è direttiva che
-# li limiti. Quello al Garante, poi, l'informativa lo deve avere.
-#
-# consent.cookiebot.com è invece una risorsa caricata davvero, ed è l'unica
-# ammessa: la CSP nel .htaccess la elenca in script-src perché il banner del
-# consenso non può che venire da lì. Se un giorno se ne aggiungesse un'altra,
-# va prima messa nella CSP e solo dopo qui — non il contrario.
+# facebook.com, it.linkedin.com e garanteprivacy.it sono link di navigazione,
+# non risorse caricate: la CSP non tocca i link, e senza `navigate-to` non c'è
+# direttiva che li limiti. Quelli a Meta e LinkedIn portano alle informative dei
+# due pixel, quello al Garante l'informativa lo deve avere.
+# consent.cookiebot.com e googletagmanager.com sono le uniche risorse di terzi
+# ammesse: banner di consenso e Google Analytics, entrambi in CSP.
 if esterne=$(grep -rnoE '(href|src)="https?://[^"]+"' -- *.html 2>/dev/null \
-  | grep -vE 'mv-consulting\.it|schema\.org|www\.w3\.org|www\.facebook\.com|www\.garanteprivacy\.it|consent\.cookiebot\.(com|eu)'); then
+  | grep -vE 'mv-consulting\.it|schema\.org|www\.w3\.org|www\.facebook\.com|it\.linkedin\.com|www\.garanteprivacy\.it|consent\.cookiebot\.com|www\.googletagmanager\.com'); then
   # niente pipe verso il while: nella sotto-shell l'incremento di $errori
   # andrebbe perso e il controllo passerebbe pur avendo stampato le righe.
   while read -r riga; do segnala "$riga"; done <<< "$esterne"
