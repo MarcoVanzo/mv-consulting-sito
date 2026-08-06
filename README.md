@@ -117,10 +117,10 @@ Da fare **solo dopo il backup**: cancella tutto ciò che c'è sul server.
 ## Dopo la pubblicazione
 
 - Aggiornare la sitemap in Google Search Console.
-- Far puntare `marcovanzo.com` (oggi un sito Flash inservibile) in redirect 301 su
-  `https://www.mv-consulting.it/`.
-- Il modulo di contatto sostituisce Contact Form 7: i messaggi arrivano solo per email,
-  non restano archiviati da nessuna parte. Se serve uno storico, va aggiunto.
+- Il modulo di contatto sostituisce Contact Form 7: i messaggi arrivano solo per email
+  e **non restano archiviati da nessuna parte**. È una scelta, non una dimenticanza:
+  niente dati di contatto conservati sul server. Se un giorno servisse uno storico, va
+  aggiunto qui e citato nell'informativa.
 
 ## Promozione sui social
 
@@ -203,15 +203,26 @@ Sono i tre tag `<script id="Cookiebot">` nelle pagine e il tag `CookieDeclaratio
 
 Il codice qui dentro non basta: queste voci vivono su
 [admin.cookiebot.com](https://admin.cookiebot.com/) e vanno controllate una volta.
+Il sito sta nel gruppo di dominio **MV Consulting** (`abf0bc57-ae54-458d-bb39-ae97f9323b72`),
+che contiene anche `klubia.it`, `www.fusionteamvolley.it` e `www.mvsporttravel.com`:
+**il banner è uno solo per tutti e quattro**. Quello che si cambia qui si cambia anche là.
 
-| voce | come deve stare | perché |
-|---|---|---|
-| Modello del banner | con la scelta **per categoria**, non il solo «OK» | il consenso dev'essere specifico per finalità |
-| Pulsante di rifiuto | presente nel primo livello, non nascosto dietro «Personalizza» | rifiutare dev'essere facile quanto accettare |
-| Scadenza del consenso | **6 mesi**, non i 12 di default | per l'Italia è la lettura prudente |
-| Lingua | italiano, o rilevamento automatico | il tag passa già `data-culture="IT"` |
-| Scansione | eseguita almeno una volta | senza, la tabella dell'informativa resta vuota |
-| Nomi delle categorie | quelli standard, niente etichette vaghe | il Garante ha contestato «cookie di esperienza» a un'altra azienda |
+| voce | come deve stare | perché | al 06/08/2026 |
+|---|---|---|---|
+| Modello del banner | con la scelta **per categoria**, non il solo «OK» | il consenso dev'essere specifico per finalità | a posto |
+| Pulsante di rifiuto | presente nel primo livello, non nascosto dietro «Personalizza» | rifiutare dev'essere facile quanto accettare | a posto: Rifiuta, Accetta selezionati, Accetta tutti |
+| Lingua | italiano, o rilevamento automatico | il tag passa già `data-culture="IT"` | a posto |
+| Nomi delle categorie | quelli standard, niente etichette vaghe | il Garante ha contestato «cookie di esperienza» a un'altra azienda | a posto |
+| Scansione | eseguita almeno una volta | senza, la tabella dell'informativa resta vuota | in corso, mai completata |
+
+La **scadenza del consenso** — per l'Italia la lettura prudente sono 6 mesi, non i 12 di
+default — nella nuova interfaccia di Cookiebot **non è più impostabile**: non sta in
+Configurazione (Design, Contenuto, Privacy), non sta in Impostazioni, non sta nella scheda
+del dominio. Finché non la riespongono, o si chiede all'assistenza o si tiene il default.
+
+L'icona flottante di Cookiebot in basso a sinistra («Mostra il pulsante privacy») è
+**accesa di proposito**, e si somma alla voce «Preferenze cookie» del piè di pagina: sono
+due strade per la stessa cosa. Spegnerla la toglierebbe anche agli altri tre siti del gruppo.
 
 I **colori** del banner non serve impostarli dal pannello: `assets/css/style.css` lo veste
 già con la palette del sito, in fondo al file. Quel blocco usa gli identificativi del DOM
