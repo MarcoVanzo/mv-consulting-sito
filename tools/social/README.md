@@ -25,3 +25,10 @@ momento: per questo i CSV sono tre, uno per account.
 Le immagini non si caricano a mano: il CSV porta l'indirizzo del file dentro
 questo repository, che GitHub serve grezzo. Vale però solo dopo che il ramo è
 stato unito in `main` — prima quell'indirizzo non esiste ancora.
+
+I PDF sì: Publer scarica dall'URL solo immagini e video, e un documento lo
+ignora senza segnalare nulla. I post con un PDF vanno aperti dopo l'import e il
+file va allegato dal disco, uno per uno.
+
+Servizio e piano in uso: Publer Professional, tre account social, fatturazione
+annuale, attivato il 6 agosto 2026.
