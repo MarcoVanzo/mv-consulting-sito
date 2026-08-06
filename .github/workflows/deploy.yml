@@ -166,12 +166,22 @@ jobs:
           sleep 5
 
           # Le pagine del vecchio sito devono rispondere con il redirect di
-          # .htaccess, non con il loro contenuto: un 200 qui significa che sul
-          # server è ricomparsa la cartella.
+          # .htaccess, non con il loro contenuto. Si interroga l'origine con un
+          # parametro: senza, si leggerebbe la cache di Aruba, che queste
+          # pagine le tiene per trenta giorni.
           for p in /chi-siamo/ /contatti/ /servizi/ /partner/ /privacy-policy/; do
-            c=$(curl -s -o /dev/null -w '%{http_code}' "https://www.mv-consulting.it$p")
+            c=$(curl -s -o /dev/null -w '%{http_code}' "https://www.mv-consulting.it$p?deploy=${GITHUB_RUN_ID}")
             echo "$p -> $c"
-            [ "$c" = "200" ] && { echo "::error::$p serve ancora una pagina del vecchio sito"; exit 1; }
+            if [ "$c" = "200" ]; then
+              echo "::error::$p serve ancora una pagina del vecchio sito"
+              exit 1
+            fi
+            # Sul server non c'è più, ma chi arriva senza parametro può
+            # continuare a riceverla dalla cache fino alla scadenza. Si
+            # segnala e basta: svuotare la cache dal deploy non si può.
+            if [ "$(curl -s -o /dev/null -w '%{http_code}' "https://www.mv-consulting.it$p")" = "200" ]; then
+              echo "::warning::$p è stata rimossa dal server ma la cache di Aruba la serve ancora: svuotarla da Pannello Aruba > Velocità > Caching"
+            fi
           done
           # Il proxy di Aruba tiene le pagine in cache: si interroga l'origine
           # con un parametro casuale, altrimenti si leggerebbe la copia vecchia
