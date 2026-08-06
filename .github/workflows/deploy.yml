@@ -127,9 +127,52 @@ jobs:
           done
           [ "$completo" = sì ] || { echo "::error::dopo tre tentativi il server continua a ricevere file incompleti"; exit 1; }
 
+      # Il vecchio sito WordPress ha lasciato sul server le cartelle delle sue
+      # pagine. Dove dentro c'è un index, quello vince sui redirect di
+      # .htaccess: il 6 agosto 2026 /chi-siamo/ e /contatti/ rispondevano 200
+      # servendo i testi del sito precedente, indicizzabili come pagine vive.
+      # Si rimuovono per nome, non a tappeto: la pulizia totale cancella anche
+      # tutto ciò che sul server non arriva da questo repository.
+      - name: Rimuove le pagine rimaste dal vecchio sito
+        env:
+          FTP_HOST: ${{ secrets.FTP_SERVER }}
+          FTP_USER: ${{ secrets.FTP_USERNAME }}
+          FTP_PASS: ${{ secrets.FTP_PASSWORD }}
+          FTP_DIR: ${{ vars.FTP_DIR || '/' }}
+          RESIDUI: chi-siamo contatti servizi partner privacy-policy cookie-policy privacy
+        run: |
+          for cartella in $RESIDUI; do
+            echo "--- $cartella"
+            # Se un giorno una di queste cartelle tornasse a esistere davvero
+            # nel repository, il deploy la caricherebbe e questo passo la
+            # cancellerebbe subito dopo: si tocca solo ciò che qui non c'è.
+            if [ -e "$cartella" ]; then echo "  (esiste nel repository, non si tocca)"; continue; fi
+            lftp -c "
+              set cmd:trace off;
+              set ftp:ssl-allow true;
+              set ftp:ssl-protect-data false;
+              set ssl:verify-certificate no;
+              set net:max-retries 3;
+              set net:timeout 20;
+              open -u '$FTP_USER','$FTP_PASS' '$FTP_HOST';
+              cd '$FTP_DIR';
+              find '$cartella';
+              rm -r -f '$cartella';
+            " || echo "  (non presente)"
+          done
+
       - name: Controllo del sito pubblicato
         run: |
           sleep 5
+
+          # Le pagine del vecchio sito devono rispondere con il redirect di
+          # .htaccess, non con il loro contenuto: un 200 qui significa che sul
+          # server è ricomparsa la cartella.
+          for p in /chi-siamo/ /contatti/ /servizi/ /partner/ /privacy-policy/; do
+            c=$(curl -s -o /dev/null -w '%{http_code}' "https://www.mv-consulting.it$p")
+            echo "$p -> $c"
+            [ "$c" = "200" ] && { echo "::error::$p serve ancora una pagina del vecchio sito"; exit 1; }
+          done
           # Il proxy di Aruba tiene le pagine in cache: si interroga l'origine
           # con un parametro casuale, altrimenti si leggerebbe la copia vecchia
           # e il controllo fallirebbe pur essendo andato tutto a buon fine.
