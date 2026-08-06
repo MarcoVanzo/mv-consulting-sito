@@ -139,31 +139,35 @@ client sta in `invio-smtp.php`: sono sei comandi in fila, nessuna libreria. Il g
 vero non è la consegna ma il **timeout**: `mail()` non si può interrompere, un socket sì.
 Dieci secondi, e comunque vada chi ha scritto riceve una risposta invece di aspettare.
 
-### Il file con la password
-
-Le credenziali stanno in `config-smtp.php`, accanto a `contatti.php` **sul server**.
-Non è nel repository (`.gitignore` lo esclude) e il deploy non lo carica: si mette a
-mano via FTP una volta sola, sul modello di `config-smtp.esempio.php`.
-
-1. Copiare `config-smtp.esempio.php` in `config-smtp.php`.
-2. Scriverci **la casella vera e la sua password**, con l'indirizzo completo e non la
-   sola parte prima della chiocciola.
-3. Caricarlo via FTP nella stessa cartella di `contatti.php`.
+### La casella e la sua password
 
 `info@mv-consulting.it` è un **alias**: riceve la posta ma non ha una password, e l'SMTP
-l'autenticazione la pretende. Ci si presenta quindi con la casella che sta dietro l'alias,
-e quella diventa anche il mittente dei messaggi del modulo — Aruba rifiuta un mittente
-diverso dall'account autenticato. Il destinatario resta `info@`, quindi la posta continua
-ad arrivare dove arrivava. Chi scrive dal sito non vede nulla di tutto questo: nella mail
-il `Reply-To` è il suo indirizzo, e a rispondere si risponde a lui.
+l'autenticazione la pretende. Ci si presenta quindi con la casella vera che sta dietro
+l'alias, e quella diventa anche il mittente dei messaggi del modulo — Aruba rifiuta un
+mittente diverso dall'account autenticato. Il destinatario resta `info@`, quindi la posta
+continua ad arrivare dove arrivava. Chi scrive dal sito non vede nulla di tutto questo:
+nella mail il `Reply-To` è il suo indirizzo, e a rispondere si risponde a lui.
 
-Il deploy carica e non cancella, quindi il file sopravvive alle pubblicazioni. **Una sola
-cosa lo porta via: l'opzione `pulizia_totale` del workflow**, che svuota la cartella
-remota. Dopo averla usata, va ricaricato, altrimenti il modulo smette di spedire.
+Le credenziali stanno in **due secret del repository**, accanto a quelli dell'FTP:
 
-Se il file manca o l'accesso viene rifiutato, il modulo non finge: risponde subito e dice
-di scrivere a `info@mv-consulting.it`. Il motivo tecnico — codice SMTP, nome del server —
-finisce nel log del server, non davanti al visitatore.
+| secret | contenuto |
+|---|---|
+| `SMTP_UTENTE` | l'indirizzo completo della casella vera |
+| `SMTP_PASSWORD` | la sua password |
+
+Il deploy legge i secret e **scrive `config-smtp.php` a ogni pubblicazione**, accanto a
+`contatti.php`. Il file non è nel repository — `.gitignore` lo esclude — e non si modifica
+a mano sul server, perché la pubblicazione successiva lo riscriverebbe: per cambiare la
+password si cambia il secret. Questo risolve anche il caso in cui il file stesse solo sul
+server, dove una `pulizia_totale` lo portava via lasciando il modulo muto.
+
+Se i secret mancano il deploy si ferma e lo dice, invece di pubblicare un sito con il
+modulo rotto. Se l'accesso viene rifiutato dal server di posta, il modulo non finge:
+risponde subito e dice di scrivere a `info@mv-consulting.it`. Il motivo tecnico — codice
+SMTP, nome del server — finisce nel log del server, non davanti al visitatore.
+
+`config-smtp.esempio.php` resta come modello, utile se un giorno si volesse tornare a
+mettere il file a mano.
 
 ## Promozione sui social
 

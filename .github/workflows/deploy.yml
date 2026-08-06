@@ -28,13 +28,62 @@ jobs:
       - name: Verifica che i secret siano configurati
         run: |
           mancanti=""
-          [ -z "${{ secrets.FTP_SERVER }}" ]   && mancanti="$mancanti FTP_SERVER"
-          [ -z "${{ secrets.FTP_USERNAME }}" ] && mancanti="$mancanti FTP_USERNAME"
-          [ -z "${{ secrets.FTP_PASSWORD }}" ] && mancanti="$mancanti FTP_PASSWORD"
+          [ -z "${{ secrets.FTP_SERVER }}" ]     && mancanti="$mancanti FTP_SERVER"
+          [ -z "${{ secrets.FTP_USERNAME }}" ]   && mancanti="$mancanti FTP_USERNAME"
+          [ -z "${{ secrets.FTP_PASSWORD }}" ]   && mancanti="$mancanti FTP_PASSWORD"
+          [ -z "${{ secrets.SMTP_UTENTE }}" ]    && mancanti="$mancanti SMTP_UTENTE"
+          [ -z "${{ secrets.SMTP_PASSWORD }}" ]  && mancanti="$mancanti SMTP_PASSWORD"
           if [ -n "$mancanti" ]; then
             echo "::error::Secret mancanti:$mancanti — impostarli in Settings > Secrets and variables > Actions, poi rilanciare."
             exit 1
           fi
+
+      # Le credenziali della casella di posta non stanno nel repository, ed è
+      # giusto così: si scrivono qui, al momento di pubblicare, leggendole dai
+      # secret. Il file finisce sul server insieme al resto e viene riscritto a
+      # ogni deploy — il che risolve anche il problema di prima, quando stava
+      # solo sul server e una `pulizia_totale` lo portava via lasciando il
+      # modulo muto.
+      #
+      # Il valore passa da un file PHP generato con var_export e non da un
+      # `echo`: una password può contenere apici, barre rovesce e dollari, e
+      # comporre il file a mano significherebbe romperlo prima o poi.
+      - name: Prepara le credenziali della posta
+        env:
+          SMTP_UTENTE: ${{ secrets.SMTP_UTENTE }}
+          SMTP_PASSWORD: ${{ secrets.SMTP_PASSWORD }}
+        run: |
+          cat > /tmp/genera-config.php <<'GENERATORE'
+          <?php
+          $modello = <<<'PHP'
+          <?php
+          /**
+           * Scritto dal deploy a ogni pubblicazione, leggendo i secret del
+           * repository. Non si modifica a mano sul server: la prossima
+           * pubblicazione lo riscriverebbe. Per cambiare la password si cambia
+           * il secret SMTP_PASSWORD.
+           */
+          declare(strict_types=1);
+
+          return [
+              'host'     => 'smtps.aruba.it',
+              'porta'    => 465,
+              'utente'   => %s,
+              'password' => %s,
+          ];
+
+          PHP;
+          printf($modello, var_export(getenv('SMTP_UTENTE'), true), var_export(getenv('SMTP_PASSWORD'), true));
+          GENERATORE
+
+          php /tmp/genera-config.php > config-smtp.php
+          php -l config-smtp.php
+          # si controlla che il file sia leggibile e completo, senza stamparlo
+          php -r '$c = require "config-smtp.php";
+                  if (!is_array($c) || ($c["utente"] ?? "") === "" || ($c["password"] ?? "") === "") {
+                      fwrite(STDERR, "il file delle credenziali e uscito incompleto\n"); exit(1);
+                  }
+                  echo "credenziali pronte per ", $c["utente"], "\n";'
 
       # Si usa lftp e non un'action pronta: il server FTP di Aruba rifiuta i
       # percorsi assoluti che FTP-Deploy-Action usa per creare le sottocartelle
