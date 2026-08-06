@@ -6,12 +6,17 @@
  */
 declare(strict_types=1);
 
+require __DIR__ . '/invio-smtp.php';
+
 const DESTINATARIO = 'info@mv-consulting.it';
 // Il mittente deve essere una casella che esiste davvero sul dominio: Aruba
 // rifiuta le mail spedite da un indirizzo esterno, e un no-reply@ inventato le
 // farebbe scartare in silenzio. Si spedisce dalla stessa casella che riceve —
 // a rispondere ci pensa il Reply-To, che porta all'indirizzo di chi ha scritto.
 const MITTENTE     = 'info@mv-consulting.it';
+// Le credenziali della casella stanno fuori dal repository: vedi
+// config-smtp.esempio.php per come si prepara il file sul server.
+const CONFIG_SMTP  = __DIR__ . '/config-smtp.php';
 const MAX_LUNGHEZZA = 5000;
 // Freno agli invii a raffica: l'esca qui sotto ferma i robot che compilano ogni
 // campo, questo ferma chi la evita e ripete. Cinque messaggi in un'ora bastano
@@ -112,8 +117,11 @@ $corpo = "Nuovo messaggio dal sito mv-consulting.it\n\n"
 
 $intestazioni = [
     'From: MV Consulting <' . MITTENTE . '>',
-    'Reply-To: ' . $nome . ' <' . $email . '>',
+    // Il nome va codificato come l'oggetto: un cognome accentato in chiaro
+    // dentro un'intestazione rende la mail malformata.
+    'Reply-To: =?UTF-8?B?' . base64_encode($nome) . '?= <' . $email . '>',
     'Content-Type: text/plain; charset=UTF-8',
+    'Content-Transfer-Encoding: 8bit',
     'X-Mailer: mv-consulting.it',
 ];
 
@@ -123,11 +131,29 @@ if (troppiInvii()) {
     esci(false, 'avete già inviato più messaggi di seguito: riprovate fra un\'ora, oppure scriveteci a ' . DESTINATARIO);
 }
 
-$inviata = mail(
+// Non si usa `mail()`: su questo hosting consegna a /usr/sbin/sendmail e non
+// torna più indietro — la richiesta resta appesa fino al 504 del proxy dopo
+// cinque minuti, e chi ha scritto guarda «Invio in corso...» per tutto il
+// tempo. Si parla direttamente col server di posta di Aruba, che risponde in
+// trenta millisecondi e, soprattutto, si può mettere sotto timeout.
+if (!is_readable(CONFIG_SMTP)) {
+    error_log('contatti.php: manca ' . CONFIG_SMTP . ', il modulo non può spedire');
+    esci(false, 'non siamo riusciti a spedire il messaggio. Scriveteci a ' . DESTINATARIO);
+}
+
+[$inviata, $motivo] = spedisciSmtp(
+    require CONFIG_SMTP,
+    MITTENTE,
     DESTINATARIO,
     '=?UTF-8?B?' . base64_encode('Sito: messaggio da ' . $nome) . '?=',
     $corpo,
-    implode("\r\n", $intestazioni)
+    $intestazioni
 );
 
-esci($inviata, $inviata ? '' : 'invio non riuscito');
+if (!$inviata) {
+    // il motivo vero nel log del server: a chi ha compilato il modulo non
+    // servono i codici SMTP, e il nome del server di posta non lo riguarda
+    error_log('contatti.php: invio non riuscito — ' . $motivo);
+}
+
+esci($inviata, $inviata ? '' : 'non siamo riusciti a spedire il messaggio. Scriveteci a ' . DESTINATARIO);
