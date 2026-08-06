@@ -117,10 +117,10 @@ Da fare **solo dopo il backup**: cancella tutto ciò che c'è sul server.
 ## Dopo la pubblicazione
 
 - Aggiornare la sitemap in Google Search Console.
-- Far puntare `marcovanzo.com` (oggi un sito Flash inservibile) in redirect 301 su
-  `https://www.mv-consulting.it/`.
-- Il modulo di contatto sostituisce Contact Form 7: i messaggi arrivano solo per email,
-  non restano archiviati da nessuna parte. Se serve uno storico, va aggiunto.
+- Il modulo di contatto sostituisce Contact Form 7: i messaggi arrivano solo per email
+  e **non restano archiviati da nessuna parte**. È una scelta, non una dimenticanza:
+  niente dati di contatto conservati sul server. Se un giorno servisse uno storico, va
+  aggiunto qui e citato nell'informativa.
 
 ## Promozione sui social
 

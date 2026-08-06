@@ -1,6 +1,7 @@
 .DS_Store
 *.log
 .anteprima/
+.anteprima-online/
 
 # La configurazione di Claude sta nel repository: le sessioni dal telefono
 # partono da un clone pulito, quello che non è committato non esiste. Restano
