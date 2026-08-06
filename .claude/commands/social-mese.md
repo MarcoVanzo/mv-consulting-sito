@@ -72,6 +72,19 @@ più di due, conviene ripensarlo — una carosello di immagini rende quanto un P
 programma da sola. Quando un documento resta, dopo l'import va detto chiaramente quali
 post aprire e quale file allegare.
 
+## Se un post esce per sbaglio
+
+Nella finestra del post **Pubblica** sta di fianco a *Modifica*: succede di premerlo
+al posto di *Salva*, e il post va online subito. Si rimedia così:
+
+1. Marco lo elimina da LinkedIn — pubblicare e spubblicare non li faccio io.
+2. Filtro *Pubblicati*, si spunta il post, **Riutilizza**: torna nel compositore con
+   testo, etichette e media già a posto, PDF convertito compreso.
+3. Si riseleziona l'account, si rimette data e ora, si programma.
+
+**Riutilizza perde il primo commento**: va riscritto a mano prima di salvare, altrimenti
+il post esce senza il link. Verificato ad agosto 2026 su `pg-w2-02`.
+
 ## Prima di consegnare
 
 1. Rileggi i CSV: date tutte nel futuro, nessun buco nel calendario, nessuna domenica.
