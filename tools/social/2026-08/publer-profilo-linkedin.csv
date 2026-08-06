@@ -1,5 +1,5 @@
 Date,Text,Link,Media URL,Title,Label,Alt text(s),Comment(s),"Pin board, FB album, or Google category",Post subtype,CTA,Reminder
-2026/09/01 08:15,"Ho imparato a diffidare dei miei preventivi complicati.
+2026/08/07 08:15,"Ho imparato a diffidare dei miei preventivi complicati.
 
 Quando la soluzione che sto proponendo ha tre eccezioni, due passaggi manuali e una nota a piè di pagina, il problema non è il cliente che ha un'azienda strana. Sono io che non ho ancora capito il processo.
 
@@ -13,8 +13,8 @@ Non è generosità. È che un software costruito sopra un processo confuso lo pa
 
 Se hai in mano un preventivo che non riesci a spiegare a un collega, mandamelo: ti dico quali domande farei al fornitore.
 
-#softwaregestionale #pmi",,,,"mvc-2026-09,mv-w1-02",,,,,,
-2026/09/03 08:15,"Un capannone, un lunedì mattina, un quaderno.
+#softwaregestionale #pmi",,,,"mvc-2026-08,mv-w1-02",,,,,,
+2026/08/10 08:15,"Un capannone, un lunedì mattina, un quaderno.
 
 Il primo giorno in un'azienda nuova non apro il computer. Cammino. Guardo chi tocca cosa, chiedo perché, scrivo a mano.
 
@@ -28,8 +28,8 @@ Poi si passa allo schema. Poi al codice. Mai prima.
 
 Se stai per commissionare un gestionale, chiedi al fornitore quante ore passerà in azienda prima di scrivere la prima riga di codice. La risposta ti dice quasi tutto.
 
-#analisideiprocessi #pmi",,https://raw.githubusercontent.com/MarcoVanzo/mv-consulting-sito/main/tools/social/2026-09/media/m6-prima-la-mappa.png,,"mvc-2026-09,mv-w1-03","Tre riquadri numerati su fondo scuro: «Prima la mappa — il processo come è, non come lo racconta l'organigramma», «Poi lo schema — le tabelle, i permessi, i tempi di conservazione», «Poi il codice — mai prima». In alto il titolo «L'ordine non è negoziabile».",,,,,
-2026/09/08 08:15,"Venti minuti al giorno non li mette a bilancio nessuno.
+#analisideiprocessi #pmi",,https://raw.githubusercontent.com/MarcoVanzo/mv-consulting-sito/main/tools/social/2026-08/media/m6-prima-la-mappa.png,,"mvc-2026-08,mv-w1-03","Tre riquadri numerati su fondo scuro: «Prima la mappa — il processo come è, non come lo racconta l'organigramma», «Poi lo schema — le tabelle, i permessi, i tempi di conservazione», «Poi il codice — mai prima». In alto il titolo «L'ordine non è negoziabile».",,,,,
+2026/08/14 08:15,"Venti minuti al giorno non li mette a bilancio nessuno.
 
 Facciamo il conto insieme, con numeri di esempio che puoi sostituire con i tuoi.
 
@@ -43,8 +43,8 @@ Non sto dicendo che serve un software. Sto dicendo che finché quel numero non c
 
 Fallo per il tuo processo peggiore e guarda il risultato. Se ti esce un numero che non ti aspettavi, scrivimelo.
 
-#pmi #processiaziendali",,,,"mvc-2026-09,mv-w2-01",,,,,,
-2026/09/09 08:15,"Quattro numeri che hai già in azienda, e un conto che di solito nessuno fa.
+#pmi #processiaziendali",,,,"mvc-2026-08,mv-w2-01",,,,,,
+2026/08/15 08:15,"Quattro numeri che hai già in azienda, e un conto che di solito nessuno fa.
 
 Ho messo in sei pagine il calcolo del costo di un processo così com'è oggi. Non è un modello complicato: sono quattro dati che chiunque in amministrazione trova in mezza giornata.
 
@@ -56,8 +56,8 @@ Un limite dichiarato subito: è una stima, non una perizia. Serve a decidere se 
 
 Sfoglia le sei pagine qui sotto. Se il numero che ti esce ti sembra sbagliato, di solito è perché è più alto del previsto.
 
-#pmi #digitalizzazione #processiaziendali",,https://raw.githubusercontent.com/MarcoVanzo/mv-consulting-sito/main/tools/social/2026-09/media/m2-il-conto.pdf,Il conto che nessuno fa,"mvc-2026-09,mv-w2-02","Documento di sei pagine intitolato «Il conto che nessuno fa»: una pagina di introduzione, quattro pagine con i quattro dati da raccogliere e una pagina con il calcolo di esempio.",,,PDF,,
-2026/09/11 08:15,"Tre casi in cui ti dico di non far scrivere software.
+#pmi #digitalizzazione #processiaziendali",,https://raw.githubusercontent.com/MarcoVanzo/mv-consulting-sito/main/tools/social/2026-08/media/m2-il-conto.pdf,Il conto che nessuno fa,"mvc-2026-08,mv-w2-02","Documento di sei pagine intitolato «Il conto che nessuno fa»: una pagina di introduzione, quattro pagine con i quattro dati da raccogliere e una pagina con il calcolo di esempio.",,,PDF,,
+2026/08/18 08:15,"Tre casi in cui ti dico di non far scrivere software.
 
 Primo: il processo cambia ogni tre mesi perché il mercato è ancora incerto. Un gestionale su misura fotografa un processo. Se la foto è mossa, aspetta.
 
@@ -69,8 +69,8 @@ Lo scrivo perché mi capita di dirlo in prima riunione e vedere una faccia solle
 
 Se sei in uno di questi tre casi e qualcuno ti sta preventivando uno sviluppo, chiedi che ti scriva perché il pacchetto non basta.
 
-#softwaregestionale #pmi",,,,"mvc-2026-09,mv-w2-03",,,,,,
-2026/09/16 08:15,"Un processo che regge su una persona sola non è un problema di quella persona.
+#softwaregestionale #pmi",,,,"mvc-2026-08,mv-w2-03",,,,,,
+2026/08/22 08:15,"Un processo che regge su una persona sola non è un problema di quella persona.
 
 È un problema di chi non se n'è accorto prima.
 
@@ -84,8 +84,8 @@ Non è una questione di software. È che finché il metodo sta nella testa di un
 
 Pensate all'ultima volta che avete detto «questo lo sa fare solo lui». Quello è il processo da guardare per primo. Scrivetemi qual è.
 
-#pmi #processiaziendali",,,,"mvc-2026-09,mv-w3-01",,,,,,
-2026/09/17 08:15,"Il file di riconciliazione è il sintomo più affidabile che conosco.
+#pmi #processiaziendali",,,,"mvc-2026-08,mv-w3-01",,,,,,
+2026/08/24 08:15,"Il file di riconciliazione è il sintomo più affidabile che conosco.
 
 È quel foglio che non produce niente: serve solo a far tornare due sistemi che dovrebbero già essere d'accordo. Lo riconosci perché ha un nome tipo «controllo», «quadratura» o le iniziali di chi lo tiene.
 
@@ -97,8 +97,8 @@ La cosa noiosa e giusta è togliere il doppio inserimento. Costa una discussione
 
 Cerca in azienda un file che serve solo a far tornare altri due file. Se lo trovi, hai trovato il punto di partenza.
 
-#processiaziendali #pmi",,,,"mvc-2026-09,mv-w3-02",,,,,,
-2026/09/19 08:15,"Per anni ho messo la formazione alla fine. Sbagliavo.
+#processiaziendali #pmi",,,,"mvc-2026-08,mv-w3-02",,,,,,
+2026/08/26 08:15,"Per anni ho messo la formazione alla fine. Sbagliavo.
 
 Sembrava ordinato: prima finiamo il sistema, poi insegniamo a usarlo. In realtà è il modo più sicuro per raccogliere le osservazioni utili quando è tardi.
 
@@ -110,8 +110,8 @@ C'è anche un motivo meno nobile. Se il cliente non sa modificare da solo le cos
 
 Se stai per firmare uno sviluppo, chiedi in che settimana è prevista la formazione. Se la risposta è «alla fine», discutila.
 
-#formazioneaziendale #pmi",,,,"mvc-2026-09,mv-w3-03",,,,,,
-2026/09/24 08:15,"Il registro dice ventiquattro mesi. Il database non cancella dal 2014.
+#formazioneaziendale #pmi",,,,"mvc-2026-08,mv-w3-03",,,,,,
+2026/08/31 08:15,"Il registro dice ventiquattro mesi. Il database non cancella dal 2014.
 
 È la scena che trovo più spesso quando entro come DPO in un'azienda che ha già fatto le carte.
 
@@ -123,8 +123,8 @@ Quando succede, non riscrivo il registro. Faccio la cosa opposta: prendo lo sche
 
 Se hai un registro, aprilo e cerca una sola voce: i tempi di conservazione. Poi chiedi chi li applica tecnicamente.
 
-#gdpr #dpo",,,,"mvc-2026-09,mv-w4-01",,,,,,
-2026/09/25 08:15,"Il registro dei trattamenti non si compila: si legge da un altro documento.
+#gdpr #dpo",,,,"mvc-2026-08,mv-w4-01",,,,,,
+2026/09/01 08:15,"Il registro dei trattamenti non si compila: si legge da un altro documento.
 
 Quando lo scrivo, non parto dal modello. Parto dallo schema dati e faccio quattro domande a ogni tabella.
 
@@ -138,8 +138,8 @@ Se invece parti dal modello Word, ottieni un documento che descrive un'azienda p
 
 Prova con una tabella sola, quella dei clienti. Se la quarta domanda ti dà una risposta imbarazzante, non sei un'eccezione.
 
-#gdpr #dpo #pmi",,https://raw.githubusercontent.com/MarcoVanzo/mv-consulting-sito/main/tools/social/2026-09/media/m5-schema-registro.png,,"mvc-2026-09,mv-w4-02","Due colonne affiancate su fondo chiaro. A sinistra le voci di uno schema dati: tabella, colonna, cancellazione, permessi. A destra le voci di un registro dei trattamenti: dati trattati, finalità, tempo di conservazione, chi accede. Le righe si corrispondono.",,,,,
-2026/09/28 08:15,"Il campo note libero è il posto più pericoloso del tuo gestionale.
+#gdpr #dpo #pmi",,https://raw.githubusercontent.com/MarcoVanzo/mv-consulting-sito/main/tools/social/2026-08/media/m5-schema-registro.png,,"mvc-2026-08,mv-w4-02","Due colonne affiancate su fondo chiaro. A sinistra le voci di uno schema dati: tabella, colonna, cancellazione, permessi. A destra le voci di un registro dei trattamenti: dati trattati, finalità, tempo di conservazione, chi accede. Le righe si corrispondono.",,,,,
+2026/09/03 08:15,"Il campo note libero è il posto più pericoloso del tuo gestionale.
 
 Lo trovo in ogni azienda in cui entro. Una casella di testo accanto all'anagrafica, senza regole, nata per annotare l'orario di consegna preferito.
 
@@ -153,4 +153,4 @@ E poi, una volta, andare a leggere cosa c'è già dentro. È sempre la parte peg
 
 Apri il gestionale e leggi dieci campi note a caso. Se trovi una sola informazione sulla salute di qualcuno, hai un trattamento non mappato.
 
-#gdpr #dpo #pmi",,,,"mvc-2026-09,mv-w4-03",,,,,,
+#gdpr #dpo #pmi",,,,"mvc-2026-08,mv-w4-03",,,,,,
