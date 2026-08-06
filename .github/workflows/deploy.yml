@@ -134,13 +134,21 @@ jobs:
       # servendo i testi del sito precedente, indicizzabili come pagine vive.
       # Si rimuovono per nome, non a tappeto: la pulizia totale cancella anche
       # tutto ciò che sul server non arriva da questo repository.
+      #
+      # La stessa lista serve a un secondo scopo. Il caricamento non cancella
+      # mai — è la sua qualità: un file messo a mano sul server, come quello
+      # con la password della posta, sopravvive ai deploy. Il rovescio è che
+      # togliere un file dal repository non lo toglie da online. Chi elimina un
+      # file già pubblicato ne scrive qui il nome, e sparisce alla pubblicazione
+      # successiva. `diagnostica-smtp.php` è il primo caso: una sonda temporanea
+      # per capire perché mail() restava appesa.
       - name: Rimuove le pagine rimaste dal vecchio sito
         env:
           FTP_HOST: ${{ secrets.FTP_SERVER }}
           FTP_USER: ${{ secrets.FTP_USERNAME }}
           FTP_PASS: ${{ secrets.FTP_PASSWORD }}
           FTP_DIR: ${{ vars.FTP_DIR || '/' }}
-          RESIDUI: chi-siamo contatti servizi partner privacy-policy cookie-policy privacy
+          RESIDUI: chi-siamo contatti servizi partner privacy-policy cookie-policy privacy diagnostica-smtp.php
         run: |
           for cartella in $RESIDUI; do
             echo "--- $cartella"
