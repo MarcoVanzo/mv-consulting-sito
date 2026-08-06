@@ -5,9 +5,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <!-- Consenso cookie: deve restare il primo script della pagina, blocca gli altri finché non c'è il consenso -->
 <script id="Cookiebot" src="https://consent.cookiebot.com/uc.js" data-cbid="abf0bc57-ae54-458d-bb39-ae97f9323b72" data-blockingmode="auto" type="text/javascript"></script>
-<!-- Google Analytics 4: parte solo con il consenso "statistiche" -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-XJX17YKC6D"></script>
-<script>
+<!-- Google Analytics 4: statistiche. Marcato come Meta e LinkedIn, non affidato al solo auto-blocking (perché, nel README). -->
+<script type="text/plain" data-cookieconsent="statistics" async src="https://www.googletagmanager.com/gtag/js?id=G-XJX17YKC6D"></script>
+<script type="text/plain" data-cookieconsent="statistics">
   window.dataLayer = window.dataLayer || [];
   function gtag(){dataLayer.push(arguments);}
   gtag('js', new Date());
@@ -108,7 +108,7 @@ s.parentNode.insertBefore(b, s);})(window.lintrk);
       <section id="titolare">
         <h2>Chi tratta i vostri dati</h2>
         <p>Il titolare del trattamento è <b>MV Consulting S.r.l.</b>, con sede legale in Via Manzoni 5, 31059 Zero Branco (TV), Italia — C.F. e P. IVA 05524540266, iscritta al Registro delle Imprese di Treviso-Belluno, REA TV-451393.</p>
-        <p>Per qualsiasi questione relativa ai dati personali, compreso l'esercizio dei diritti descritti al punto 11, potete scrivere a <a href="mailto:marco@mv-consulting.it">marco@mv-consulting.it</a> oppure alla PEC <a href="mailto:consultingmv@pec.it">consultingmv@pec.it</a>.</p>
+        <p>Per qualsiasi questione relativa ai dati personali, compreso l'esercizio dei diritti descritti al punto 11, potete scrivere a <a href="mailto:info@mv-consulting.it">info@mv-consulting.it</a> oppure alla PEC <a href="mailto:consultingmv@pec.it">consultingmv@pec.it</a>.</p>
         <h3>Responsabile della protezione dei dati (DPO)</h3>
         <p>MV Consulting non ha nominato un responsabile della protezione dei dati, perché non ricorre nessuno dei casi previsti dall'articolo 37 del Regolamento: non siamo un'autorità pubblica, non svolgiamo monitoraggio sistematico su larga scala e non trattiamo su larga scala categorie particolari di dati. Le richieste in materia di privacy sono gestite direttamente dal titolare ai recapiti indicati sopra.</p>
       </section>
@@ -285,7 +285,7 @@ s.parentNode.insertBefore(b, s);})(window.lintrk);
           <div><dt>Opposizione</dt><dd>Opporvi per motivi legati alla vostra situazione particolare ai trattamenti fondati sul legittimo interesse.</dd></div>
           <div><dt>Revoca del consenso</dt><dd>Ritirare in ogni momento il consenso dato a statistica e marketing, senza doverne spiegare il motivo e senza che ciò renda illecito quanto raccolto prima: si fa dal banner, con l'icona in basso a sinistra.</dd></div>
         </dl>
-        <p>Per esercitarli è sufficiente una richiesta a <a href="mailto:marco@mv-consulting.it">marco@mv-consulting.it</a> o alla PEC <a href="mailto:consultingmv@pec.it">consultingmv@pec.it</a>: non serve un modulo particolare, basta che siate identificabili e che si capisca che cosa chiedete. Rispondiamo <b>senza ingiustificato ritardo e comunque entro un mese</b> dal ricevimento, termine prorogabile di due mesi se la richiesta è complessa: in tal caso ve ne daremo conto entro il primo mese. L'esercizio dei diritti è gratuito, salvo richieste manifestamente infondate o eccessive, in particolare ripetitive.</p>
+        <p>Per esercitarli è sufficiente una richiesta a <a href="mailto:info@mv-consulting.it">info@mv-consulting.it</a> o alla PEC <a href="mailto:consultingmv@pec.it">consultingmv@pec.it</a>: non serve un modulo particolare, basta che siate identificabili e che si capisca che cosa chiedete. Rispondiamo <b>senza ingiustificato ritardo e comunque entro un mese</b> dal ricevimento, termine prorogabile di due mesi se la richiesta è complessa: in tal caso ve ne daremo conto entro il primo mese. L'esercizio dei diritti è gratuito, salvo richieste manifestamente infondate o eccessive, in particolare ripetitive.</p>
         <h3>Reclamo</h3>
         <p>Se ritenete che il trattamento dei vostri dati violi la normativa, avete diritto di proporre reclamo al <b>Garante per la protezione dei dati personali</b> (Piazza Venezia 11, 00187 Roma — <a href="https://www.garanteprivacy.it" target="_blank" rel="noopener">www.garanteprivacy.it</a>), oppure di rivolgervi all'autorità giudiziaria. Prima di farlo potete scriverci: molte cose si risolvono con una e-mail.</p>
       </section>
@@ -330,7 +330,7 @@ s.parentNode.insertBefore(b, s);})(window.lintrk);
     <div class="foot-col">
       <h4>Contatti</h4>
       <p>
-        <a href="mailto:marco@mv-consulting.it">marco@mv-consulting.it</a><br>
+        <a href="mailto:info@mv-consulting.it">info@mv-consulting.it</a><br>
         PEC <a href="mailto:consultingmv@pec.it">consultingmv@pec.it</a>
       </p>
       <p><a href="/#contatti">Scrivici dal modulo &#8594;</a></p>
@@ -340,7 +340,9 @@ s.parentNode.insertBefore(b, s);})(window.lintrk);
   <div class="w foot-in">
     <span>&copy; 2026 MV Consulting S.r.l. &middot; Iscritta al Registro Imprese di Treviso&#8209;Belluno</span>
     <span><a href="/privacy-policy.html">Privacy &amp; Cookie Policy</a></span>
+    <span><button type="button" class="linkish" data-cookie-renew hidden>Preferenze cookie</button></span>
   </div>
 </footer>
+<script src="/assets/js/consenso.js" defer></script>
 </body>
 </html>

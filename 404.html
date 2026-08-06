@@ -5,9 +5,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <!-- Consenso cookie: deve restare il primo script della pagina, blocca gli altri finché non c'è il consenso -->
 <script id="Cookiebot" src="https://consent.cookiebot.com/uc.js" data-cbid="abf0bc57-ae54-458d-bb39-ae97f9323b72" data-blockingmode="auto" type="text/javascript"></script>
-<!-- Google Analytics 4: parte solo con il consenso "statistiche" -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-XJX17YKC6D"></script>
-<script>
+<!-- Google Analytics 4: statistiche. Marcato come Meta e LinkedIn, non affidato al solo auto-blocking (perché, nel README). -->
+<script type="text/plain" data-cookieconsent="statistics" async src="https://www.googletagmanager.com/gtag/js?id=G-XJX17YKC6D"></script>
+<script type="text/plain" data-cookieconsent="statistics">
   window.dataLayer = window.dataLayer || [];
   function gtag(){dataLayer.push(arguments);}
   gtag('js', new Date());
@@ -42,6 +42,7 @@ s.parentNode.insertBefore(b, s);})(window.lintrk);
 </script>
 <title>Pagina non trovata - MV Consulting</title>
 <meta name="description" content="La pagina cercata non esiste.">
+<meta name="robots" content="noindex, follow">
 <link rel="canonical" href="https://www.mv-consulting.it/404.html">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="MV Consulting">
@@ -112,7 +113,7 @@ s.parentNode.insertBefore(b, s);})(window.lintrk);
     <div class="foot-col">
       <h4>Contatti</h4>
       <p>
-        <a href="mailto:marco@mv-consulting.it">marco@mv-consulting.it</a><br>
+        <a href="mailto:info@mv-consulting.it">info@mv-consulting.it</a><br>
         PEC <a href="mailto:consultingmv@pec.it">consultingmv@pec.it</a>
       </p>
       <p><a href="/#contatti">Scrivici dal modulo &#8594;</a></p>
@@ -122,7 +123,11 @@ s.parentNode.insertBefore(b, s);})(window.lintrk);
   <div class="w foot-in">
     <span>&copy; 2026 MV Consulting S.r.l. &middot; Iscritta al Registro Imprese di Treviso&#8209;Belluno</span>
     <span><a href="/privacy-policy.html">Privacy &amp; Cookie Policy</a></span>
+    <span><button type="button" class="linkish" data-cookie-renew hidden>Preferenze cookie</button></span>
   </div>
 </footer>
+
+<script src="/assets/js/consenso.js" defer></script>
+
 </body>
 </html>

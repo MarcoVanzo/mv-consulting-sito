@@ -1,5 +1,18 @@
 User-agent: *
 Allow: /
 Disallow: /contatti.php
+Disallow: /404.html
+# Gli indirizzi con utm_* restano visitabili: il tag canonical della home dice
+# già a Google che sono la stessa pagina, e bloccarli gli impedirebbe di leggerlo.
+
+# le anteprime dei link nelle chat e sui social devono poter leggere la pagina
+User-agent: facebookexternalhit
+Allow: /
+User-agent: Twitterbot
+Allow: /
+User-agent: LinkedInBot
+Allow: /
+User-agent: WhatsApp
+Allow: /
 
 Sitemap: https://www.mv-consulting.it/sitemap.xml
