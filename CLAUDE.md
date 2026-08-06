@@ -36,6 +36,10 @@ schede progetto (`<article class="case">`) prendono i colori del brand dall'attr
 `style` (`--p`, `--p2`, `--p3`, `--tint`): per aggiungerne una si duplica l'articolo e
 si cambiano i colori. I redirect dai vecchi indirizzi WordPress stanno in `.htaccess`.
 
+`tools/` è materiale di lavoro — modelli delle grafiche per i post, immagini già
+esportate, marchi originali — e il deploy lo esclude: quello che ci si mette non
+finisce online. Se un file deve essere raggiungibile dai visitatori, non va lì.
+
 ## Come si verifica una modifica
 
 Prima di dire che una modifica funziona:
@@ -55,9 +59,13 @@ vanno **mostrate all'utente con SendUserFile** (`display: "render"`), non solo c
 Il deploy parte da solo a ogni push su `main` (`.github/workflows/deploy.yml`) e alla
 fine controlla che il sito online risponda 200 e serva davvero la versione nuova.
 
-In questo ambiente **`gh` non esiste**: il workflow si lancia a mano con gli strumenti
-GitHub MCP — `mcp__github__actions_run_trigger` per avviarlo, `actions_list` /
-`actions_get` / `get_job_logs` per seguirlo. Il repository è `MarcoVanzo/mv-consulting-sito`.
+In questo ambiente **`gh` non esiste**, e il server GitHub MCP non espone sempre gli
+strumenti per le Actions: in diverse sessioni ci sono solo quelli su repository, PR e
+issue. Quando ci sono, il workflow si avvia con `actions_run_trigger` e si segue con
+`actions_list` / `actions_get` / `get_job_logs`; quando non ci sono, non c'è modo di
+lanciarlo o di leggerne l'esito da qui — lo si dice invece di far finta di aver
+verificato. Il push su `main` resta comunque la via normale: il deploy parte da solo.
+Il repository è `MarcoVanzo/mv-consulting-sito`.
 
 Il deploy è un'azione visibile all'esterno: **si chiede conferma prima di lanciarlo**,
 salvo che sia stata la richiesta esplicita dell'utente.

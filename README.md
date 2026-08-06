@@ -12,6 +12,7 @@ index.html              home, pagina unica con ancore (#aree #progetti #insegnia
 privacy-policy.html     informativa, testo ripreso integralmente dal sito precedente
 404.html                pagina di errore
 contatti.php            ricezione del modulo, invia via mail() a info@mv-consulting.it
+                        (campo esca contro i robot, cinque invii l'ora per indirizzo)
 .htaccess               HTTPS, redirect dai vecchi indirizzi, cache, intestazioni di sicurezza
 robots.txt sitemap.xml  indicizzazione
 assets/css/style.css    tutto lo stile
@@ -19,14 +20,18 @@ assets/js/main.js       animazione della hero, menu del telefono, rivelazioni al
                         provenienza della visita, avvio degli strumenti su consenso,
                         invio del modulo
 assets/js/consenso.js   riapertura del banner Cookiebot (serve anche alle pagine interne)
-assets/img/             logo (SVG), ritratto (JPG + WebP), immagini per le condivisioni
-tools/social.html       modelli delle grafiche per i post e le inserzioni
+assets/img/             logo (SVG), ritratto (JPG + WebP), og.jpg per le condivisioni
+tools/                  materiale di lavoro: modelli delle grafiche, immagini già
+                        esportate per i post, marchi originali — non viene pubblicato
 favicon.svg .ico apple-touch-icon.png
 ```
 
-Peso complessivo: ~500 KB, di cui metà sono le immagini per i social (che il sito non
-carica: servono a chi pubblica). La pagina in sé pesa circa 100 KB. Nessun font esterno,
-nessuna libreria: si apre completa alla prima richiesta.
+`tools/` sta nel repository ma resta fuori dal server: il deploy lo esclude. Sono file
+che servono a chi pubblica i post, non a chi visita il sito, e online sarebbero solo
+pagine e immagini raggiungibili da chiunque.
+
+Quello che va davvero online pesa circa 250 KB, la pagina in sé un centinaio. Nessun
+font esterno, nessuna libreria: si apre completa alla prima richiesta.
 
 ## Modificare i contenuti
 
@@ -123,13 +128,17 @@ pagamento su Meta, LinkedIn o Google. Ci sono tre pezzi.
 
 ### 1. Grafiche pronte
 
-In `assets/img/` ci sono tre immagini nello stesso linguaggio del sito:
+Tre immagini nello stesso linguaggio del sito:
 
 | file | misure | dove si usa |
 |---|---|---|
-| `og.jpg` | 1200×630 | anteprima dei link (Facebook, LinkedIn, WhatsApp, X) |
-| `social-quadrata.jpg` | 1200×1200 | post nel feed di Instagram, Facebook, LinkedIn |
-| `social-storia.jpg` | 1080×1920 | storie e reel |
+| `assets/img/og.jpg` | 1200×630 | anteprima dei link (Facebook, LinkedIn, WhatsApp, X) |
+| `tools/social-quadrata.jpg` | 1200×1200 | post nel feed di Instagram, Facebook, LinkedIn |
+| `tools/social-storia.jpg` | 1080×1920 | storie e reel |
+
+Solo la prima va online, perché è quella che i social vanno a leggere dai meta della
+pagina. Le altre due si caricano a mano al momento del post: stanno in `tools/`, che
+il deploy non pubblica.
 
 Si rigenerano da `tools/social.html`: si apre il file nel browser, si cambia il testo e
 si esporta il riquadro con «Capture node screenshot» negli strumenti per sviluppatori.
