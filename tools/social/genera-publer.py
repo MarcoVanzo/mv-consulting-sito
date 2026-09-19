@@ -145,6 +145,13 @@ def main() -> int:
     post = json.loads(sorgente.read_text(encoding="utf-8"))
     etichetta = f"mvc-{cartella.name}"
 
+    # Chi porta `pubblicato` e' gia' uscito a mano e non va reimportato: senza
+    # questo, un post pubblicato prima dell'import esce due volte.
+    gia_online = [p for p in post if p.get("pubblicato")]
+    post = [p for p in post if not p.get("pubblicato")]
+    for p in gia_online:
+        print(f"{p['id']}: gia' pubblicato il {p['pubblicato']}, escluso")
+
     mancanti = []
     for p in post:
         nome = file_media(p)
