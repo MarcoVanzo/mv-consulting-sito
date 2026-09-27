@@ -14,8 +14,8 @@ privacy-policy.html     informativa, testo ripreso integralmente dal sito preced
 contatti.php            ricezione del modulo, spedisce a info@mv-consulting.it
                         (campo esca contro i robot, cinque invii l'ora per indirizzo)
 invio-smtp.php          client SMTP minimo: `mail()` su Aruba resta appesa, vedi sotto
-config-smtp.esempio.php modello del file con la password della casella, che sta
-                        solo sul server e non nel repository
+config-smtp.esempio.php modello del file con la password della casella, che il
+                        deploy scrive dai secret a ogni pubblicazione
 .htaccess               HTTPS, redirect dai vecchi indirizzi, cache, intestazioni di sicurezza
 robots.txt sitemap.xml  indicizzazione
 assets/css/style.css    tutto lo stile
@@ -105,7 +105,8 @@ remota prima di caricare:
 gh workflow run "Deploy su Aruba" --repo MarcoVanzo/mv-consulting-sito -f pulizia_totale=true
 ```
 
-Da fare **solo dopo il backup**: cancella tutto ciò che c'è sul server.
+Da fare **solo dopo il backup**: cancella tutto ciò che c'è sul server, tranne la
+cartella `ERP/` del gestionale.
 
 ### Verifica dopo la pubblicazione
 
@@ -115,7 +116,7 @@ Da fare **solo dopo il backup**: cancella tutto ciò che c'è sul server.
 - `https://www.mv-consulting.it/privacy-policy/` — deve reindirizzare alla nuova pagina
 - un invio di prova del modulo di contatto
 
-**Rollback:** ricaricare la copia scaricata al punto 1 e ripristinare il database.
+**Rollback:** ricaricare la copia scaricata al punto 1. Il sito non ha database.
 
 ## Dopo la pubblicazione
 

@@ -1,0 +1,361 @@
+<title>Connettoma mv-consulting.it</title>
+<style>
+:root{
+  color-scheme:dark;
+  --bg:#101315; --bg2:#14181B; --panel:#191E22ee; --edge:#2E363C; --edge2:#3F484F;
+  --text:#E9E7E3; --dim:#98A1A6; --body:#C3C8CB;
+  --brand:#429DDA; --warm:#D8A46A; --ok:#4FBFA0; --rose:#C9788F; --lilac:#9C8CD6; --white:#F2F0EC;
+  --font:"Avenir Next",Avenir,"Segoe UI",system-ui,sans-serif;
+  --mono:ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+}
+html,body{height:100%}
+body{background:var(--bg);color:var(--text);font-family:var(--font);margin:0;overflow:hidden}
+#scene{position:fixed;inset:0;display:block;touch-action:none;cursor:grab}
+#scene.hover{cursor:pointer}
+.top{position:fixed;left:0;right:0;top:0;padding:calc(env(safe-area-inset-top,0px) + 18px) 20px 0;display:flex;justify-content:space-between;align-items:flex-start;gap:16px;pointer-events:none;flex-wrap:wrap}
+.top>*{pointer-events:auto}
+.brand .eyebrow{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--brand);font-weight:600}
+.brand h1{margin:4px 0 0;font-size:clamp(20px,2.6vw,28px);font-weight:600;letter-spacing:-.01em;text-wrap:balance}
+.brand p{margin:6px 0 0;color:var(--dim);font-size:13px;max-width:44ch;line-height:1.5}
+.stats{display:flex;gap:18px;font-variant-numeric:tabular-nums}
+.stat b{display:block;font-size:22px;font-weight:600;color:var(--white)}
+.stat span{font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--dim)}
+.legend{position:fixed;left:20px;bottom:calc(env(safe-area-inset-bottom,0px) + 18px);display:flex;flex-direction:column;gap:6px;max-width:calc(100% - 40px)}
+.legend .lbl{font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--dim);margin-bottom:2px}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{font:inherit;font-size:12.5px;color:var(--body);background:var(--panel);border:1px solid var(--edge);border-radius:999px;padding:5px 11px 5px 9px;display:flex;align-items:center;gap:7px;cursor:pointer}
+.chip i{width:9px;height:9px;border-radius:50%;background:var(--c);box-shadow:0 0 8px var(--c)}
+.chip small{color:var(--dim);font-variant-numeric:tabular-nums}
+.chip[aria-pressed="false"]{opacity:.38}
+.chip:focus-visible,.btn:focus-visible,.link:focus-visible{outline:2px solid var(--brand);outline-offset:2px}
+.tools{position:fixed;right:20px;bottom:calc(env(safe-area-inset-bottom,0px) + 18px);display:flex;gap:6px}
+.btn{font:inherit;font-size:12.5px;color:var(--text);background:var(--panel);border:1px solid var(--edge2);border-radius:8px;padding:7px 12px;cursor:pointer}
+.btn.primary{border-color:var(--brand);color:var(--white);background:#429DDA22}
+.btn:hover{border-color:var(--brand)}
+#tip{position:fixed;pointer-events:none;background:var(--panel);border:1px solid var(--edge2);border-radius:6px;padding:6px 9px;font-size:12px;font-family:var(--mono);color:var(--white);transform:translate(12px,12px);white-space:nowrap}
+#tip small{display:block;font-family:var(--font);color:var(--dim);font-size:11px;margin-top:2px}
+.layer-label{position:fixed;pointer-events:none;font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--dim);transform:translate(-50%,-100%);white-space:nowrap;text-align:center}
+.layer-label b{display:block;color:var(--c);font-weight:600;letter-spacing:.1em;font-size:11.5px}
+#panel{position:fixed;right:20px;top:120px;width:300px;max-height:calc(100% - 200px);overflow:auto;background:var(--panel);border:1px solid var(--edge);border-radius:12px;padding:16px;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}
+#panel .kind{font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--c);font-weight:600}
+#panel h2{margin:4px 0 10px;font-family:var(--mono);font-size:14px;font-weight:500;word-break:break-all;color:var(--white)}
+#panel dl{display:grid;grid-template-columns:auto 1fr;gap:4px 12px;margin:0 0 12px;font-size:12.5px;font-variant-numeric:tabular-nums}
+#panel dt{color:var(--dim)} #panel dd{margin:0;color:var(--body)}
+#panel h3{font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--dim);margin:12px 0 6px;font-weight:600}
+#panel ul{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:2px}
+.link{font:inherit;font-family:var(--mono);font-size:12px;color:var(--body);background:none;border:0;padding:3px 4px;text-align:left;cursor:pointer;border-radius:4px;display:flex;gap:7px;align-items:center;width:100%;word-break:break-all}
+.link:hover{background:#ffffff0d;color:var(--white)}
+.link i{flex:none;width:7px;height:7px;border-radius:50%;background:var(--c)}
+#panel .none{color:var(--dim);font-size:12px}
+#panel .x{position:absolute;right:10px;top:8px;background:none;border:0;color:var(--dim);font-size:18px;cursor:pointer}
+.hint{position:fixed;left:50%;bottom:calc(env(safe-area-inset-bottom,0px) + 18px);transform:translateX(-50%);font-size:12px;color:var(--dim);pointer-events:none;white-space:nowrap}
+@media (max-width:760px){
+  .brand p,.hint{display:none}
+  .stats{gap:12px} .stat b{font-size:17px}
+  #panel{left:16px;right:16px;width:auto;top:auto;bottom:calc(env(safe-area-inset-bottom,0px) + 110px);max-height:42%}
+  .legend{left:16px;bottom:calc(env(safe-area-inset-bottom,0px) + 56px)}
+  .tools{left:16px;right:auto;bottom:calc(env(safe-area-inset-bottom,0px) + 14px)}
+  .chip{font-size:11.5px;padding:4px 9px 4px 7px}
+}
+</style>
+
+<canvas id="scene" aria-label="Rete neurale 3D dei file del sito mv-consulting.it"></canvas>
+
+<header class="top">
+  <div class="brand">
+    <div class="eyebrow">MV Consulting · repository del sito</div>
+    <h1>Connettoma mv-consulting.it</h1>
+    <p>Ogni neurone è un file del repository, ogni sinapsi un riferimento reale tra due file. Il segnale scorre verso il sito pubblicato.</p>
+  </div>
+  <div class="stats" id="stats"></div>
+</header>
+
+<div id="labels"></div>
+<div id="tip" hidden></div>
+<aside id="panel" hidden></aside>
+
+<div class="legend">
+  <div class="lbl">Strati</div>
+  <div class="chips" id="chips"></div>
+</div>
+<div class="tools">
+  <button class="btn primary" id="pass" type="button">Forward pass</button>
+  <button class="btn" id="spin" type="button" aria-pressed="true">Rotazione</button>
+  <button class="btn" id="reset" type="button">Centra</button>
+</div>
+<div class="hint">Trascina per ruotare · rotella o pizzico per zoom · tocca un neurone</div>
+
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+<script>
+const DATA = __DATA__;
+const OUT = 'www.mv-consulting.it';
+const LAYERS = [
+  {name:'Officina',   desc:'tools/ · grafiche e social', color:'#9C8CD6'},
+  {name:'Automazione',desc:'.claude · .github · doc',    color:'#C9788F'},
+  {name:'Server',     desc:'.htaccess · PHP · SEO',      color:'#D8A46A'},
+  {name:'Pagine',     desc:'HTML pubblicato',            color:'#429DDA'},
+  {name:'Asset',      desc:'CSS · JS · immagini',        color:'#4FBFA0'},
+  {name:'Output',     desc:'sito online',                color:'#F2F0EC'},
+];
+function layerOf(f){
+  if(f===OUT) return 5;
+  if(f.startsWith('tools/')) return 0;
+  if(f.startsWith('.claude/')||f.startsWith('.github/')||/^(CLAUDE|README)\.md$|^\.gitignore$/.test(f)) return 1;
+  if(f.startsWith('assets/')||/^(favicon|apple-touch-icon)/.test(f)) return 4;
+  if(/^[^/]+\.html$/.test(f)) return 3;
+  return 2;
+}
+const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+// ---------- dati ----------
+const nodes = DATA.nodes.map(n=>({...n, layer:layerOf(n.id), out:[], inc:[]}));
+nodes.push({id:OUT, size:0, lines:0, layer:5, out:[], inc:[], virtual:true});
+const byId = Object.fromEntries(nodes.map(n=>[n.id,n]));
+const edges = DATA.edges.map(([a,b])=>({a:byId[a],b:byId[b]}));
+['index.html','404.html','privacy-policy.html','contatti.php','invio-smtp.php','.htaccess','robots.txt','sitemap.xml']
+  .filter(f=>byId[f]).forEach(f=>edges.push({a:byId[f],b:byId[OUT],virtual:true}));
+edges.forEach(e=>{e.a.out.push(e);e.b.inc.push(e)});
+
+const totLines = nodes.reduce((s,n)=>s+n.lines,0);
+document.getElementById('stats').innerHTML =
+  [[nodes.length-1,'file'],[DATA.edges.length,'sinapsi'],[totLines.toLocaleString('it-IT'),'righe'],[5,'strati']]
+  .map(([v,l])=>`<div class="stat"><b>${v}</b><span>${l}</span></div>`).join('');
+
+// ---------- layout: strati lungo X, girasole nel piano YZ ----------
+const GAP = 150, GA = Math.PI*(3-Math.sqrt(5));
+LAYERS.forEach((L,li)=>{
+  const members = nodes.filter(n=>n.layer===li).sort((a,b)=>(b.inc.length+b.out.length)-(a.inc.length+a.out.length));
+  L.count = li===5?0:members.length;
+  const R = 17*Math.sqrt(members.length);
+  members.forEach((n,i)=>{
+    const r = members.length===1?0:R*Math.sqrt((i+.5)/members.length);
+    const t = i*GA;
+    n.pos = new THREE.Vector3((li-2.5)*GAP, r*Math.sin(t), r*Math.cos(t));
+  });
+  L.x=(li-2.5)*GAP; L.r=R;
+});
+
+// ---------- scena ----------
+const canvas = document.getElementById('scene');
+const renderer = new THREE.WebGLRenderer({canvas, antialias:true, alpha:false});
+renderer.setPixelRatio(Math.min(devicePixelRatio,2));
+renderer.setClearColor(0x101315,1);
+const scene = new THREE.Scene();
+scene.fog = new THREE.FogExp2(0x101315, 0.0011);
+const camera = new THREE.PerspectiveCamera(50, 1, 1, 5000);
+const HOME = new THREE.Vector3(-120, 170, 720);
+camera.position.copy(HOME);
+const controls = new THREE.OrbitControls(camera, canvas);
+controls.enableDamping = true; controls.dampingFactor = .08;
+controls.autoRotate = !reduce; controls.autoRotateSpeed = .45;
+controls.minDistance = 120; controls.maxDistance = 1800;
+
+// texture luminosa per bagliore e impulsi
+function glowTex(){
+  const c=document.createElement('canvas'); c.width=c.height=128;
+  const g=c.getContext('2d'), gr=g.createRadialGradient(64,64,0,64,64,64);
+  gr.addColorStop(0,'rgba(255,255,255,1)'); gr.addColorStop(.18,'rgba(255,255,255,.55)');
+  gr.addColorStop(.45,'rgba(255,255,255,.12)'); gr.addColorStop(1,'rgba(255,255,255,0)');
+  g.fillStyle=gr; g.fillRect(0,0,128,128);
+  return new THREE.CanvasTexture(c);
+}
+const GLOW = glowTex();
+
+// dischi degli strati (anelli tenui)
+LAYERS.forEach((L,li)=>{
+  if(li===5) return;
+  const ring = new THREE.Mesh(new THREE.RingGeometry(L.r+14, L.r+15.2, 96),
+    new THREE.MeshBasicMaterial({color:L.color, transparent:true, opacity:.22, side:THREE.DoubleSide, depthWrite:false}));
+  ring.rotation.y = Math.PI/2; ring.position.x = L.x; scene.add(ring);
+});
+
+// neuroni
+const sphereGeo = new THREE.SphereGeometry(1, 20, 14);
+const pickables = [];
+nodes.forEach(n=>{
+  const col = new THREE.Color(LAYERS[n.layer].color);
+  n.radius = n.virtual ? 11 : 2.6 + Math.log10(1+n.size/1024)*2.4;
+  n.mat = new THREE.MeshBasicMaterial({color:col, transparent:true, opacity:1});
+  n.mesh = new THREE.Mesh(sphereGeo, n.mat);
+  n.mesh.scale.setScalar(n.radius); n.mesh.position.copy(n.pos); n.mesh.userData.node = n;
+  scene.add(n.mesh); pickables.push(n.mesh);
+  n.glowMat = new THREE.SpriteMaterial({map:GLOW, color:col, transparent:true, opacity:.55, blending:THREE.AdditiveBlending, depthWrite:false});
+  n.glow = new THREE.Sprite(n.glowMat); n.glow.scale.setScalar(n.radius*6); n.glow.position.copy(n.pos); scene.add(n.glow);
+  n.fire = 0;
+});
+
+// sinapsi: curve di Bézier, piegate verso l'esterno quando restano nello stesso strato
+edges.forEach(e=>{
+  const A=e.a.pos, B=e.b.pos, mid=A.clone().add(B).multiplyScalar(.5);
+  if(e.a.layer===e.b.layer){ mid.x += (e.a.layer%2?1:-1)*(40+A.distanceTo(B)*.35); }
+  else { mid.y += (A.y+B.y)*.15; mid.z += (A.z+B.z)*.15; }
+  e.curve = new THREE.QuadraticBezierCurve3(A.clone(), mid, B.clone());
+  const pts = e.curve.getPoints(28);
+  const geo = new THREE.BufferGeometry().setFromPoints(pts);
+  const cA=new THREE.Color(LAYERS[e.a.layer].color), cB=new THREE.Color(LAYERS[e.b.layer].color);
+  const cols=[]; pts.forEach((_,i)=>{const c=cA.clone().lerp(cB,i/28); cols.push(c.r,c.g,c.b)});
+  geo.setAttribute('color', new THREE.Float32BufferAttribute(cols,3));
+  e.baseOp = e.virtual ? .10 : .20;
+  e.mat = new THREE.LineBasicMaterial({vertexColors:true, transparent:true, opacity:e.baseOp, blending:THREE.AdditiveBlending, depthWrite:false});
+  e.line = new THREE.Line(geo, e.mat); scene.add(e.line);
+  // impulso
+  e.pMat = new THREE.SpriteMaterial({map:GLOW, color:cB, transparent:true, opacity:0, blending:THREE.AdditiveBlending, depthWrite:false});
+  e.pulse = new THREE.Sprite(e.pMat); e.pulse.scale.setScalar(7); scene.add(e.pulse);
+  e.t = Math.random(); e.speed = .12 + Math.random()*.18; e.wave = -1;
+});
+
+// ---------- stato: filtri, selezione ----------
+const visible = LAYERS.map(()=>true);
+let selected = null, hovered = null;
+const isVis = n => visible[n.layer];
+
+function applyState(){
+  const nb = selected ? new Set([selected, ...selected.out.map(e=>e.b), ...selected.inc.map(e=>e.a)]) : null;
+  nodes.forEach(n=>{
+    const on = isVis(n) && (!nb || nb.has(n));
+    n.mesh.visible = n.glow.visible = isVis(n);
+    n.mat.opacity = on ? 1 : .12; n.glowMat.opacity = on ? (n===selected?.95:.55) : .04;
+    n.glow.scale.setScalar(n.radius*(n===selected?9:6));
+  });
+  edges.forEach(e=>{
+    const vis = isVis(e.a)&&isVis(e.b);
+    const hit = selected && (e.a===selected||e.b===selected);
+    e.line.visible = vis; e.pulse.visible = vis && (!selected || hit);
+    e.mat.opacity = !selected ? e.baseOp : hit ? .85 : .025;
+  });
+  renderLabels();
+}
+
+// legenda
+const chips = document.getElementById('chips');
+LAYERS.forEach((L,li)=>{
+  if(li===5) return;
+  const b=document.createElement('button'); b.type='button'; b.className='chip'; b.style.setProperty('--c',L.color);
+  b.setAttribute('aria-pressed','true'); b.innerHTML=`<i></i>${L.name} <small>${L.count}</small>`;
+  b.onclick=()=>{visible[li]=!visible[li]; b.setAttribute('aria-pressed',visible[li]); if(selected&&!isVis(selected)) select(null); applyState();};
+  chips.appendChild(b);
+});
+
+// pannello dettagli
+const panel = document.getElementById('panel');
+const esc = s=>s.replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+function list(arr){
+  if(!arr.length) return '<div class="none">nessuno</div>';
+  return '<ul>'+arr.map(n=>`<li><button class="link" type="button" data-id="${esc(n.id)}" style="--c:${LAYERS[n.layer].color}"><i></i>${esc(n.id)}</button></li>`).join('')+'</ul>';
+}
+function select(n){
+  selected = n;
+  if(!n){ panel.hidden = true; applyState(); return; }
+  const L = LAYERS[n.layer];
+  const kb = n.size ? (n.size/1024).toLocaleString('it-IT',{maximumFractionDigits:1})+' KB' : '—';
+  panel.style.setProperty('--c', L.color);
+  panel.innerHTML = `<button class="x" type="button" aria-label="Chiudi">×</button>
+    <div class="kind">Strato ${n.layer+1} · ${L.name}</div><h2>${esc(n.id)}</h2>
+    ${n.virtual ? '<dl><dt>Ruolo</dt><dd>neurone di uscita: ciò che il deploy pubblica</dd></dl>' :
+    `<dl><dt>Peso</dt><dd>${kb}</dd><dt>Righe</dt><dd>${n.lines ? n.lines.toLocaleString('it-IT') : 'binario'}</dd>
+      <dt>Sinapsi</dt><dd>${n.out.length} in uscita · ${n.inc.length} in entrata</dd></dl>`}
+    <h3>Cita</h3>${list(n.out.map(e=>e.b))}
+    <h3>È citato da</h3>${list(n.inc.map(e=>e.a))}`;
+  panel.hidden = false;
+  panel.querySelector('.x').onclick=()=>select(null);
+  panel.querySelectorAll('.link').forEach(b=>b.onclick=()=>{const m=byId[b.dataset.id]; if(!isVis(m)){visible[m.layer]=true; chips.children[m.layer].setAttribute('aria-pressed','true');} select(m); focusOn(m);});
+  n.fire = 1;
+  applyState();
+}
+let focusTarget=null;
+function focusOn(n){ focusTarget = n.pos.clone(); }
+
+// ---------- picking ----------
+const ray = new THREE.Raycaster(), mouse = new THREE.Vector2(), tip = document.getElementById('tip');
+let down=null;
+function pick(ev){
+  const r=canvas.getBoundingClientRect();
+  mouse.set(((ev.clientX-r.left)/r.width)*2-1, -((ev.clientY-r.top)/r.height)*2+1);
+  ray.setFromCamera(mouse,camera);
+  // tolleranza: ingrandisce temporaneamente le sfere piccole
+  pickables.forEach(m=>m.scale.setScalar(Math.max(m.userData.node.radius,6)));
+  const hit = ray.intersectObjects(pickables.filter(m=>m.visible))[0];
+  pickables.forEach(m=>m.scale.setScalar(m.userData.node.radius));
+  return hit ? hit.object.userData.node : null;
+}
+canvas.addEventListener('pointermove',ev=>{
+  if(ev.pointerType==='touch') return;
+  hovered = pick(ev);
+  canvas.classList.toggle('hover',!!hovered);
+  if(hovered){ tip.hidden=false; tip.style.left=ev.clientX+'px'; tip.style.top=ev.clientY+'px';
+    tip.innerHTML=`${esc(hovered.id)}<small>${LAYERS[hovered.layer].name} · ${hovered.out.length+hovered.inc.length} sinapsi</small>`; }
+  else tip.hidden=true;
+});
+canvas.addEventListener('pointerleave',()=>{tip.hidden=true});
+canvas.addEventListener('pointerdown',ev=>{down={x:ev.clientX,y:ev.clientY}; controls.autoRotate=false;});
+canvas.addEventListener('pointerup',ev=>{
+  controls.autoRotate = spinning;
+  if(!down||Math.hypot(ev.clientX-down.x,ev.clientY-down.y)>6) return;
+  const n=pick(ev); select(n===selected?null:n);
+});
+
+// ---------- pulsanti ----------
+let spinning = !reduce;
+const spinBtn=document.getElementById('spin'); spinBtn.setAttribute('aria-pressed',spinning);
+spinBtn.onclick=()=>{spinning=!spinning; controls.autoRotate=spinning; spinBtn.setAttribute('aria-pressed',spinning);};
+document.getElementById('reset').onclick=()=>{select(null); focusTarget=new THREE.Vector3(); camera.position.copy(HOME);};
+let waveStart = -1;
+document.getElementById('pass').onclick=()=>{ waveStart = clock.getElapsedTime(); };
+
+// ---------- etichette degli strati ----------
+const labelsEl=document.getElementById('labels');
+const labelEls = LAYERS.map(L=>{const d=document.createElement('div'); d.className='layer-label'; d.style.setProperty('--c',L.color);
+  d.innerHTML=`<b>${L.name}</b>${L.desc}`; labelsEl.appendChild(d); return d;});
+const tmp=new THREE.Vector3();
+function renderLabels(){
+  const w=canvas.clientWidth,h=canvas.clientHeight;
+  LAYERS.forEach((L,li)=>{
+    tmp.set(L.x, (li===5?20:L.r+26), 0).project(camera);
+    const el=labelEls[li], show = tmp.z<1 && visible[li];
+    el.style.display = show?'':'none';
+    if(show){ el.style.left=((tmp.x+1)/2*w)+'px'; el.style.top=((1-tmp.y)/2*h)+'px'; }
+  });
+}
+
+// ---------- ciclo ----------
+function resize(){
+  const w=innerWidth,h=innerHeight; renderer.setSize(w,h,false); camera.aspect=w/h;
+  camera.fov = w<700 ? 68 : 50; camera.updateProjectionMatrix();
+}
+addEventListener('resize',resize); resize(); applyState();
+const clock = new THREE.Clock();
+const WAVE_STEP = .9;
+function frame(){
+  const dt = Math.min(clock.getDelta(),.05), time = clock.getElapsedTime();
+  if(focusTarget){ controls.target.lerp(focusTarget,.08); if(controls.target.distanceTo(focusTarget)<.5) focusTarget=null; }
+  controls.update();
+  const waveT = waveStart<0 ? -1 : (time-waveStart)/WAVE_STEP; // strato raggiunto dall'onda
+  if(waveT>7) waveStart=-1;
+  edges.forEach(e=>{
+    if(!e.pulse.visible){ return; }
+    let show=false, t=0;
+    if(waveT>=0){
+      // forward pass: ogni sinapsi si accende quando l'onda arriva allo strato di partenza
+      const local = waveT - e.a.layer;
+      if(local>=0 && local<=1){ t=local; show=true; }
+      if(local>1 && local<1.15) e.b.fire = 1;
+    } else if(!reduce){
+      e.t = (e.t + dt*e.speed) % 1; t=e.t; show=true;
+      if(e.t < dt*e.speed) e.b.fire = Math.max(e.b.fire,.7);
+    }
+    if(show){ e.pulse.position.copy(e.curve.getPoint(t)); e.pMat.opacity = (selected?1:.8)*Math.sin(Math.PI*t); }
+    else e.pMat.opacity = 0;
+  });
+  if(waveT>=0) nodes.forEach(n=>{ if(Math.abs(waveT-n.layer)<.06 && n.layer===0) n.fire=1; });
+  nodes.forEach(n=>{
+    if(n.fire>0){ n.fire=Math.max(0,n.fire-dt*1.6); }
+    const base = n===selected?9:6;
+    n.glow.scale.setScalar(n.radius*(base + n.fire*5));
+  });
+  renderLabels();
+  renderer.render(scene,camera);
+  requestAnimationFrame(frame);
+}
+frame();
+</script>

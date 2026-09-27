@@ -46,13 +46,19 @@ Prima di dire che una modifica funziona:
 
 ```bash
 .claude/scripts/anteprima.sh          # screenshot mobile + desktop della home
-.claude/scripts/controlla.sh          # sintassi PHP, link interni, file mancanti
+.claude/scripts/controlla.sh          # sintassi PHP, link interni, file mancanti, orfani
+.claude/scripts/rete.py               # rete 3D dei riferimenti in .anteprima/rete.html
 ```
 
 `anteprima.sh` avvia `php -S` sulla cartella e fotografa la pagina con il Chromium già
 presente nell'ambiente: è l'unico modo per accorgersi di un impaginato rotto senza
 avere il sito davanti. Le immagini finiscono in `.anteprima/` (fuori dal repository) e
 vanno **mostrate all'utente con SendUserFile** (`display: "render"`), non solo citate.
+
+`controlla.sh` gira anche su ogni PR (`.github/workflows/controlla.yml`): se è rosso,
+non si fa il merge. Segnala come avviso i file che nessun altro file nomina: un file
+nuovo va citato da qualche parte (doc, workflow, pagina), uno vecchio che nessuno
+cita più è quasi sempre da togliere.
 
 ## Pubblicazione
 

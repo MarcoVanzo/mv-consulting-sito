@@ -1,0 +1,16 @@
+name: Controlla la PR
+
+# Gli stessi controlli di .claude/scripts/controlla.sh — PHP che compila, link
+# e immagini che esistono, nessuna risorsa esterna fuori dalla CSP — lanciati
+# su ogni PR, così un errore si vede prima del merge e non dopo il deploy.
+on:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  controlla:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Controlli del repository
+        run: .claude/scripts/controlla.sh
