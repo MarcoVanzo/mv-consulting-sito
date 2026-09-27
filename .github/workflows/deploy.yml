@@ -120,7 +120,8 @@ jobs:
           FTP_DIR: ${{ vars.FTP_DIR || '/' }}
           PULIZIA: ${{ inputs.pulizia_totale == true && '--delete' || '' }}
         run: |
-          [ -n "$PULIZIA" ] && echo "::warning::pulizia totale attiva: i file remoti non presenti in questo repository verranno rimossi"
+          # /ERP è il gestionale, deployato dal suo repository: la pulizia non deve toccarlo
+          [ -n "$PULIZIA" ] && echo "::warning::pulizia totale attiva: i file remoti non presenti in questo repository verranno rimossi (tranne ERP/)"
 
           # L'FTP di Aruba ogni tanto chiude il canale dati a metà: il file
           # arriva tagliato (index.html si è già fermato due volte a 16384
@@ -151,6 +152,7 @@ jobs:
               mirror --reverse --parallel=1 $* $PULIZIA \
                 --exclude-glob .git* \
                 --exclude .github/ \
+                --exclude ERP/ \
                 --exclude .claude/ \
                 --exclude .anteprima/ \
                 --exclude tools/ \
