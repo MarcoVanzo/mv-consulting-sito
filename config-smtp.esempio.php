@@ -2,14 +2,11 @@
 /**
  * Modello del file di accesso alla casella di posta.
  *
- * Sul server va copiato accanto a `contatti.php` con il nome
- * `config-smtp.php` e la password vera dentro. **Non entra nel repository**:
- * `.gitignore` lo tiene fuori, e il deploy carica solo ciò che è versionato.
- * Si carica a mano via FTP una volta sola e resta lì — il deploy non cancella
- * i file che sul server trova in più.
- *
- * Unica eccezione: l'opzione `pulizia_totale` del workflow svuota la cartella
- * remota, e porterebbe via anche questo. Dopo una pulizia totale va ricaricato.
+ * Il file vero, `config-smtp.php`, lo scrive il deploy a ogni pubblicazione
+ * leggendo i secret `SMTP_UTENTE` e `SMTP_PASSWORD`: non si carica e non si
+ * modifica a mano. **Non entra nel repository**: `.gitignore` lo tiene fuori.
+ * Questo modello resta come riferimento del formato, utile se un giorno si
+ * volesse tornare a mettere il file sul server a mano.
  *
  * Un file `.php` non viene mai mostrato come sorgente da Apache — chi lo chiede
  * dal browser riceve una pagina vuota, non la password. Per questo può stare
