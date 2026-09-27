@@ -50,6 +50,15 @@ for f in index.html privacy-policy.html 404.html contatti.php .htaccess robots.t
   [ -e "$f" ] || segnala "manca $f"
 done
 
+echo "File orfani (solo avviso)"
+# Un file che nessun altro nomina è di solito un residuo, come lo era
+# diagnostica-ftp.yml. Non blocca: a volte un file nuovo va solo citato.
+if command -v python3 >/dev/null; then
+  .claude/scripts/rete.py --orfani | sed 's/^/  /'
+else
+  echo "  — python3 non disponibile, controllo saltato"
+fi
+
 if [ "${1:-}" = "--online" ]; then
   echo "Sito pubblicato"
   base="https://www.mv-consulting.it"
