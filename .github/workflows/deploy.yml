@@ -152,7 +152,7 @@ jobs:
               mirror --reverse --parallel=1 $* $PULIZIA \
                 --exclude-glob .git* \
                 --exclude .github/ \
-                --exclude ERP/ \
+                --exclude '^ERP/' \
                 --exclude .claude/ \
                 --exclude .anteprima/ \
                 --exclude tools/ \
@@ -187,9 +187,9 @@ jobs:
       # tutto ciò che sul server non arriva da questo repository.
       #
       # La stessa lista serve a un secondo scopo. Il caricamento non cancella
-      # mai — è la sua qualità: un file messo a mano sul server, come quello
-      # con la password della posta, sopravvive ai deploy. Il rovescio è che
-      # togliere un file dal repository non lo toglie da online. Chi elimina un
+      # mai, salvo `pulizia_totale`: un file messo a mano sul server
+      # sopravvive ai deploy. Il rovescio è che togliere un file dal
+      # repository non lo toglie da online. Chi elimina un
       # file già pubblicato ne scrive qui il nome, e sparisce alla pubblicazione
       # successiva. `diagnostica-smtp.php` è il primo caso: una sonda temporanea
       # per capire perché mail() restava appesa.

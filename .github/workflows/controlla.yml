@@ -7,9 +7,14 @@ on:
   pull_request:
   workflow_dispatch:
 
+# Legge e basta: nessun secret, nessuna scrittura sul repository.
+permissions:
+  contents: read
+
 jobs:
   controlla:
     runs-on: ubuntu-latest
+    timeout-minutes: 5
     steps:
       - uses: actions/checkout@v4
       - name: Controlli del repository

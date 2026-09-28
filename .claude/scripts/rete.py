@@ -43,7 +43,10 @@ def leggibile(f):
 
 
 def rete():
-    files = [f for f in subprocess.check_output(['git', 'ls-files']).decode().split('\n') if f]
+    # un file tracciato ma cancellato dal disco (rimozione non ancora
+    # committata) farebbe cadere lo script: si guarda solo ciò che c'è
+    files = [f for f in subprocess.check_output(['git', 'ls-files', '-z']).decode().split('\0')
+             if f and os.path.isfile(f)]
     nodi, archi = [], set()
     for f in files:
         righe = 0
