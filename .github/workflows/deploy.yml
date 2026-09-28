@@ -138,7 +138,8 @@ jobs:
           # lasciando online una og.jpg di 16384 byte su 64623. Si cifra
           # quindi il solo canale di controllo, quello su cui viaggiano
           # utente e password: i dati sono file pubblici del sito, che il
-          # visitatore scaricherà comunque in chiaro dal browser.
+          # visitatore scaricherà comunque in chiaro dal browser. Fa eccezione
+          # config-smtp.php, che ha un passaggio suo qui sotto.
           mirror() {
             lftp -c "
               set cmd:trace off;
@@ -153,6 +154,7 @@ jobs:
                 --exclude-glob .git* \
                 --exclude .github/ \
                 --exclude '^ERP/' \
+                --exclude '^config-smtp\.php$' \
                 --exclude .claude/ \
                 --exclude .anteprima/ \
                 --exclude tools/ \
@@ -178,6 +180,31 @@ jobs:
             echo "::warning::giro $tentativo: alcuni file erano arrivati incompleti e sono stati ricaricati"
           done
           [ "$completo" = sì ] || { echo "::error::dopo tre tentativi il server continua a ricevere file incompleti"; exit 1; }
+
+          # config-smtp.php è l'unico file non pubblico: contiene la password
+          # della casella. Il canale dati in chiaro va bene per il resto del
+          # sito, non per lui — per questo il mirror lo esclude e viaggia qui
+          # da solo, con il canale dati cifrato. Pesa poche centinaia di byte,
+          # sta in un solo record TLS e il troncamento a 16384 non lo tocca;
+          # lo si riscarica comunque e si confronta.
+          lftp -c "
+            set cmd:trace off;
+            set ftp:ssl-allow true;
+            set ftp:ssl-force true;
+            set ftp:ssl-protect-data true;
+            set ssl:verify-certificate no;
+            set net:max-retries 3;
+            set net:timeout 20;
+            set xfer:clobber on;
+            open -u '$FTP_USER','$FTP_PASS' '$FTP_HOST';
+            cd '$FTP_DIR';
+            put config-smtp.php;
+            get config-smtp.php -o /tmp/config-smtp.verifica;
+          "
+          cmp -s config-smtp.php /tmp/config-smtp.verifica \
+            || { echo "::error::config-smtp.php non è arrivato intero sul server"; exit 1; }
+          rm -f /tmp/config-smtp.verifica
+          echo "config-smtp.php caricato su canale cifrato"
 
       # Il vecchio sito WordPress ha lasciato sul server le cartelle delle sue
       # pagine. Dove dentro c'è un index, quello vince sui redirect di
