@@ -11,5 +11,5 @@
 !.claude/commands/
 !.claude/scripts/
 
-# Le credenziali della casella di posta vivono solo sul server.
+# Le credenziali della casella di posta: le scrive il deploy dai secret.
 config-smtp.php
