@@ -1,14 +1,50 @@
 (function(){
   "use strict";
   var reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  var mouse = window.matchMedia("(hover: hover) and (pointer: fine)").matches;
+
+  /* Divide un testo in parole avvolte in <span class="cls">, lasciando gli
+     spazi fra una e l'altra: così vanno a capo come prima. Gli elementi figli
+     (lo <span class="grad"> del titolo) vengono aperti e le loro parole
+     prendono anche la classe `extra`. */
+  function parole(el, cls, extra){
+    var n = 0;
+    (function giu(nodo, piu){
+      Array.prototype.slice.call(nodo.childNodes).forEach(function(c){
+        if(c.nodeType === 1){ giu(c, extra); return; }
+        if(c.nodeType !== 3) return;
+        var fr = document.createDocumentFragment();
+        c.textContent.split(/(\s+)/).forEach(function(p){
+          if(!p) return;
+          if(/^\s+$/.test(p)){ fr.appendChild(document.createTextNode(p)); return; }
+          var s = document.createElement("span");
+          s.className = cls + (piu ? " " + piu : "");
+          s.style.setProperty("--i", n++);
+          s.textContent = p;
+          fr.appendChild(s);
+        });
+        nodo.replaceChild(fr, c);
+      });
+    })(el, "");
+    return n;
+  }
+
+  /* titolo della hero: parola per parola. Resta .rv, quindi la rete di
+     sicurezza in testa alla pagina vale anche qui. */
+  var h1 = document.querySelector(".hero h1");
+  if(h1 && !reduce){ parole(h1, "wd", "g"); h1.classList.add("split"); }
 
 
   /* ---- rivelazione allo scroll ---- */
   var io = new IntersectionObserver(function(es){
     es.forEach(function(e){
       if(!e.isIntersecting) return;
-      e.target.classList.add("in");
-      io.unobserve(e.target);
+      var el = e.target;
+      el.classList.add("in");
+      io.unobserve(el);
+      // il ritardo a scalare serve solo alla comparsa: lasciato lì, rallenterebbe
+      // anche le reazioni al passaggio del mouse
+      setTimeout(function(){ el.style.transitionDelay = ""; }, 1200);
     });
   }, {rootMargin:"0px 0px -12% 0px", threshold:.15});
 
@@ -128,6 +164,108 @@
   /* ---- anno nel piè di pagina ---- */
   var anno = document.getElementById("anno");
   if(anno) anno.textContent = String(new Date().getFullYear());
+
+  /* ---- voce del menu della sezione in vista ----
+     Una sezione è «in vista» quando attraversa la fascia al 40% dell'altezza
+     dello schermo: è dove l'occhio legge, non il bordo in alto. */
+  var voci = {};
+  document.querySelectorAll(".nav-links.desktop a[href^='#']:not(.btn)").forEach(function(a){
+    voci[a.getAttribute("href").slice(1)] = a;
+  });
+  var spia = new IntersectionObserver(function(es){
+    es.forEach(function(e){
+      var a = voci[e.target.id];
+      if(!a) return;
+      if(e.isIntersecting){
+        Object.keys(voci).forEach(function(k){ voci[k].classList.remove("on"); });
+        a.classList.add("on");
+      } else a.classList.remove("on");
+    });
+  }, {rootMargin:"-40% 0px -59% 0px"});
+  Object.keys(voci).forEach(function(id){
+    var sez = document.getElementById(id);
+    if(sez) spia.observe(sez);
+  });
+
+  /* ---- nastro dei clienti ----
+     La riga si copia finché due copie coprono lo schermo, poi scorre di una
+     copia: il punto d'arrivo coincide con quello di partenza e non si vede
+     lo stacco. Le copie sono nascoste ai lettori di schermo. */
+  var nastro = document.querySelector(".marquee");
+  if(nastro && !reduce){
+    var set = nastro.querySelector(".marquee-set");
+    nastro.classList.add("run");   // prima di misurare: in fila, non a capo
+    var giri = 0;
+    while(set.children.length < 24 && set.scrollWidth < window.innerWidth * 1.1 && giri++ < 4){
+      Array.prototype.slice.call(set.children, 0, 6).forEach(function(li){
+        var c = li.cloneNode(true); c.setAttribute("aria-hidden","true"); set.appendChild(c);
+      });
+    }
+    var copia = set.cloneNode(true);
+    copia.setAttribute("aria-hidden","true");
+    nastro.appendChild(copia);
+    nastro.style.setProperty("--dur", Math.max(24, Math.round(set.scrollWidth / 45)) + "s");
+  }
+
+  /* ---- citazione del founder: le parole si accendono leggendo ---- */
+  var cit = document.querySelector(".founder blockquote");
+  if(cit && !reduce){
+    var tot = parole(cit, "wq"), accese = -1;
+    var wq = cit.querySelectorAll(".wq");
+    var leggi = function(){
+      var r = cit.getBoundingClientRect(), vh = window.innerHeight;
+      // da quando il blocco entra dal basso a quando arriva a un terzo dello schermo
+      var p = (vh * 0.9 - r.top) / (vh * 0.9 - vh * 0.3 + r.height * 0.5);
+      var n = Math.round(Math.max(0, Math.min(1, p)) * tot);
+      if(n === accese) return;
+      accese = n;
+      for(var k=0;k<tot;k++) wq[k].classList.toggle("lit", k < n);
+    };
+    window.addEventListener("scroll", leggi, {passive:true});
+    window.addEventListener("resize", leggi);
+    leggi();
+  }
+
+  /* ---- luci che seguono il puntatore (solo con un mouse) ---- */
+  if(mouse && !reduce){
+    // schede: la posizione del puntatore diventa --mx / --my
+    document.querySelectorAll(".area, .step, .quote").forEach(function(el){
+      el.addEventListener("pointermove", function(e){
+        var r = el.getBoundingClientRect();
+        el.style.setProperty("--mx", (e.clientX - r.left) + "px");
+        el.style.setProperty("--my", (e.clientY - r.top) + "px");
+      });
+    });
+    // hero: una luce morbida sotto il cursore
+    var hero = document.querySelector(".hero"), bg = hero && hero.querySelector(".hero-bg");
+    if(hero && bg){
+      hero.addEventListener("pointermove", function(e){
+        var r = hero.getBoundingClientRect();
+        bg.style.setProperty("--hx", (e.clientX - r.left) + "px");
+        bg.style.setProperty("--hy", (e.clientY - r.top) + "px");
+        hero.classList.add("lit");
+      });
+      hero.addEventListener("pointerleave", function(){ hero.classList.remove("lit"); });
+    }
+    // scheda dimostrativa: inclinazione di qualche grado verso il puntatore.
+    // Mentre si trascina il cursore dell'avanzamento resta ferma.
+    var demo = document.getElementById("demo"), trascina = false;
+    if(demo){
+      demo.addEventListener("pointerdown", function(){ trascina = true; });
+      window.addEventListener("pointerup", function(){ trascina = false; });
+      demo.addEventListener("pointermove", function(e){
+        if(trascina) return;
+        var r = demo.getBoundingClientRect();
+        var x = (e.clientX - r.left) / r.width - 0.5, y = (e.clientY - r.top) / r.height - 0.5;
+        demo.classList.add("tilt");
+        demo.style.transform = "perspective(1100px) rotateX(" + (-y * 5).toFixed(2) + "deg) rotateY(" + (x * 6).toFixed(2) + "deg)";
+      });
+      demo.addEventListener("pointerleave", function(){
+        demo.classList.remove("tilt");
+        demo.style.transform = "";
+      });
+    }
+  }
 
   /* ---- demo: documenti che diventano dati ---- */
   var cv = document.getElementById("cv"), ctx = cv.getContext("2d");

@@ -142,7 +142,10 @@ for (const d of dispositivi) {
   // La passata si fa sempre, non solo a pagina intera: appena sotto la piega la
   // pagina è tutta da rivelare, e una foto scattata prima mostrerebbe il vuoto.
   // Alla fine si torna dove serve — sull'ancora se l'indirizzo ne ha una.
+  // Con `scroll-behavior:smooth` ogni scrollTo partirebbe un'animazione che il
+  // passo successivo interrompe: la pagina non scenderebbe mai davvero.
   await valuta(`(async () => {
+    document.documentElement.style.scrollBehavior = 'auto'
     const passo = innerHeight * 0.8
     for (let y = 0; y < document.body.scrollHeight; y += passo) {
       scrollTo(0, y)

@@ -320,6 +320,8 @@ s.parentNode.insertBefore(b, s);})(window.lintrk);
 
   <!-- ============ HERO ============ -->
   <section class="hero">
+    <!-- griglia e luce che segue il puntatore: solo decorazione -->
+    <div class="hero-bg" aria-hidden="true"></div>
     <div class="w hero-grid">
       <div>
         <span class="eyebrow rv"><i></i> Trasformazione digitale d'impresa</span>
@@ -356,6 +358,23 @@ s.parentNode.insertBefore(b, s);})(window.lintrk);
     </div>
   </section>
 
+  <!-- ============ CLIENTI ============
+       Una riga sola: main.js la duplica e la fa scorrere; senza script, o con
+       il movimento ridotto, resta ferma e va a capo. -->
+  <section class="clients" aria-labelledby="clienti-tit">
+    <div class="w"><p class="clients-lab" id="clienti-tit">Hanno lavorato con noi</p></div>
+    <div class="marquee">
+      <ul class="marquee-set">
+        <li><img class="sq" src="/assets/img/logo-savino-del-bene-volley.png" width="248" height="240" alt="Savino Del Bene Volley" loading="lazy" decoding="async"></li>
+        <li><span class="wm">Safe Srl</span></li>
+        <li><img src="/assets/img/logo-mv-sport-travel.png" width="951" height="200" alt="MV Sport Travel" loading="lazy" decoding="async"></li>
+        <li><span class="wm">CSM Machinery</span></li>
+        <li><img src="/assets/img/logo-klubia.png" width="593" height="200" alt="Klubia" loading="lazy" decoding="async"></li>
+        <li><span class="wm">Hope</span></li>
+      </ul>
+    </div>
+  </section>
+
   <!-- ============ AREE ============ -->
   <section id="aree">
     <div class="w">
@@ -368,24 +387,28 @@ s.parentNode.insertBefore(b, s);})(window.lintrk);
       </div>
       <div class="areas">
         <article class="area rv">
+          <span class="ic" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m15.5 15.5 5 5M7.5 10.5h6M10.5 7.5v6"/></svg></span>
           <p class="n mono">01 — ANALISI</p>
           <h3>Digitalizzazione</h3>
           <p>Prima di scrivere una riga di codice guardiamo come lavora davvero l'azienda. Spesso il problema si risolve qui, senza software nuovo.</p>
           <ul><li>Analisi dei processi</li><li>Selezione dei software</li><li>Riordino documentale</li><li>Formazione delle persone</li></ul>
         </article>
         <article class="area rv">
+          <span class="ic" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="m8 7-5 5 5 5M16 7l5 5-5 5M13.5 4.5l-3 15"/></svg></span>
           <p class="n mono">02 — COSTRUZIONE</p>
           <h3>Software su misura</h3>
           <p>Quando il processo non entra in un prodotto standard, costruiamo il gestionale attorno al processo.</p>
           <ul><li>ERP e gestionali web</li><li>Portali con redazione interna</li><li>Migrazione dallo storico</li><li>Manutenzione diretta</li></ul>
         </article>
         <article class="area rv hi">
+          <span class="ic" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 3 4.5 6v5.5c0 4.6 3.1 8.2 7.5 9.5 4.4-1.3 7.5-4.9 7.5-9.5V6L12 3Z"/><path d="m8.8 12.2 2.3 2.3 4.2-4.6"/></svg></span>
           <p class="n mono">03 — RESPONSABILITÀ</p>
           <h3>Privacy e DPO</h3>
           <p>Ricopriamo il ruolo di Data Protection Officer per aziende di ogni dimensione, incluse multinazionali.</p>
           <ul><li>DPO esterno</li><li>Registro dei trattamenti</li><li>Valutazioni d'impatto</li><li>Audit e formazione</li></ul>
         </article>
         <article class="area rv">
+          <span class="ic" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="3.5" y="3.5" width="7" height="7" rx="1.6"/><rect x="13.5" y="3.5" width="7" height="7" rx="1.6"/><rect x="3.5" y="13.5" width="7" height="7" rx="1.6"/><path d="M17 14v6M14 17h6"/></svg></span>
           <p class="n mono">04 — PRODOTTO</p>
           <h3>Klubia</h3>
           <p>Il nostro SaaS per le società sportive: nato da anni di lavori su commessa, oggi vive di vita propria.</p>
@@ -547,17 +570,17 @@ s.parentNode.insertBefore(b, s);})(window.lintrk);
       </div>
 
       <div class="steps">
-        <article class="step rv">
+        <article class="step rv" data-n="01">
           <p class="n mono">01</p>
           <h3>Lavoriamo insieme, non al posto vostro</h3>
           <p>Chi userà il sistema partecipa mentre lo costruiamo. Non è un vezzo: è il modo più rapido perché somigli al lavoro vero invece che a come ce lo siamo immaginato noi.</p>
         </article>
-        <article class="step rv">
+        <article class="step rv" data-n="02">
           <p class="n mono">02</p>
           <h3>Formiamo le persone, non i ruoli</h3>
           <p>Sessioni sul vostro gestionale, con i vostri dati e i casi che vi capitano davvero. Alla fine chi in azienda fa quella cosa la sa fare da solo — e sa spiegarla a chi arriva dopo.</p>
         </article>
-        <article class="step rv">
+        <article class="step rv" data-n="03">
           <p class="n mono">03</p>
           <h3>Restiamo, ma per le cose nuove</h3>
           <p>Dopo il passaggio ci chiamate per quello che ancora non sapete fare: una funzione nuova, una norma che cambia, un processo che si allarga. Non per l'ordinario.</p>
