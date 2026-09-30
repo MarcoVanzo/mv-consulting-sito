@@ -842,8 +842,11 @@ input[type=checkbox].CybotCookiebotDialogBodyLevelButton{accent-color:var(--bran
 }
 .area::before{background:radial-gradient(340px circle at var(--mx,50%) var(--my,-30%), color-mix(in srgb, var(--a) 16%, transparent), transparent 62%);}
 
-/* caso NIS 2 */
-.case.nis h3::before{background:linear-gradient(180deg, #4FBFA0, #429DDA);}
+/* caso NIS 2. Il blu del marchio Zanutta sparisce sul fondo scuro: il logo
+   sta su una lastra chiara, come lo si vede sul loro sito. */
+.case.nis h3::before{background:linear-gradient(180deg, #AD2230, #1E3A72);}
+.case-logo.lastra{height:48px; max-width:min(100%,240px); background:#F4F2EE; padding:9px 14px; border-radius:8px;
+  box-shadow:0 10px 26px -14px rgba(0,0,0,.8);}
 .scan{display:grid; grid-template-columns:1fr 1fr; gap:8px;}
 .scan-it{display:flex; align-items:center; gap:10px; padding:11px 12px; border:1px solid var(--edge);
   border-radius:7px; font-size:12px; color:var(--dim); background:var(--bg2);}
@@ -853,11 +856,11 @@ input[type=checkbox].CybotCookiebotDialogBodyLevelButton{accent-color:var(--bran
 .viz.in .scan-it i{animation:verifica-punto 7.2s var(--ease) infinite; animation-delay:calc(var(--k) * 1.2s);}
 @keyframes verifica{
   0%, 22%, 100%{border-color:var(--edge); color:var(--dim); background:var(--bg2);}
-  4%, 15%{border-color:color-mix(in srgb, var(--p) 60%, transparent); color:var(--text); background:var(--tint);}
+  4%, 15%{border-color:color-mix(in srgb, var(--p2) 60%, transparent); color:var(--text); background:color-mix(in srgb, var(--p2) 12%, transparent);}
 }
 @keyframes verifica-punto{
   0%, 22%, 100%{background:var(--edge2); box-shadow:none;}
-  4%, 15%{background:var(--p); box-shadow:0 0 10px color-mix(in srgb, var(--p) 75%, transparent);}
+  4%, 15%{background:var(--p2); box-shadow:0 0 10px color-mix(in srgb, var(--p2) 75%, transparent);}
 }
 @media (max-width:560px){.scan{grid-template-columns:1fr;}}
 
