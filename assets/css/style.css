@@ -67,10 +67,6 @@ img{max-width:100%; height:auto; display:block;}
 }
 .skip:focus{transform:none;}
 
-/* rivelazione allo scroll */
-.rv{opacity:0; transform:translateY(18px); transition:opacity .7s var(--ease), transform .7s var(--ease);}
-.rv.in{opacity:1; transform:none;}
-
 /* Rivelazione allo scroll. Il contenuto si nasconde solo se c'e' un JS che poi
    lo rivela: la classe "js" la mette lo script in testa a index.html e la
    toglie se main.js non e' partito entro pochi secondi. Senza quella classe la
@@ -624,6 +620,205 @@ input[type=checkbox].CybotCookiebotDialogBodyLevelButton{accent-color:var(--bran
   .brand{width:140px; height:28px;}
   header.nav.stuck .brand{width:124px; height:25px;}
   .nav-in{gap:12px;}
+}
+
+/* ---------- rifinitura: profondità e risposta al puntatore ----------
+   Tutto quello che segue aggiunge materia e reazione, non contenuto: se lo
+   script non parte, o il movimento è ridotto, la pagina resta quella di sopra.
+   Le luci che seguono il puntatore esistono solo con un mouse (hover:hover). */
+
+/* hero: griglia tecnica che sfuma e luce sotto il puntatore */
+.hero-bg{position:absolute; inset:0; pointer-events:none;}
+.hero-bg::before{
+  content:""; position:absolute; inset:0;
+  background-image:linear-gradient(rgba(233,231,227,.045) 1px, transparent 1px),
+                   linear-gradient(90deg, rgba(233,231,227,.045) 1px, transparent 1px);
+  background-size:56px 56px; background-position:-1px -1px;
+  -webkit-mask-image:radial-gradient(70% 70% at 40% 30%, #000 20%, transparent 75%);
+          mask-image:radial-gradient(70% 70% at 40% 30%, #000 20%, transparent 75%);
+}
+.hero-bg::after{
+  content:""; position:absolute; inset:0; opacity:0; transition:opacity .6s var(--ease);
+  background:radial-gradient(420px circle at var(--hx,40%) var(--hy,30%), rgba(66,157,218,.11), transparent 65%);
+}
+.hero.lit .hero-bg::after{opacity:1;}
+.hero::before{animation:deriva 22s ease-in-out infinite alternate;}
+@keyframes deriva{
+  0%{transform:translate3d(0,0,0) scale(1);}
+  100%{transform:translate3d(4%,6%,0) scale(1.08);}
+}
+
+/* titolo: le parole salgono una alla volta (main.js le separa) */
+.hero h1.split .grad{background:none; color:inherit;}
+.hero h1 .wd{display:inline-block; opacity:0; transform:translateY(.45em); filter:blur(6px);
+  transition:opacity .7s var(--ease), transform .8s var(--ease), filter .7s var(--ease);
+  transition-delay:calc(var(--i) * 45ms + 80ms);}
+.hero h1 .wd.g{background:linear-gradient(96deg, var(--brand) 10%, #7FD0F2 90%);
+  -webkit-background-clip:text; background-clip:text; color:transparent; padding-bottom:.06em;}
+.hero h1.in .wd{opacity:1; transform:none; filter:none;}
+
+/* scheda dimostrativa: si inclina appena verso il puntatore */
+.demo{transition:transform .5s var(--ease), box-shadow .5s var(--ease); transform-style:preserve-3d;}
+.demo.tilt{transition:transform .12s linear, box-shadow .5s var(--ease);
+  box-shadow:0 50px 100px -50px rgba(0,0,0,.95), 0 0 0 1px rgba(66,157,218,.18);}
+
+/* pulsante pieno: un riflesso lo attraversa al passaggio */
+.btn:not(.ghost), .form button{position:relative; overflow:hidden; isolation:isolate;}
+.btn:not(.ghost)::after, .form button::after{
+  content:""; position:absolute; top:0; bottom:0; left:-70%; width:45%; z-index:-1;
+  background:linear-gradient(100deg, transparent, rgba(255,255,255,.45), transparent);
+  transform:skewX(-18deg); transition:left .7s var(--ease);
+}
+@media (hover:hover){
+  .btn:not(.ghost):hover::after, .form button:hover::after{left:130%;}
+}
+
+/* navigazione: la voce della sezione in cui ci si trova */
+.nav-links a:not(.btn){position:relative;}
+.nav-links a:not(.btn)::after{
+  content:""; position:absolute; left:0; right:0; bottom:-7px; height:1.5px; border-radius:2px;
+  background:var(--brand); transform:scaleX(0); transition:transform .35s var(--ease);
+}
+.nav-links a.on{color:var(--text);}
+.nav-links a.on::after{transform:scaleX(1);}
+.prog{background:linear-gradient(90deg, var(--brand-d), var(--brand) 60%, #7FD0F2);
+  box-shadow:0 0 12px rgba(66,157,218,.6);}
+
+/* occhielli: una lineetta davanti, come i numeri delle aree */
+.kicker{display:flex; align-items:center; gap:10px;}
+.kicker::before{content:""; width:18px; height:1px; background:currentColor; opacity:.7;}
+/* dentro le intestazioni `.sec-head p`, `.founder p` ed `.end p` vincevano per
+   specificità: l'occhiello usciva a 15 px e grigio invece che piccolo e blu */
+.founder .sign{font-size:11.5px; line-height:1.6;}
+.sec-head .kicker, .founder .kicker, .end .kicker{
+  font-size:10.5px; line-height:1.55; color:var(--brand); max-width:none; margin:0 0 14px;}
+
+/* clienti */
+.clients{padding:6px 0 34px;}
+.clients-lab{font-size:10.5px; letter-spacing:.16em; text-transform:uppercase; color:var(--dim);
+  text-align:center; margin-bottom:22px;}
+.marquee{overflow:hidden; display:flex;
+  -webkit-mask-image:linear-gradient(90deg, transparent, #000 12%, #000 88%, transparent);
+          mask-image:linear-gradient(90deg, transparent, #000 12%, #000 88%, transparent);}
+.marquee-set{list-style:none; margin:0 auto; padding:0 32px; display:flex; flex-wrap:wrap;
+  justify-content:center; align-items:center; gap:22px 64px;}
+.marquee-set li{display:flex; align-items:center; height:48px;}
+.marquee-set img{height:30px; width:auto; filter:grayscale(1) brightness(1.5); opacity:.55;
+  transition:filter .4s var(--ease), opacity .4s var(--ease);}
+.marquee-set img.sq{height:46px;}
+.marquee-set .wm{font-size:17px; font-weight:700; letter-spacing:.02em; color:var(--ard); white-space:nowrap;
+  transition:color .4s var(--ease);}
+@media (hover:hover){
+  .marquee-set img:hover{filter:none; opacity:1;}
+  .marquee-set .wm:hover{color:var(--text);}
+}
+/* in movimento: le copie si mettono in fila e il nastro scorre di una copia */
+.marquee.run .marquee-set{flex-wrap:nowrap; flex:none; margin:0; padding:0 32px 0 0; gap:64px;
+  animation:nastro var(--dur,40s) linear infinite;}
+.marquee.run:hover .marquee-set{animation-play-state:paused;}
+@keyframes nastro{to{transform:translateX(-100%);}}
+
+/* aree: icona e luce che segue il puntatore */
+.area .ic{display:flex; align-items:center; justify-content:center; width:42px; height:42px;
+  border-radius:10px; border:1px solid var(--edge); background:var(--bg2); margin-bottom:18px;
+  transition:border-color .3s var(--ease), background .3s var(--ease), transform .4s var(--ease);}
+.area .ic svg{width:21px; height:21px; fill:none; stroke:var(--brand); stroke-width:1.6;
+  stroke-linecap:round; stroke-linejoin:round;}
+.area.hi .ic{border-color:rgba(66,157,218,.5); background:rgba(66,157,218,.1);}
+@media (hover:hover){
+  .area:hover .ic{border-color:rgba(66,157,218,.55); background:rgba(66,157,218,.1); transform:translateY(-2px) rotate(-4deg);}
+}
+.area, .step, .quote{isolation:isolate;}
+.step, .quote{position:relative; transition:border-color .3s var(--ease), transform .3s var(--ease);}
+.area::before, .step::before, .quote::before{
+  content:""; position:absolute; inset:0; z-index:-1; border-radius:inherit; pointer-events:none;
+  background:radial-gradient(340px circle at var(--mx,50%) var(--my,-30%), rgba(66,157,218,.13), transparent 62%);
+  opacity:0; transition:opacity .35s var(--ease);
+}
+@media (hover:hover){
+  .area:hover::before, .step:hover::before, .quote:hover::before{opacity:1;}
+  .step:hover, .quote:hover{border-color:var(--edge2); transform:translateY(-3px);}
+}
+
+/* passaggi: il numero diventa un segnaposto grande e leggero */
+.step{overflow:hidden;}
+.step::after{
+  content:attr(data-n); position:absolute; right:14px; bottom:-26px; z-index:-1;
+  font-size:110px; font-weight:700; letter-spacing:-.06em; line-height:1;
+  color:transparent; -webkit-text-stroke:1px rgba(66,157,218,.16); pointer-events:none;
+}
+
+/* testimonianze: virgolette grandi in filigrana */
+.quote{overflow:hidden; margin:0; padding-top:58px;}   /* il margine di default di <blockquote> stringeva le schede */
+.quote::after{
+  content:"\201C"; position:absolute; top:8px; left:20px; z-index:-1;
+  font:700 84px/1 Georgia, "Times New Roman", serif; color:var(--brand); opacity:.35; pointer-events:none;
+}
+
+/* citazione del founder: le parole si accendono mentre la si legge */
+.founder blockquote .wq{color:rgba(233,231,227,.24); transition:color .35s var(--ease);}
+.founder blockquote .wq.lit{color:var(--text);}
+
+/* modulo: una luce gira lungo il bordo, lenta, per dire «si scrive qui» */
+@property --ang{syntax:"<angle>"; inherits:false; initial-value:0deg;}
+.form{position:relative;}
+.form::before{
+  content:""; position:absolute; inset:-1px; border-radius:15px; padding:1px; pointer-events:none;
+  background:conic-gradient(from var(--ang), transparent 0 62%, rgba(66,157,218,.9) 80%, #7FD0F2 84%, transparent 92%);
+  -webkit-mask:linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite:xor; mask-composite:exclude;
+  animation:giro 7s linear infinite;
+}
+@keyframes giro{to{--ang:360deg;}}
+
+/* ritratto: una cornice di luce */
+.portrait{box-shadow:0 40px 90px -50px rgba(0,0,0,.95), 0 0 0 1px var(--edge);}
+
+@media (prefers-reduced-motion:reduce){
+  .hero::before, .marquee.run .marquee-set, .form::before{animation:none;}
+  .hero h1 .wd{opacity:1; transform:none; filter:none; transition:none;}
+  .demo, .demo.tilt{transition:none; transform:none;}
+  .btn::after, .form button::after{transition:none;}
+  .founder blockquote .wq{color:inherit;}
+}
+@media (max-width:820px){
+  .clients{padding:0 0 18px;}
+  .marquee-set{gap:18px 40px; padding:0 20px;}
+  .marquee.run .marquee-set{gap:40px; padding-right:40px;}
+  .marquee-set img{height:24px;}
+  .marquee-set img.sq{height:38px;}
+  .marquee-set .wm{font-size:15px;}
+}
+
+/* ---------- seconda passata (revisione con Gemini) ---------- */
+
+/* profondità: un filo di luce sul bordo alto e un'ombra sotto staccano le
+   schede dal fondo, che altrimenti restano piatte come il fondo stesso */
+.area, .step, .quote, .viz, .ba, .transfer, .form, .demo{
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.05), 0 14px 34px -18px rgba(0,0,0,.85);
+}
+.demo{box-shadow:inset 0 1px 0 rgba(255,255,255,.06), 0 40px 90px -50px rgba(0,0,0,.9);}
+
+/* campi del modulo: prima avevano quasi il colore del pannello e sembravano
+   disattivati. Più chiari, bordo visibile, anello di luce sul focus. */
+.field input, .field textarea{background:rgba(255,255,255,.035); border-color:var(--edge2);
+  transition:border-color .2s, box-shadow .2s, background .2s;}
+.field input:focus, .field textarea:focus{background:rgba(66,157,218,.05);
+  box-shadow:0 0 0 4px rgba(66,157,218,.16);}
+.field textarea::placeholder{color:var(--ard);}
+
+/* prima / dopo: una riga di colore in cima dice subito quale è il problema
+   e quale la soluzione, prima ancora di leggere */
+.ba .before{box-shadow:inset 0 2px 0 rgba(216,164,106,.65);}
+.ba .after{box-shadow:inset 0 2px 0 var(--p);}
+.case.klubia .ba .after{box-shadow:inset 0 2px 0 #8B5CF6;}
+
+/* progetti a scacchiera: il secondo inverte le colonne, così la sequenza non
+   diventa un muro di schede identiche. Solo dove le colonne sono due. */
+@media (min-width:821px){
+  .case:nth-of-type(even) .case-top{grid-template-columns:minmax(0,1.45fr) minmax(0,1fr);}
+  .case:nth-of-type(even) .case-top > :first-child{order:2;}
+  .case:nth-of-type(even)::before{background:radial-gradient(46% 100% at 68% 0%, var(--tint), transparent 72%);}
 }
 
 /* ---------- documenti legali (informativa privacy, cookie) ----------
