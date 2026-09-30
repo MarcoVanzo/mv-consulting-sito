@@ -821,6 +821,79 @@ input[type=checkbox].CybotCookiebotDialogBodyLevelButton{accent-color:var(--bran
   .case:nth-of-type(even)::before{background:radial-gradient(46% 100% at 68% 0%, var(--tint), transparent 72%);}
 }
 
+/* ---------- ritmo: la pagina non è più un solo grigio ----------
+   Tutto scuro e tutto blu, sezione dopo sezione, finiva per sembrare un unico
+   blocco. Tre leve: ogni mestiere ha il suo colore, il passaggio di competenza
+   è una fascia chiara (color carta), le testimonianze stanno su un blu notte. */
+
+/* aree: un accento per mestiere, lo stesso nelle icone, nei punti e nella riga */
+.area{--a:var(--brand);}
+.area:nth-child(1){--a:#D8A46A;}
+.area:nth-child(3){--a:#4FBFA0;}
+.area:nth-child(4){--a:#A78BFA;}
+.area::after, .area li::before{background:var(--a);}
+.area .ic svg{stroke:var(--a);}
+.area.hi{border-color:color-mix(in srgb, var(--a) 55%, transparent);
+  background:linear-gradient(180deg, color-mix(in srgb, var(--a) 9%, transparent), transparent 45%), var(--panel);}
+.area.hi .n{color:var(--a);}
+.area.hi .ic{border-color:color-mix(in srgb, var(--a) 50%, transparent); background:color-mix(in srgb, var(--a) 12%, transparent);}
+@media (hover:hover){
+  .area:hover .ic{border-color:color-mix(in srgb, var(--a) 55%, transparent); background:color-mix(in srgb, var(--a) 12%, transparent);}
+}
+.area::before{background:radial-gradient(340px circle at var(--mx,50%) var(--my,-30%), color-mix(in srgb, var(--a) 16%, transparent), transparent 62%);}
+
+/* caso NIS 2 */
+.case.nis h3::before{background:linear-gradient(180deg, #4FBFA0, #429DDA);}
+.scan{display:grid; grid-template-columns:1fr 1fr; gap:8px;}
+.scan-it{display:flex; align-items:center; gap:10px; padding:11px 12px; border:1px solid var(--edge);
+  border-radius:7px; font-size:12px; color:var(--dim); background:var(--bg2);}
+.scan-it i{width:7px; height:7px; border-radius:50%; flex:none; background:var(--edge2);}
+/* una verifica che passa da un'area all'altra, in ciclo: l'assessment è in corso */
+.viz.in .scan-it{animation:verifica 7.2s var(--ease) infinite; animation-delay:calc(var(--k) * 1.2s);}
+.viz.in .scan-it i{animation:verifica-punto 7.2s var(--ease) infinite; animation-delay:calc(var(--k) * 1.2s);}
+@keyframes verifica{
+  0%, 22%, 100%{border-color:var(--edge); color:var(--dim); background:var(--bg2);}
+  4%, 15%{border-color:color-mix(in srgb, var(--p) 60%, transparent); color:var(--text); background:var(--tint);}
+}
+@keyframes verifica-punto{
+  0%, 22%, 100%{background:var(--edge2); box-shadow:none;}
+  4%, 15%{background:var(--p); box-shadow:0 0 10px color-mix(in srgb, var(--p) 75%, transparent);}
+}
+@media (max-width:560px){.scan{grid-template-columns:1fr;}}
+
+/* passaggio di competenza: fascia chiara. Si ridefiniscono i colori dentro la
+   sezione, così schede, barre e testi seguono da soli. */
+.handover{
+  --bg2:#F5F3EF; --panel:#FFFFFF; --panel2:#E4E0D9; --edge:#DAD5CC; --edge2:#C5BFB4;
+  --text:#15191C; --body:#3D454A; --dim:#646D73; --brand:#1F74B0; --ard:#8A9399;
+  background:#ECE9E3; color:var(--text); color-scheme:light; border-color:#DAD5CC;
+}
+.handover .step, .handover .transfer{
+  box-shadow:0 1px 2px rgba(20,25,28,.06), 0 22px 44px -28px rgba(20,25,28,.35);}
+.handover .step::after{-webkit-text-stroke:1px rgba(31,116,176,.22);}
+.handover :focus-visible{outline-color:var(--brand);}
+
+/* testimonianze: blu notte, la prima in grande */
+.voci{
+  background:
+    radial-gradient(60% 80% at 12% 0%, rgba(66,157,218,.26), transparent 62%),
+    radial-gradient(50% 70% at 100% 100%, rgba(139,92,246,.14), transparent 60%),
+    #0C1824;
+  border-top:1px solid rgba(66,157,218,.22); border-bottom:1px solid rgba(66,157,218,.22);
+}
+.voci .quote{background:rgba(255,255,255,.035); border-color:rgba(255,255,255,.1);
+  -webkit-backdrop-filter:blur(6px); backdrop-filter:blur(6px);}
+@media (min-width:961px){
+  .voci .quotes{grid-template-columns:minmax(0,1.35fr) minmax(0,1fr);}
+  .voci .quote:first-child{grid-row:1 / span 2; display:flex; flex-direction:column; justify-content:flex-end; padding:40px 36px 34px;}
+  .voci .quote:first-child::after{font-size:150px; top:6px; left:30px;}
+  .voci .quote:first-child p{font-size:22px; line-height:1.5; color:var(--text); letter-spacing:-.01em; margin-bottom:24px;}
+}
+
+@media (prefers-reduced-motion:reduce){
+  .viz.in .scan-it, .viz.in .scan-it i{animation:none;}
+}
+
 /* ---------- documenti legali (informativa privacy, cookie) ----------
    Un'informativa si legge per cercare una cosa sola: chi tratta i dati, per
    quanto tempo, come si cancellano. Quindi non un muro di testo ma un
