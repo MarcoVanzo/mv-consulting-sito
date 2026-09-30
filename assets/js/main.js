@@ -195,9 +195,9 @@
   if(nastro && !reduce){
     var set = nastro.querySelector(".marquee-set");
     nastro.classList.add("run");   // prima di misurare: in fila, non a capo
-    var giri = 0;
-    while(set.children.length < 24 && set.scrollWidth < window.innerWidth * 1.1 && giri++ < 4){
-      Array.prototype.slice.call(set.children, 0, 6).forEach(function(li){
+    var giri = 0, nVoci = set.children.length;
+    while(set.children.length < nVoci * 4 && set.scrollWidth < window.innerWidth * 1.1 && giri++ < 4){
+      Array.prototype.slice.call(set.children, 0, nVoci).forEach(function(li){
         var c = li.cloneNode(true); c.setAttribute("aria-hidden","true"); set.appendChild(c);
       });
     }
