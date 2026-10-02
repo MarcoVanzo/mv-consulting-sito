@@ -3,12 +3,12 @@
         xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
   <url>
     <loc>https://www.mv-consulting.it/</loc>
-    <lastmod>2026-08-06</lastmod>
+    <lastmod>2026-10-02</lastmod>
     <changefreq>monthly</changefreq>
     <priority>1.0</priority>
     <image:image>
       <image:loc>https://www.mv-consulting.it/assets/img/og.jpg</image:loc>
-      <image:title>MV Consulting - software su misura, privacy e DPO</image:title>
+      <image:title>MV Consulting - software su misura, privacy, DPO e NIS 2</image:title>
     </image:image>
     <image:image>
       <image:loc>https://www.mv-consulting.it/assets/img/marco@2x.jpg</image:loc>

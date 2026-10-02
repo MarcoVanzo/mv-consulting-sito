@@ -190,21 +190,40 @@
   /* ---- nastro dei clienti ----
      La riga si copia finché due copie coprono lo schermo, poi scorre di una
      copia: il punto d'arrivo coincide con quello di partenza e non si vede
-     lo stacco. Le copie sono nascoste ai lettori di schermo. */
+     lo stacco. Le copie sono nascoste ai lettori di schermo. Se la finestra
+     si allarga (telefono girato) si aggiungono copie; stringerla non serve. */
   var nastro = document.querySelector(".marquee");
   if(nastro && !reduce){
-    var set = nastro.querySelector(".marquee-set");
+    var set = nastro.querySelector(".marquee-set"), copia = null;
+    var nVoci = set.children.length, largo = -1;
     nastro.classList.add("run");   // prima di misurare: in fila, non a capo
-    var giri = 0, nVoci = set.children.length;
-    while(set.children.length < nVoci * 4 && set.scrollWidth < window.innerWidth * 1.1 && giri++ < 4){
-      Array.prototype.slice.call(set.children, 0, nVoci).forEach(function(li){
-        var c = li.cloneNode(true); c.setAttribute("aria-hidden","true"); set.appendChild(c);
-      });
-    }
-    var copia = set.cloneNode(true);
-    copia.setAttribute("aria-hidden","true");
-    nastro.appendChild(copia);
-    nastro.style.setProperty("--dur", Math.max(24, Math.round(set.scrollWidth / 45)) + "s");
+    var riempi = function(){
+      if(window.innerWidth <= largo) return;
+      largo = window.innerWidth;
+      while(set.children.length < nVoci * 6 && set.scrollWidth < largo * 1.1){
+        Array.prototype.slice.call(set.children, 0, nVoci).forEach(function(li){
+          var c = li.cloneNode(true); c.setAttribute("aria-hidden","true"); set.appendChild(c);
+        });
+      }
+      if(copia) copia.remove();
+      copia = set.cloneNode(true);
+      copia.setAttribute("aria-hidden","true");
+      nastro.appendChild(copia);
+      nastro.style.setProperty("--dur", Math.max(24, Math.round(set.scrollWidth / 45)) + "s");
+      // le due copie devono ripartire insieme, o fra l'una e l'altra si apre un buco
+      [set, copia].forEach(function(el){ el.style.animation = "none"; void el.offsetWidth; el.style.animation = ""; });
+    };
+    riempi();
+    var attesa;
+    window.addEventListener("resize", function(){ clearTimeout(attesa); attesa = setTimeout(riempi, 200); });
+
+    // pausa: col mouse basta passarci sopra, per tutti gli altri c'è il pulsante
+    var stop = document.createElement("button");
+    stop.type = "button"; stop.className = "marquee-stop"; stop.textContent = "Metti in pausa";
+    stop.addEventListener("click", function(){
+      stop.textContent = nastro.classList.toggle("ferma") ? "Riprendi" : "Metti in pausa";
+    });
+    nastro.parentNode.insertBefore(stop, nastro.nextSibling);
   }
 
   /* ---- citazione del founder: le parole si accendono leggendo ---- */
