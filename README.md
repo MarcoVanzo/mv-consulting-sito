@@ -53,8 +53,9 @@ cambiare i colori.
 
 Il deploy gira su **GitHub Actions** (`.github/workflows/deploy.yml`) e carica via FTP
 sull'hosting Aruba, che supporta PHP. Ogni push su `main` pubblica; il workflow si può
-anche lanciare a mano. Il modulo di contatto ha però una configurazione che il deploy
-non porta con sé: vedi «Il modulo di contatto» più sotto.
+anche lanciare a mano. Le credenziali della casella del modulo di contatto non stanno nel
+repository: il deploy scrive `config-smtp.php` leggendole dai secret (vedi «Il modulo di
+contatto» più sotto).
 
 Il repository è **pubblico** di proposito: contiene solo il sito, che è già pubblico, e
 sui repo pubblici i minuti di Actions non si consumano — quelli del piano sono già
@@ -69,7 +70,11 @@ terminale:
 gh secret set FTP_SERVER   --repo MarcoVanzo/mv-consulting-sito
 gh secret set FTP_USERNAME --repo MarcoVanzo/mv-consulting-sito
 gh secret set FTP_PASSWORD --repo MarcoVanzo/mv-consulting-sito
+gh secret set SMTP_UTENTE   --repo MarcoVanzo/mv-consulting-sito
+gh secret set SMTP_PASSWORD --repo MarcoVanzo/mv-consulting-sito
 ```
+
+Senza uno di questi cinque il deploy si ferma al primo passo e dice quale manca.
 
 Se la cartella pubblica su Aruba non è la radice della connessione FTP ma `/www`,
 aggiungere anche la variabile (non segreta) `FTP_DIR` con valore `/www/`.
@@ -95,18 +100,19 @@ gh run watch --repo MarcoVanzo/mv-consulting-sito
 Il workflow, alla fine, controlla da solo che `https://www.mv-consulting.it/` risponda
 200 e serva davvero il sito nuovo; se così non è, fallisce con l'errore esplicito.
 
-I file WordPress non vengono rimossi: restano sul server sotto il sito nuovo, che ha
-comunque la precedenza grazie a `DirectoryIndex index.html index.php` nel `.htaccess`.
-È voluto — così il primo deploy è reversibile. Quando il sito nuovo è verificato, si
-lancia il workflow con l'opzione **pulizia_totale** attiva, che svuota la cartella
-remota prima di caricare:
+Un deploy normale non cancella niente sul server, salvo le cartelle del vecchio sito
+WordPress elencate in `RESIDUI` nel workflow (e i file che vi si aggiungono quando si
+tolgono dal repository). Per allineare il server al repository si lancia il workflow con
+l'opzione **pulizia_totale**, che durante il caricamento rimuove i file remoti che il
+repository non ha:
 
 ```bash
 gh workflow run "Deploy su Aruba" --repo MarcoVanzo/mv-consulting-sito -f pulizia_totale=true
 ```
 
-Da fare **solo dopo il backup**: cancella tutto ciò che c'è sul server, tranne la
-cartella `ERP/` del gestionale.
+Da fare **solo dopo il backup**: cancella tutto ciò che sul server non arriva da questo
+repository, tranne quello che il caricamento esclude — la cartella `ERP/` del gestionale e
+`config-smtp.php`.
 
 ### Verifica dopo la pubblicazione
 
@@ -116,7 +122,9 @@ cartella `ERP/` del gestionale.
 - `https://www.mv-consulting.it/privacy-policy/` — deve reindirizzare alla nuova pagina
 - un invio di prova del modulo di contatto
 
-**Rollback:** ricaricare la copia scaricata al punto 1. Il sito non ha database.
+**Rollback:** `git revert` del commit sbagliato e push su `main`: il deploy ripubblica la
+versione precedente. Il sito non ha database. La copia del punto 1 serve solo a tornare
+al vecchio WordPress.
 
 ## Dopo la pubblicazione
 

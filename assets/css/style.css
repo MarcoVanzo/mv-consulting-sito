@@ -72,10 +72,16 @@ img{max-width:100%; height:auto; display:block;}
    toglie se main.js non e' partito entro pochi secondi. Senza quella classe la
    pagina resta visibile — un errore o un blocco dello script non deve mai
    lasciare lo schermo vuoto. */
-.js .rv{opacity:0; transform:translateY(18px); transition:opacity .7s var(--ease), transform .7s var(--ease);}
-.js .rv.in{opacity:1; transform:none;}
+/* La comparsa usa `translate` e non `transform`: con transform, `.rv.in`
+   (più specifico) annullava il sollevamento al passaggio del mouse di aree,
+   passaggi e testimonianze, che sono tutte .rv. Per lo stesso motivo la
+   transizione elenca anche quelle degli effetti delle schede. */
+.js .rv{opacity:0; translate:0 18px;
+  transition:opacity .7s var(--ease), translate .7s var(--ease), transform .3s var(--ease), border-color .3s var(--ease);}
+.js .rv.in{opacity:1; translate:none;}
+.js .rv.demo{transition:opacity .7s var(--ease), translate .7s var(--ease), transform .5s var(--ease), box-shadow .5s var(--ease);}
 @media (prefers-reduced-motion:reduce){
-  .js .rv{opacity:1; transform:none; transition:none;}
+  .js .rv, .js .rv.demo{opacity:1; translate:none; transition:none;}
 }
 
 /* ---------- barra di avanzamento pagina ---------- */
@@ -400,7 +406,6 @@ section[id], main[id]{scroll-margin-top:90px;}
 /* testimonial */
 .quotes{display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:16px;}
 .quote{background:var(--panel); border:1px solid var(--edge); border-radius:12px; padding:24px; transition:border-color .3s;}
-.quote:hover{border-color:var(--edge2);}
 .quote p{font-size:14px; line-height:1.62; color:var(--body); margin-bottom:16px;}
 .quote cite{font-style:normal; font-size:12px; color:var(--dim);}
 .quote cite b{display:block; color:var(--text); font-weight:600; font-size:13.5px;}
@@ -700,7 +705,8 @@ input[type=checkbox].CybotCookiebotDialogBodyLevelButton{accent-color:var(--bran
 .clients{padding:6px 0 34px;}
 .clients-lab{font-size:10.5px; letter-spacing:.16em; text-transform:uppercase; color:var(--dim);
   text-align:center; margin-bottom:22px;}
-.marquee{overflow:hidden; display:flex;
+.marquee{overflow:hidden; display:flex;}
+.marquee.run{
   -webkit-mask-image:linear-gradient(90deg, transparent, #000 12%, #000 88%, transparent);
           mask-image:linear-gradient(90deg, transparent, #000 12%, #000 88%, transparent);}
 .marquee-set{list-style:none; margin:0 auto; padding:0 32px; display:flex; flex-wrap:wrap;
@@ -716,9 +722,10 @@ input[type=checkbox].CybotCookiebotDialogBodyLevelButton{accent-color:var(--bran
   .marquee-set .wm:hover{color:var(--text);}
 }
 /* in movimento: le copie si mettono in fila e il nastro scorre di una copia */
-.marquee.run .marquee-set{flex-wrap:nowrap; flex:none; margin:0; padding:0 32px 0 0; gap:64px;
+.marquee.run .marquee-set{flex-wrap:nowrap; flex:none; margin:0; padding:0 64px 0 0; gap:64px;
   animation:nastro var(--dur,40s) linear infinite;}
-.marquee.run:hover .marquee-set, .marquee.run.ferma .marquee-set{animation-play-state:paused;}
+.marquee.run.ferma .marquee-set{animation-play-state:paused;}
+@media (hover:hover){.marquee.run:hover .marquee-set{animation-play-state:paused;}}
 /* pausa del nastro: serve a chi non ha un mouse da appoggiarci sopra (WCAG 2.2.2) */
 .marquee-stop{display:block; margin:10px auto 0; padding:0 14px; min-height:44px; background:none; border:0; cursor:pointer;
   font:inherit; font-size:10.5px; letter-spacing:.16em; text-transform:uppercase; color:var(--dim);}
@@ -763,7 +770,7 @@ input[type=checkbox].CybotCookiebotDialogBodyLevelButton{accent-color:var(--bran
 }
 
 /* citazione del founder: le parole si accendono mentre la si legge */
-.founder blockquote .wq{color:rgba(233,231,227,.42); transition:color .35s var(--ease);}
+.founder blockquote .wq{color:rgba(233,231,227,.55); transition:color .35s var(--ease);}
 .founder blockquote .wq.lit{color:var(--text);}
 
 /* modulo: una luce gira lungo il bordo, lenta, per dire «si scrive qui» */
@@ -783,10 +790,8 @@ input[type=checkbox].CybotCookiebotDialogBodyLevelButton{accent-color:var(--bran
 
 @media (prefers-reduced-motion:reduce){
   .hero::before, .marquee.run .marquee-set, .form::before{animation:none;}
-  .hero h1 .wd{opacity:1; transform:none; transition:none;}
   .demo, .demo.tilt{transition:none; transform:none;}
   .btn:not(.ghost)::after, .form button::after{transition:none;}
-  .founder blockquote .wq{color:inherit;}
 }
 @media (max-width:820px){
   .clients{padding:0 0 18px;}
@@ -812,7 +817,7 @@ input[type=checkbox].CybotCookiebotDialogBodyLevelButton{accent-color:var(--bran
   transition:border-color .2s, box-shadow .2s, background .2s;}
 .field input:focus, .field textarea:focus{background:rgba(66,157,218,.05);
   box-shadow:0 0 0 4px rgba(66,157,218,.16);}
-.field textarea::placeholder{color:var(--ard);}
+.field input::placeholder, .field textarea::placeholder{color:var(--dim);}
 
 /* prima / dopo: una riga di colore in cima dice subito quale è il problema
    e quale la soluzione, prima ancora di leggere */
@@ -875,7 +880,7 @@ input[type=checkbox].CybotCookiebotDialogBodyLevelButton{accent-color:var(--bran
    sezione, così schede, barre e testi seguono da soli. */
 .handover{
   --bg2:#F5F3EF; --panel:#FFFFFF; --panel2:#E4E0D9; --edge:#DAD5CC; --edge2:#C5BFB4;
-  --text:#15191C; --body:#3D454A; --dim:#646D73; --brand:#1F74B0; --ard:#8A9399;
+  --text:#15191C; --body:#3D454A; --dim:#5A6268; --brand:#1A6599; --ard:#6B747A;
   background:#ECE9E3; color:var(--text); color-scheme:light; border-color:#DAD5CC;
 }
 .handover .step, .handover .transfer{
@@ -891,8 +896,8 @@ input[type=checkbox].CybotCookiebotDialogBodyLevelButton{accent-color:var(--bran
     #0C1824;
   border-top:1px solid rgba(66,157,218,.22); border-bottom:1px solid rgba(66,157,218,.22);
 }
-.voci .quote{background:rgba(255,255,255,.035); border-color:rgba(255,255,255,.1);
-  -webkit-backdrop-filter:blur(6px); backdrop-filter:blur(6px);}
+.voci .quote{background:rgba(255,255,255,.035); border-color:rgba(255,255,255,.1);}
+@media (hover:hover){.voci .quote:hover{border-color:rgba(255,255,255,.24);}}
 @media (min-width:961px){
   .voci .quotes{grid-template-columns:minmax(0,1.35fr) minmax(0,1fr);}
   .voci .quote:first-child{grid-row:1 / span 2; display:flex; flex-direction:column; justify-content:flex-end; padding:40px 36px 34px;}
@@ -902,7 +907,8 @@ input[type=checkbox].CybotCookiebotDialogBodyLevelButton{accent-color:var(--bran
 
 @media (prefers-reduced-motion:reduce){
   .viz.in .scan-it, .viz.in .scan-it i{animation:none;}
-  .step, .quote, .area, .area::after, .area .ic, .btn, .btn .arw, .foot-social, .qa summary::after{transition:none;}
+  .step, .quote, .area, .area::after, .area .ic, .btn, .btn .arw, .foot-social, .qa summary::after,
+  .nav-links a:not(.btn)::after{transition:none;}
   .step:hover, .quote:hover, .area:hover, .area:hover .ic, .btn:hover, .btn:hover .arw, .foot-col a.foot-social:hover{transform:none;}
 }
 

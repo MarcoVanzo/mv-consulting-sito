@@ -18,8 +18,14 @@ for f in *.php; do
 done
 
 echo "Riferimenti locali"
-riferimenti=$(grep -rhoE '(href|src)="[^"#:]+"' -- *.html 2>/dev/null \
-  | sed -E 's/.*="([^"]+)".*/\1/' | sort -u)
+# href e src fino al primo # (un'ancora non salva un nome di file sbagliato),
+# le voci di srcset e gli url() del foglio di stile, che sono relativi alla sua
+# cartella. Restano fuori gli indirizzi con «:» (https:, mailto:, tel:, data:).
+riferimenti=$( {
+  grep -rhoE '(href|src)="[^"#:]*["#]' -- *.html 2>/dev/null | sed -E 's/^[a-z]+="//; s/["#]$//'
+  grep -rhoE 'srcset="[^"]+"' -- *.html 2>/dev/null | sed -E 's/^srcset="//; s/"$//' | tr ',' '\n' | awk '{print $1}'
+  grep -hoE 'url\(["'"'"']?[^"'"'"')#:%]+["'"'"')]' assets/css/*.css 2>/dev/null | sed -E 's/^url\(["'"'"']?//; s/["'"'"')]$//; s#^\.\./#/assets/#'
+} | grep -v ':' | sort -u)
 visti=0
 for r in $riferimenti; do
   percorso="${r#/}"; percorso="${percorso%%\?*}"

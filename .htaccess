@@ -38,8 +38,8 @@ RedirectMatch 410 ^/(wp-admin|wp-login\.php|wp-json|xmlrpc\.php|wp-content|wp-in
 # testo, e quella password sarebbe pubblica. Questa riga costa nulla e copre
 # proprio quel giorno. invio-smtp.php dichiara solo funzioni: chiamarlo da fuori
 # non fa danni, ma non ha senso.
-# Si passa da mod_alias e non da <Files>/Require: la direttiva giusta cambia
-# fra Apache 2.2 e 2.4, e sbagliarla qui significa un 500 su tutto il sito.
+# Si passa da mod_alias e non da <Files>/Require: un 404 non dice nemmeno che
+# il file esiste, un 403 sì.
 # Un RedirectMatch vale ovunque e riguarda solo le richieste dal browser: il
 # require di contatti.php legge dal disco e non passa di qui.
 RedirectMatch 404 ^/(config-smtp\.php|config-smtp\.esempio\.php|invio-smtp\.php)$

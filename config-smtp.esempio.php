@@ -8,9 +8,10 @@
  * Questo modello resta come riferimento del formato, utile se un giorno si
  * volesse tornare a mettere il file sul server a mano.
  *
- * Un file `.php` non viene mai mostrato come sorgente da Apache — chi lo chiede
- * dal browser riceve una pagina vuota, non la password. Per questo può stare
- * dentro la cartella pubblica senza rischi.
+ * Finché PHP funziona, un file `.php` non viene mostrato come sorgente: chi lo
+ * chiede dal browser riceve una pagina vuota. Per il giorno in cui l'hosting
+ * perdesse il gestore PHP, `.htaccess` risponde comunque 404 a chi chiede
+ * `config-smtp.php` dal browser.
  */
 declare(strict_types=1);
 
