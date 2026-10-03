@@ -8,10 +8,11 @@ on:
       - 'CLAUDE.md'
       - '.gitignore'
       - '.claude/**'
+      - 'tools/**'
   workflow_dispatch:
     inputs:
       pulizia_totale:
-        description: "Svuota la cartella remota prima di caricare (rimuove i residui WordPress). Usare solo dopo aver fatto il backup."
+        description: "Rimuove dal server i file che il repository non ha (tranne ERP/ e config-smtp.php). Usare solo dopo aver fatto il backup."
         type: boolean
         default: false
 
@@ -19,20 +20,37 @@ concurrency:
   group: deploy-produzione
   cancel-in-progress: false
 
+# Il token serve solo a leggere il repository.
+permissions:
+  contents: read
+
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    # il proxy di Aruba a volte resta appeso: meglio fallire che occupare il
+    # gruppo deploy-produzione per ore
+    timeout-minutes: 20
     steps:
       - uses: actions/checkout@v4
 
+      # Gli stessi controlli della PR: un push diretto su main non ci passa.
+      - name: Controlli del repository
+        run: .claude/scripts/controlla.sh
+
+      # I secret passano dall'ambiente e non dentro lo script: scritti come
+      # ${{ }} nel testo, una password con un apice o un $( ) lo romperebbe.
       - name: Verifica che i secret siano configurati
+        env:
+          FTP_SERVER: ${{ secrets.FTP_SERVER }}
+          FTP_USERNAME: ${{ secrets.FTP_USERNAME }}
+          FTP_PASSWORD: ${{ secrets.FTP_PASSWORD }}
+          SMTP_UTENTE: ${{ secrets.SMTP_UTENTE }}
+          SMTP_PASSWORD: ${{ secrets.SMTP_PASSWORD }}
         run: |
           mancanti=""
-          [ -z "${{ secrets.FTP_SERVER }}" ]     && mancanti="$mancanti FTP_SERVER"
-          [ -z "${{ secrets.FTP_USERNAME }}" ]   && mancanti="$mancanti FTP_USERNAME"
-          [ -z "${{ secrets.FTP_PASSWORD }}" ]   && mancanti="$mancanti FTP_PASSWORD"
-          [ -z "${{ secrets.SMTP_UTENTE }}" ]    && mancanti="$mancanti SMTP_UTENTE"
-          [ -z "${{ secrets.SMTP_PASSWORD }}" ]  && mancanti="$mancanti SMTP_PASSWORD"
+          for v in FTP_SERVER FTP_USERNAME FTP_PASSWORD SMTP_UTENTE SMTP_PASSWORD; do
+            [ -n "${!v}" ] || mancanti="$mancanti $v"
+          done
           if [ -n "$mancanti" ]; then
             echo "::error::Secret mancanti:$mancanti — impostarli in Settings > Secrets and variables > Actions, poi rilanciare."
             exit 1
@@ -114,7 +132,9 @@ jobs:
         env:
           FTP_HOST: ${{ secrets.FTP_SERVER }}
           FTP_USER: ${{ secrets.FTP_USERNAME }}
-          FTP_PASS: ${{ secrets.FTP_PASSWORD }}
+          # lftp la legge da qui con --env-password: dentro il comando, un apice
+          # nella password romperebbe il login
+          LFTP_PASSWORD: ${{ secrets.FTP_PASSWORD }}
           # Cartella pubblica sul server: su questo hosting è la radice della
           # connessione FTP. Se cambiasse, impostare la variabile FTP_DIR.
           FTP_DIR: ${{ vars.FTP_DIR || '/' }}
@@ -144,16 +164,18 @@ jobs:
             lftp -c "
               set cmd:trace off;
               set ftp:ssl-allow true;
+              set ftp:ssl-force true;
               set ftp:ssl-protect-data false;
               set ssl:verify-certificate no;
               set net:max-retries 3;
               set net:timeout 20;
               set xfer:clobber on;
-              open -u '$FTP_USER','$FTP_PASS' '$FTP_HOST';
+              open -u '$FTP_USER' --env-password '$FTP_HOST';
               mirror --reverse --parallel=1 $* $PULIZIA \
                 --exclude-glob .git* \
                 --exclude .github/ \
                 --exclude '^ERP/' \
+                --exclude '^\.well-known/' \
                 --exclude '^config-smtp\.php$' \
                 --exclude .claude/ \
                 --exclude .anteprima/ \
@@ -196,7 +218,7 @@ jobs:
             set net:max-retries 3;
             set net:timeout 20;
             set xfer:clobber on;
-            open -u '$FTP_USER','$FTP_PASS' '$FTP_HOST';
+            open -u '$FTP_USER' --env-password '$FTP_HOST';
             cd '$FTP_DIR';
             put config-smtp.php;
             get config-smtp.php -o /tmp/config-smtp.verifica;
@@ -224,7 +246,9 @@ jobs:
         env:
           FTP_HOST: ${{ secrets.FTP_SERVER }}
           FTP_USER: ${{ secrets.FTP_USERNAME }}
-          FTP_PASS: ${{ secrets.FTP_PASSWORD }}
+          # lftp la legge da qui con --env-password: dentro il comando, un apice
+          # nella password romperebbe il login
+          LFTP_PASSWORD: ${{ secrets.FTP_PASSWORD }}
           FTP_DIR: ${{ vars.FTP_DIR || '/' }}
           RESIDUI: chi-siamo contatti servizi partner privacy-policy cookie-policy privacy diagnostica-smtp.php
         run: |
@@ -237,11 +261,12 @@ jobs:
             lftp -c "
               set cmd:trace off;
               set ftp:ssl-allow true;
+              set ftp:ssl-force true;
               set ftp:ssl-protect-data false;
               set ssl:verify-certificate no;
               set net:max-retries 3;
               set net:timeout 20;
-              open -u '$FTP_USER','$FTP_PASS' '$FTP_HOST';
+              open -u '$FTP_USER' --env-password '$FTP_HOST';
               cd '$FTP_DIR';
               find '$cartella';
               rm -r -f '$cartella';
@@ -255,18 +280,20 @@ jobs:
           # Le pagine del vecchio sito devono rispondere con il redirect di
           # .htaccess, non con il loro contenuto. Si interroga l'origine con un
           # parametro: senza, si leggerebbe la cache di Aruba, che queste
-          # pagine le tiene per trenta giorni.
-          for p in /chi-siamo/ /contatti/ /servizi/ /partner/ /privacy-policy/; do
-            c=$(curl -s -o /dev/null -w '%{http_code}' "https://www.mv-consulting.it$p?deploy=${GITHUB_RUN_ID}")
+          # pagine le tiene per trenta giorni. Si pretende il redirect, non
+          # «tutto tranne 200»: anche un 404 o un 500 sarebbero un guasto.
+          for p in /chi-siamo/ /contatti/ /servizi/ /partner/ /privacy-policy/ /cookie-policy/ /privacy/; do
+            c=$(curl -s --max-time 30 -o /dev/null -w '%{http_code}' "https://www.mv-consulting.it$p?deploy=${GITHUB_RUN_ID}")
             echo "$p -> $c"
-            if [ "$c" = "200" ]; then
-              echo "::error::$p serve ancora una pagina del vecchio sito"
-              exit 1
-            fi
+            case "$c" in
+              301|302) ;;
+              200) echo "::error::$p serve ancora una pagina del vecchio sito"; exit 1 ;;
+              *)   echo "::error::$p risponde $c invece del redirect"; exit 1 ;;
+            esac
             # Sul server non c'è più, ma chi arriva senza parametro può
             # continuare a riceverla dalla cache fino alla scadenza. Si
             # segnala e basta: svuotare la cache dal deploy non si può.
-            if [ "$(curl -s -o /dev/null -w '%{http_code}' "https://www.mv-consulting.it$p")" = "200" ]; then
+            if [ "$(curl -s --max-time 30 -o /dev/null -w '%{http_code}' "https://www.mv-consulting.it$p")" = "200" ]; then
               echo "::warning::$p è stata rimossa dal server ma la cache di Aruba la serve ancora: svuotarla da Pannello Aruba > Velocità > Caching"
             fi
           done
@@ -274,14 +301,14 @@ jobs:
           # con un parametro casuale, altrimenti si leggerebbe la copia vecchia
           # e il controllo fallirebbe pur essendo andato tutto a buon fine.
           url="https://www.mv-consulting.it/?deploy=${GITHUB_RUN_ID}"
-          codice=$(curl -s -o /tmp/home.html -w '%{http_code}' "$url")
+          codice=$(curl -s --max-time 30 -o /tmp/home.html -w '%{http_code}' "$url")
           echo "HTTP $codice"
           [ "$codice" = "200" ] || { echo "::error::la home risponde $codice"; exit 1; }
           grep -q "Non esistono cose facili" /tmp/home.html \
             || { echo "::error::la home risponde ma non serve il sito nuovo"; exit 1; }
 
           for p in /assets/css/style.css /assets/js/main.js /privacy-policy.html; do
-            c=$(curl -s -o /dev/null -w '%{http_code}' "https://www.mv-consulting.it$p")
+            c=$(curl -s --max-time 30 -o /dev/null -w '%{http_code}' "https://www.mv-consulting.it$p")
             echo "$p -> $c"
             [ "$c" = "200" ] || { echo "::error::$p risponde $c"; exit 1; }
           done
@@ -329,9 +356,9 @@ jobs:
           [ "$esito_cache" -eq 0 ] || exit 1
 
           # Stato della cache pubblica: informativo, non fa fallire il deploy.
-          cache=$(curl -sI https://www.mv-consulting.it/ | grep -i '^x-aruba-cache' | tr -d '\r')
+          cache=$(curl -sI --max-time 30 https://www.mv-consulting.it/ | grep -i '^x-aruba-cache' | tr -d '\r')
           echo "Cache del proxy: ${cache:-non dichiarata}"
-          if curl -s https://www.mv-consulting.it/ | grep -q "Non esistono cose facili"; then
+          if curl -s --max-time 30 https://www.mv-consulting.it/ | grep -q "Non esistono cose facili"; then
             echo "Sito nuovo online e servito anche dalla cache."
           else
             echo "::warning::il sito nuovo è pubblicato, ma il proxy di Aruba serve ancora la versione in cache. Svuotare la cache da Pannello > Velocità > Caching."

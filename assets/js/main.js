@@ -66,6 +66,7 @@
       var r = rvs[j].getBoundingClientRect();
       if(r.top < window.innerHeight && r.bottom > 0){
         rvs[j].classList.add("in");
+        rvs[j].style.transitionDelay = "";
         io.unobserve(rvs[j]);
       }
     }
@@ -172,15 +173,15 @@
   document.querySelectorAll(".nav-links.desktop a[href^='#']:not(.btn)").forEach(function(a){
     voci[a.getAttribute("href").slice(1)] = a;
   });
+  // Si tiene lo stato di ogni sezione e si accende l'ultima dentro la fascia:
+  // #klubia sta dentro #progetti, e uscendo da Klubia l'osservatore non dice
+  // niente di Progetti, che resterebbe spenta pur essendo ancora lì.
+  var dentro = {};
   var spia = new IntersectionObserver(function(es){
-    es.forEach(function(e){
-      var a = voci[e.target.id];
-      if(!a) return;
-      if(e.isIntersecting){
-        Object.keys(voci).forEach(function(k){ voci[k].classList.remove("on"); });
-        a.classList.add("on");
-      } else a.classList.remove("on");
-    });
+    es.forEach(function(e){ dentro[e.target.id] = e.isIntersecting; });
+    var attiva = null;
+    Object.keys(voci).forEach(function(k){ if(dentro[k]) attiva = k; });
+    Object.keys(voci).forEach(function(k){ voci[k].classList.toggle("on", k === attiva); });
   }, {rootMargin:"-40% 0px -59% 0px"});
   Object.keys(voci).forEach(function(id){
     var sez = document.getElementById(id);
@@ -193,7 +194,7 @@
      lo stacco. Le copie sono nascoste ai lettori di schermo. Se la finestra
      si allarga (telefono girato) si aggiungono copie; stringerla non serve. */
   var nastro = document.querySelector(".marquee");
-  if(nastro && !reduce){
+  if(nastro && !reduce && nastro.querySelector(".marquee-set")){
     var set = nastro.querySelector(".marquee-set"), copia = null;
     var nVoci = set.children.length, largo = -1;
     nastro.classList.add("run");   // prima di misurare: in fila, non a capo
@@ -219,10 +220,10 @@
 
     // pausa: col mouse basta passarci sopra, per tutti gli altri c'è il pulsante
     var stop = document.createElement("button");
-    stop.type = "button"; stop.className = "marquee-stop"; stop.textContent = "Metti in pausa";
-    stop.addEventListener("click", function(){
-      stop.textContent = nastro.classList.toggle("ferma") ? "Riprendi" : "Metti in pausa";
-    });
+    // «Metti in pausa» da solo, sotto una fila di loghi, non dice che cosa si ferma
+    var etichetta = function(ferma){ stop.textContent = ferma ? "Riprendi lo scorrimento" : "Ferma lo scorrimento"; };
+    stop.type = "button"; stop.className = "marquee-stop"; etichetta(false);
+    stop.addEventListener("click", function(){ etichetta(nastro.classList.toggle("ferma")); });
     nastro.parentNode.insertBefore(stop, nastro.nextSibling);
   }
 
@@ -240,8 +241,15 @@
       accese = n;
       for(var k=0;k<tot;k++) wq[k].classList.toggle("lit", k < n);
     };
-    window.addEventListener("scroll", leggi, {passive:true});
-    window.addEventListener("resize", leggi);
+    // una misura per fotogramma, non una per ogni evento di scroll
+    var inCoda = false;
+    var aFotogramma = function(){
+      if(inCoda) return;
+      inCoda = true;
+      requestAnimationFrame(function(){ inCoda = false; leggi(); });
+    };
+    window.addEventListener("scroll", aFotogramma, {passive:true});
+    window.addEventListener("resize", aFotogramma);
     leggi();
   }
 
@@ -268,12 +276,12 @@
     }
     // scheda dimostrativa: inclinazione di qualche grado verso il puntatore.
     // Mentre si trascina il cursore dell'avanzamento resta ferma.
-    var demo = document.getElementById("demo"), trascina = false;
+    // Si guarda il tasto premuto dell'evento e non un flag: un pointerup fuori
+    // dalla finestra non arriverebbe e l'inclinazione resterebbe bloccata.
+    var demo = document.getElementById("demo");
     if(demo){
-      demo.addEventListener("pointerdown", function(){ trascina = true; });
-      window.addEventListener("pointerup", function(){ trascina = false; });
       demo.addEventListener("pointermove", function(e){
-        if(trascina) return;
+        if(e.buttons) return;
         var r = demo.getBoundingClientRect();
         var x = (e.clientX - r.left) / r.width - 0.5, y = (e.clientY - r.top) / r.height - 0.5;
         demo.classList.add("tilt");
