@@ -219,10 +219,10 @@
 
     // pausa: col mouse basta passarci sopra, per tutti gli altri c'è il pulsante
     var stop = document.createElement("button");
-    stop.type = "button"; stop.className = "marquee-stop"; stop.textContent = "Metti in pausa";
-    stop.addEventListener("click", function(){
-      stop.textContent = nastro.classList.toggle("ferma") ? "Riprendi" : "Metti in pausa";
-    });
+    // «Metti in pausa» da solo, sotto una fila di loghi, non dice che cosa si ferma
+    var etichetta = function(ferma){ stop.textContent = ferma ? "Riprendi lo scorrimento" : "Ferma lo scorrimento"; };
+    stop.type = "button"; stop.className = "marquee-stop"; etichetta(false);
+    stop.addEventListener("click", function(){ etichetta(nastro.classList.toggle("ferma")); });
     nastro.parentNode.insertBefore(stop, nastro.nextSibling);
   }
 

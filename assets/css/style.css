@@ -250,8 +250,10 @@ section[id], main[id]{scroll-margin-top:90px;}
 }
 .area::after{content:""; position:absolute; left:0; right:0; top:0; height:2px; background:var(--brand);
   transform:scaleX(0); transform-origin:left; transition:transform .45s var(--ease);}
-.area:hover{border-color:var(--edge2); transform:translateY(-3px);}
-.area:hover::after{transform:scaleX(1);}
+@media (hover:hover){
+  .area:hover{border-color:var(--edge2); transform:translateY(-3px);}
+  .area:hover::after{transform:scaleX(1);}
+}
 .area .n{font-size:10px; letter-spacing:.14em; color:var(--dim); margin-bottom:16px;}
 .area h3{font-size:18px; margin-bottom:10px;}
 .area p{font-size:13.5px; line-height:1.6; color:var(--body); margin-bottom:16px;}
@@ -718,7 +720,7 @@ input[type=checkbox].CybotCookiebotDialogBodyLevelButton{accent-color:var(--bran
   animation:nastro var(--dur,40s) linear infinite;}
 .marquee.run:hover .marquee-set, .marquee.run.ferma .marquee-set{animation-play-state:paused;}
 /* pausa del nastro: serve a chi non ha un mouse da appoggiarci sopra (WCAG 2.2.2) */
-.marquee-stop{display:block; margin:16px auto 0; padding:6px 10px; background:none; border:0; cursor:pointer;
+.marquee-stop{display:block; margin:10px auto 0; padding:0 14px; min-height:44px; background:none; border:0; cursor:pointer;
   font:inherit; font-size:10.5px; letter-spacing:.16em; text-transform:uppercase; color:var(--dim);}
 @media (hover:hover){.marquee-stop:hover{color:var(--text);}}
 @keyframes nastro{to{transform:translateX(-100%);}}
@@ -900,8 +902,8 @@ input[type=checkbox].CybotCookiebotDialogBodyLevelButton{accent-color:var(--bran
 
 @media (prefers-reduced-motion:reduce){
   .viz.in .scan-it, .viz.in .scan-it i{animation:none;}
-  .step, .quote, .area .ic{transition:none;}
-  .step:hover, .quote:hover, .area:hover .ic{transform:none;}
+  .step, .quote, .area, .area::after, .area .ic, .btn, .btn .arw, .foot-social, .qa summary::after{transition:none;}
+  .step:hover, .quote:hover, .area:hover, .area:hover .ic, .btn:hover, .btn:hover .arw, .foot-col a.foot-social:hover{transform:none;}
 }
 
 /* ---------- documenti legali (informativa privacy, cookie) ----------
