@@ -34,7 +34,8 @@ che servono a chi pubblica i post, non a chi visita il sito, e online sarebbero 
 pagine e immagini raggiungibili da chiunque.
 
 Quello che va davvero online pesa circa 250 KB, la pagina in sé un centinaio. Nessun
-font esterno, nessuna libreria: si apre completa alla prima richiesta.
+font esterno, nessuna libreria: si apre completa alla prima richiesta. Il carattere
+è Geist (Vercel), ospitato in `assets/fonts/` con la sua licenza OFL (`assets/fonts/OFL.txt`).
 
 ## Modificare i contenuti
 
