@@ -1105,3 +1105,6 @@ footer .foot-in::before{content:""; position:absolute; top:0; left:32px; right:3
 /* logo scuro su fondo trasparente: in negativo, come gli altri del nastro */
 .marquee-set img.inv{filter:grayscale(1) invert(1) brightness(1.1); opacity:.5;}
 @media (hover:hover){.marquee-set img.inv:hover{filter:grayscale(1) invert(1); opacity:1;}}
+/* marchio in corsivo, quasi due volte più largo che alto: a 30 px sparirebbe */
+.marquee-set img.md{height:42px;}
+@media (max-width:820px){.marquee-set img.md{height:34px;}}
