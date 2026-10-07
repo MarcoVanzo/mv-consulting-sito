@@ -334,8 +334,10 @@ jobs:
           # byte: le anteprime su WhatsApp e LinkedIn uscivano tagliate a
           # metà. Sono file grandi quanto basta a incappare nel troncamento,
           # quindi si controllano anche loro.
+          # `find` e non `assets/img/*`: il glob prendeva anche la sottocartella
+          # progetti/ e sha256sum falliva su una directory. Dentro anche i font.
           esito=0
-          for f in index.html privacy-policy.html 404.html assets/css/style.css assets/js/main.js assets/img/*; do
+          for f in index.html privacy-policy.html 404.html assets/css/style.css assets/js/main.js $(find assets/img assets/fonts -type f | sort); do
             confronta "$f" || esito=1
           done
           [ "$esito" -eq 0 ] || exit 1
