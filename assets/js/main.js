@@ -381,7 +381,9 @@
 
   function paint(){
     pct.textContent = Math.round(t*100) + "%";
-    tagA.style.opacity = String(Math.max(0.25, 1 - t*1.5));
+    // «sembra complicato» si attenua ma resta leggibile: a .25 scendeva a 1.6:1,
+    // a .75 l'ambra sul fondo della demo sta a 5:1
+    tagA.style.opacity = String(Math.max(0.75, 1 - t*1.5));
     tagB.style.opacity = String(Math.max(0.25, t*1.5 - 0.2));
     tagB.style.transform = "translateX(" + (10 - t*10).toFixed(1) + "px)";
     draw();

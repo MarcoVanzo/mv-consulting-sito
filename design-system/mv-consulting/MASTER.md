@@ -110,6 +110,7 @@ Base: `body` 16px / 1.55, antialiased. Titoli peso 600, `letter-spacing:-.025em`
 | Testo lungo (progetti, founder, FAQ, legale) | 15–15.5px | 1.7–1.74, max 56–78ch |
 | Testo schede | 13.5–14px | 1.6 |
 | Didascalie | 12–13px | — |
+| Etichette della hero e della demo, didascalie dei numeri | 13px (minimo) | tracking .04–.1em |
 | Etichette maiuscole (occhielli, label, testate) | 10–11px | tracking .12–.16em, `uppercase` |
 
 ## Spaziature
@@ -261,9 +262,12 @@ valori reali dei token.
 2. ✓ **risolto** in `fix(form)` — **Bordi dei campi del modulo sotto 3:1** (contrasto non testuale, WCAG 1.4.11):
    `--edge2 #3F484F` sul fondo del campo ≈ 1.7:1 (`style.css:767`). Il campo si
    distingue solo dal fondo appena più chiaro.
-3. **Testo sotto i 12px diffuso**: etichette 10–10.5px a `--dim` (`style.css:209, 227,
-   295, 314, 320, 420, 453, 669, 1038`), etichette della demo a 9.5px su telefono
-   (`style.css:222`). Il contrasto regge (≥5.5:1), la dimensione no.
+3. **Testo sotto i 12px diffuso.** ✓ **risolto in parte** in `fix(ui)`: eyebrow, testata,
+   etichette, «Trascina» e nota della demo, didascalie dei numeri ora a 13px; l'etichetta
+   «sembra complicato» non scende più sotto l'opacità .75 (5:1, prima 1.6:1).
+   Restano a 10–11px gli occhielli e le etichette delle schede (`style.css`: `.kicker`,
+   `.pal .lab`, `.ba h4`, `.viz-head`, `.field label`, `.foot-col h4`, `.clients-lab`,
+   `.spec span`). Il contrasto regge (≥5.5:1), la dimensione no.
 4. **Salto di livello nei titoli**: nel footer `<h4>` segue direttamente l'`<h2>` della
    chiusura (`index.html:830`, `404.html:99`, `privacy-policy.html:316`).
 5. **Canvas della demo con `aria-label` ma senza `role="img"`** (`index.html:370`): i
