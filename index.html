@@ -775,40 +775,45 @@ s.parentNode.insertBefore(b, s);})(window.lintrk);
       </div>
       <div class="form rv">
         <form id="contatto" method="post" action="contatti.php" novalidate>
+          <p class="form-note">I campi con <span class="req" aria-hidden="true">*</span> sono obbligatori.</p>
           <div class="row">
             <div class="field">
-              <label for="f-nome">Nome e cognome</label>
-              <input id="f-nome" name="nome" type="text" required autocomplete="name">
+              <label for="f-nome">Nome e cognome <span class="req" aria-hidden="true">*</span></label>
+              <input id="f-nome" name="nome" type="text" required autocomplete="name" aria-describedby="e-nome">
+              <p class="field-err" id="e-nome" hidden></p>
             </div>
             <div class="field">
-              <label for="f-azienda">Azienda</label>
+              <label for="f-azienda">Azienda <span class="opt">(facoltativo)</span></label>
               <input id="f-azienda" name="azienda" type="text" autocomplete="organization">
             </div>
           </div>
           <div class="row">
             <div class="field">
-              <label for="f-email">Email</label>
-              <input id="f-email" name="email" type="email" required autocomplete="email">
+              <label for="f-email">Email <span class="req" aria-hidden="true">*</span></label>
+              <input id="f-email" name="email" type="email" required autocomplete="email" aria-describedby="e-email">
+              <p class="field-err" id="e-email" hidden></p>
             </div>
             <div class="field">
-              <label for="f-tel">Telefono <span style="text-transform:none; letter-spacing:0">(facoltativo)</span></label>
+              <label for="f-tel">Telefono <span class="opt">(facoltativo)</span></label>
               <input id="f-tel" name="telefono" type="tel" autocomplete="tel">
             </div>
           </div>
           <div class="field">
-            <label for="f-msg">Che cosa vi sembra complicato?</label>
-            <textarea id="f-msg" name="messaggio" required placeholder="Anche solo due righe: da lì partiamo."></textarea>
+            <label for="f-msg">Che cosa vi sembra complicato? <span class="req" aria-hidden="true">*</span></label>
+            <textarea id="f-msg" name="messaggio" required placeholder="Anche solo due righe: da lì partiamo." aria-describedby="e-msg"></textarea>
+            <p class="field-err" id="e-msg" hidden></p>
           </div>
           <p class="hp"><label for="f-sito">Non compilare</label><input id="f-sito" name="sito" type="text" tabindex="-1" autocomplete="off"></p>
           <!-- provenienza della visita: la riempie main.js dai parametri UTM dell'annuncio.
                Viaggia con il messaggio, non serve alcun cookie. -->
           <input type="hidden" name="origine" id="f-origine" value="">
           <label class="consent">
-            <input type="checkbox" name="consenso" value="1" required>
-            <span>Ho letto l'<a href="/privacy-policy.html">informativa privacy</a>: i dati servono solo a rispondere a questa richiesta e restano 24 mesi. Nessuna newsletter, nessuna cessione a terzi.</span>
+            <input type="checkbox" name="consenso" value="1" required aria-describedby="e-consenso">
+            <span>Ho letto l'<a href="/privacy-policy.html">informativa privacy</a>: i dati servono solo a rispondere a questa richiesta e restano 24 mesi. Nessuna newsletter, nessuna cessione a terzi. <span class="req" aria-hidden="true">*</span></span>
           </label>
-          <button type="submit" data-cta="form">Invia il messaggio</button>
-          <p class="form-msg" id="formMsg" role="status"></p>
+          <p class="field-err consent-err" id="e-consenso" hidden></p>
+          <button class="btn" type="submit" data-cta="form">Invia il messaggio</button>
+          <p class="form-msg" id="formMsg" role="status" tabindex="-1"></p>
         </form>
       </div>
     </div>

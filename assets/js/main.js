@@ -474,13 +474,43 @@
   /* ---- invio del modulo senza ricaricare la pagina ---- */
   var form = document.getElementById("contatto"), msg = document.getElementById("formMsg");
   if(form){
+    /* Errori accanto al campo. La bolla di reportValidity() ne mostrava uno alla
+       volta e spariva dopo un attimo; qui ogni campo ha il suo messaggio sotto,
+       collegato con aria-describedby, e resta finché non è corretto. */
+    var avvisi = {
+      nome: function(c){ return c.value.trim() ? "" : "Scrivete nome e cognome."; },
+      email: function(c){
+        if(!c.value.trim()) return "Scrivete l'indirizzo a cui rispondervi.";
+        return c.validity.typeMismatch ? "L'indirizzo non sembra completo: controllate la chiocciola e il dominio." : "";
+      },
+      messaggio: function(c){ return c.value.trim() ? "" : "Scrivete anche solo due righe su cosa vi sembra complicato."; },
+      consenso: function(c){ return c.checked ? "" : "Per inviare serve aver letto l'informativa privacy."; }
+    };
+    function verifica(c){
+      var testo = avvisi[c.name](c), err = document.getElementById(c.getAttribute("aria-describedby"));
+      err.textContent = testo; err.hidden = !testo;
+      if(testo) c.setAttribute("aria-invalid", "true"); else c.removeAttribute("aria-invalid");
+      return !testo;
+    }
+    Object.keys(avvisi).forEach(function(nome){
+      var c = form.elements[nome], toccato = false;
+      // si controlla all'uscita dal campo, non a ogni tasto; un errore già
+      // mostrato invece sparisce appena il campo torna a posto
+      c.addEventListener("input", function(){ toccato = true; if(c.getAttribute("aria-invalid")) verifica(c); });
+      c.addEventListener("change", function(){ if(c.type === "checkbox") verifica(c); });
+      c.addEventListener("blur", function(){ if(toccato && c.type !== "checkbox") verifica(c); });
+    });
+
     form.addEventListener("submit", function(e){
-      // Il modulo ha novalidate: il browser non mostra i suoi messaggi da solo e
-      // senza questo blocco un campo mancante faceva partire l'invio classico,
-      // che rimanda alla home con un parametro che nessuna pagina legge — la
-      // pagina si ricaricava e basta. Si chiede al browser di dirlo lui.
-      if(!form.checkValidity()){ e.preventDefault(); form.reportValidity(); return; }
+      // Il modulo ha novalidate: senza questo blocco un campo mancante faceva
+      // partire l'invio classico, che ricaricava la pagina e basta.
       e.preventDefault();
+      var primo = null;
+      Object.keys(avvisi).forEach(function(nome){
+        var c = form.elements[nome];
+        if(!verifica(c) && !primo) primo = c;
+      });
+      if(primo){ primo.focus(); return; }
       var btn = form.querySelector("button");
       btn.disabled = true; btn.textContent = "Invio in corso...";
       msg.className = "form-msg"; msg.textContent = "";
@@ -496,7 +526,7 @@
           if(campoOrigine) campoOrigine.value = origine;   // reset() svuota anche i campi nascosti
           msg.className = "form-msg ok";
           msg.textContent = "Messaggio inviato. Vi rispondiamo entro un giorno lavorativo.";
-          msg.focus && msg.focus();
+          msg.focus();   // ha tabindex="-1": il fuoco porta l'esito sullo schermo
           evento("richiesta_inviata", {origine: origine || "diretta"});
         })
         .catch(function(err){
@@ -506,6 +536,7 @@
           } else {
             msg.innerHTML = 'Non siamo riusciti a inviare il messaggio. Scriveteci a <a href="mailto:info@mv-consulting.it">info@mv-consulting.it</a>.';
           }
+          msg.focus();
         })
         .then(function(){ btn.disabled = false; btn.textContent = "Invia il messaggio"; });
     });

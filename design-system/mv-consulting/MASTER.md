@@ -28,7 +28,8 @@ del `CLAUDE.md`: niente font esterni, niente CDN, niente librerie, niente build.
 | `--panel` | `#191E22` | schede, modulo, demo, viz |
 | `--panel2` | `#232A2F` | binario dello slider, tessere dei passaggi |
 | `--edge` | `#2E363C` | bordi e filetti |
-| `--edge2` | `#3F484F` | bordi in hover, bordi dei campi |
+| `--edge2` | `#3F484F` | bordi in hover |
+| `--field-edge` | `#6B757C` | bordi dei campi del modulo (3.2:1 sul loro fondo) |
 | `--text` | `#E9E7E3` | titoli e testo forte (avorio) |
 | `--body` | `#C3C8CB` | testo corrente |
 | `--dim` | `#98A1A6` | didascalie, etichette, testo secondario |
@@ -38,7 +39,7 @@ del `CLAUDE.md`: niente font esterni, niente CDN, niente librerie, niente build.
 | `--ard` | `#7E888F` | ardesia del marchio: logotipi testuali nel nastro |
 | `--warm` | `#D8A46A` | ambra: «Prima», alone caldo della hero |
 | `--ok` | `#4FBFA0` | messaggio di invio riuscito |
-| (letterale) | `#FF8A8A` | messaggio di errore del modulo |
+| `--ko` | `#FF8A8A` | errori del modulo: sotto il campo, bordo del campo, esito |
 | (letterale) | `#7FD0F2` | fine del gradiente di «sai fare» e della barra |
 
 Marchio: `#429DDA` blu, `#66879E` ardesia (`style.css:2`).
@@ -181,8 +182,12 @@ Non c'è una scala a token: i valori ricorrono per convenzione.
   fermo a sinistra (sticky).
 - **Chiusura e modulo** `.end` + `.form`: alone blu, H2 grande; modulo in pannello
   14px, righe a due colonne (una sotto 820), etichette maiuscole sopra i campi,
-  campi su `rgba(255,255,255,.035)` con bordo `--edge2`, consenso con checkbox
-  `accent-color` blu, pulsante blu, messaggio `role="status"` verde/rosso, honeypot
+  nota «I campi con * sono obbligatori», asterisco blu `.req` sugli obbligatori e
+  «(facoltativo)» sugli altri; campi su `rgba(255,255,255,.035)` con bordo
+  `--field-edge`, 16px sotto 820px; errore `.field-err` rosso sotto ogni campo,
+  legato con `aria-describedby` e `aria-invalid`, controllato all'uscita dal campo e
+  all'invio (fuoco sul primo errato); consenso con checkbox `accent-color` blu,
+  pulsante `.btn` (stato `:disabled` durante l'invio), messaggio `role="status"` verde/rosso, honeypot
   `.hp` nascosto con `clip-path`.
 - **Pulsanti** `.btn`: blu pieno, testo `--ink`, 600 14px, raggio 7, `min-height:44px`,
   freccia `.arw` che scorre in hover; `.ghost` trasparente con bordo `--edge`. Hover
@@ -233,6 +238,8 @@ animazione va dentro la stessa media query.
 
 ## Regole che il sito oggi viola
 
+Le voci segnate **✓ risolto** sono state sistemate; resta indicato il commit.
+
 Dalle ricerche `--domain landing`, `--domain ux` e `--domain typography` su «sito
 vetrina consulenza informatica B2B, PMI italiane, tono sobrio». Per `landing` e `ux`
 la query non ha trovato corrispondenze né in italiano né riformulata in inglese
@@ -250,7 +257,7 @@ valori reali dei token.
    maiuscolo (`style.css:315`) e per la testata della viz (`style.css:322`). Valori in
    `index.html:491` e `index.html:591`. Serve un `--p` più chiaro per il testo,
    lasciando i colori originali ai campioni `.pal`.
-2. **Bordi dei campi del modulo sotto 3:1** (contrasto non testuale, WCAG 1.4.11):
+2. ✓ **risolto** in `fix(form)` — **Bordi dei campi del modulo sotto 3:1** (contrasto non testuale, WCAG 1.4.11):
    `--edge2 #3F484F` sul fondo del campo ≈ 1.7:1 (`style.css:767`). Il campo si
    distingue solo dal fondo appena più chiaro.
 3. **Testo sotto i 12px diffuso**: etichette 10–10.5px a `--dim` (`style.css:209, 227,
@@ -268,18 +275,18 @@ valori reali dei token.
 
 ### 2. Conversione del modulo contatti
 
-1. **Nessun errore accanto al campo.** Con `novalidate` lo script chiama solo
+1. ✓ **risolto** in `fix(form)` — **Nessun errore accanto al campo.** Con `novalidate` lo script chiama solo
    `reportValidity()` (`assets/js/main.js:482`): una bolla del browser alla volta, che
    sparisce, nessun `aria-describedby`, nessun riepilogo. Gli errori del server finiscono
    solo in fondo, in `#formMsg` (`main.js:503-506`).
-2. **Campi obbligatori non segnalati**: Nome, Email, messaggio e consenso sono
+2. ✓ **risolto** in `fix(form)` — **Campi obbligatori non segnalati**: Nome, Email, messaggio e consenso sono
    `required` ma niente lo dice; solo «Telefono» porta «(facoltativo)», «Azienda» no
    (`index.html:780-800`). Chi compila scopre l'obbligo all'invio.
-3. **Pulsante d'invio fuori dal sistema `.btn`** (`index.html:810`, `style.css:430-435`):
+3. ✓ **risolto** in `fix(form)` — **Pulsante d'invio fuori dal sistema `.btn`** (`index.html:810`, `style.css:430-435`):
    niente `min-height:44px`, hover non chiuso in `@media (hover:hover)` (resta
    «appiccicato» sul touch), nessuno stile `:disabled` durante «Invio in corso...»,
    escluso dalle regole di movimento ridotto.
-4. **Il messaggio di esito non riceve il fuoco**: `msg.focus()` (`main.js:498`) su un
+4. ✓ **risolto** in `fix(form)` — **Il messaggio di esito non riceve il fuoco**: `msg.focus()` (`main.js:498`) su un
    `<p>` senza `tabindex="-1"` non fa nulla; dopo l'invio da tastiera il fuoco resta sul
    pulsante e su telefono il messaggio può restare fuori schermo.
 5. **Etichette dei campi a 10.5px maiuscole** (`style.css:420`): sono la parte che
@@ -287,7 +294,7 @@ valori reali dei token.
 
 ### 3. Resa su mobile
 
-1. **Campi a 14.5px: iOS ingrandisce la pagina al tocco** (sotto i 16px,
+1. ✓ **risolto** in `fix(form)` — **Campi a 14.5px: iOS ingrandisce la pagina al tocco** (sotto i 16px,
    `style.css:423`). È il difetto più visibile su iPhone, proprio nel modulo.
 2. **Testo corrente sotto i 16px sul telefono**: schede aree e passaggi 13.5px
    (`style.css:269, 358`), Prima/Dopo 13.5px (`style.css:316`), spec 12.5–13.5px
@@ -295,4 +302,4 @@ valori reali dei token.
    alza sotto 820px.
 3. **`theme-color` diverso dal fondo**: `#101A22` (`index.html:91`, `404.html:57`) contro
    `--bg #101315`: la barra del browser su Android ha una tinta che la pagina non ha.
-4. **Hover del pulsante del modulo attivo anche su touch** (`style.css:435`), vedi 2.3.
+4. ✓ **risolto** in `fix(form)` — **Hover del pulsante del modulo attivo anche su touch** (`style.css:435`), vedi 2.3.
