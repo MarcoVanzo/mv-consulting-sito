@@ -352,15 +352,10 @@ s.parentNode.insertBefore(b, s);})(window.lintrk);
       <div>
         <span class="eyebrow rv">Trasformazione digitale d'impresa</span>
         <h1 class="rv">Non esistono cose facili o difficili. Solo cose che <span class="nw"><span class="grad">sai fare</span>,</span> e cose che non sai ancora fare.</h1>
-        <p class="lede rv">Quello che in azienda sembra complicato quasi sempre non lo è: è solo qualcosa che lì dentro nessuno ha ancora imparato. Noi lo sappiamo fare — costruiamo il software, mettiamo in ordine i processi, rispondiamo dei dati. Poi ve lo insegniamo, perché il pezzo difficile smetta di esserlo.</p>
+        <p class="lede rv">Quello che in azienda sembra complicato, di solito, è solo qualcosa che lì dentro nessuno ha ancora imparato. Noi lo sappiamo fare, poi ve lo insegniamo.</p>
         <div class="hero-cta rv">
           <a class="btn" href="#contatti" data-cta="hero">Parliamone <span class="arw">→</span></a>
           <a class="btn ghost" href="#progetti" data-cta="hero-progetti">Guarda cosa sappiamo fare</a>
-        </div>
-        <div class="stats rv">
-          <div class="stat"><b data-count="3">0</b><span>gestionali su misura in esercizio</span></div>
-          <div class="stat"><b data-count="7">0</b><span>moduli del nostro SaaS Klubia</span></div>
-          <div class="stat"><b data-text="DPO">—</b><span>anche di grandi multinazionali</span></div>
         </div>
       </div>
 
@@ -380,6 +375,14 @@ s.parentNode.insertBefore(b, s);})(window.lintrk);
           </div>
           <p class="demo-note">Ogni rettangolo è un documento della vostra azienda. Nient'altro è cambiato: sono gli stessi dati, messi dove si trovano.</p>
         </div>
+      </div>
+
+      <!-- fuori dalla colonna del testo: su telefono vengono dopo la demo,
+           su schermo tornano sotto il testo grazie alle aree della griglia -->
+      <div class="stats rv">
+        <div class="stat"><b data-count="3">0</b><span>gestionali su misura in esercizio</span></div>
+        <div class="stat"><b data-count="7">0</b><span>moduli del nostro SaaS Klubia</span></div>
+        <div class="stat"><b data-text="DPO">—</b><span>anche di grandi multinazionali</span></div>
       </div>
     </div>
   </section>
@@ -488,7 +491,7 @@ s.parentNode.insertBefore(b, s);})(window.lintrk);
       </article>
 
       <!-- 02 -->
-      <article class="case" style="--p:#E8006A; --p2:#34D399; --p3:#E8006A; --tint:rgba(232,0,106,.10)">
+      <article class="case" style="--p:#E8006A; --p-text:#FF4A9D; --p2:#34D399; --p3:#E8006A; --tint:rgba(232,0,106,.10)">
         <div class="case-top">
           <div class="rv">
             <div class="case-id"><span class="kind">Turismo sportivo</span></div>
@@ -588,7 +591,7 @@ s.parentNode.insertBefore(b, s);})(window.lintrk);
       </article>
 
       <!-- 04 -->
-      <article class="case nis" style="--p:#E04552; --p2:#5B86D6; --p3:#E04552; --tint:rgba(173,34,48,.12)">
+      <article class="case nis" style="--p:#E04552; --p-text:#E76C77; --p2:#5B86D6; --p3:#E04552; --tint:rgba(173,34,48,.12)">
         <div class="case-top">
           <div class="rv">
             <div class="case-id"><span class="kind">Distribuzione edile · Sicurezza informatica</span></div>
@@ -775,40 +778,45 @@ s.parentNode.insertBefore(b, s);})(window.lintrk);
       </div>
       <div class="form rv">
         <form id="contatto" method="post" action="contatti.php" novalidate>
+          <p class="form-note">I campi con <span class="req" aria-hidden="true">*</span> sono obbligatori.</p>
           <div class="row">
             <div class="field">
-              <label for="f-nome">Nome e cognome</label>
-              <input id="f-nome" name="nome" type="text" required autocomplete="name">
+              <label for="f-nome">Nome e cognome <span class="req" aria-hidden="true">*</span></label>
+              <input id="f-nome" name="nome" type="text" required autocomplete="name" aria-describedby="e-nome">
+              <p class="field-err" id="e-nome" hidden></p>
             </div>
             <div class="field">
-              <label for="f-azienda">Azienda</label>
+              <label for="f-azienda">Azienda <span class="opt">(facoltativo)</span></label>
               <input id="f-azienda" name="azienda" type="text" autocomplete="organization">
             </div>
           </div>
           <div class="row">
             <div class="field">
-              <label for="f-email">Email</label>
-              <input id="f-email" name="email" type="email" required autocomplete="email">
+              <label for="f-email">Email <span class="req" aria-hidden="true">*</span></label>
+              <input id="f-email" name="email" type="email" required autocomplete="email" aria-describedby="e-email">
+              <p class="field-err" id="e-email" hidden></p>
             </div>
             <div class="field">
-              <label for="f-tel">Telefono <span style="text-transform:none; letter-spacing:0">(facoltativo)</span></label>
+              <label for="f-tel">Telefono <span class="opt">(facoltativo)</span></label>
               <input id="f-tel" name="telefono" type="tel" autocomplete="tel">
             </div>
           </div>
           <div class="field">
-            <label for="f-msg">Che cosa vi sembra complicato?</label>
-            <textarea id="f-msg" name="messaggio" required placeholder="Anche solo due righe: da lì partiamo."></textarea>
+            <label for="f-msg">Che cosa vi sembra complicato? <span class="req" aria-hidden="true">*</span></label>
+            <textarea id="f-msg" name="messaggio" required placeholder="Anche solo due righe: da lì partiamo." aria-describedby="e-msg"></textarea>
+            <p class="field-err" id="e-msg" hidden></p>
           </div>
           <p class="hp"><label for="f-sito">Non compilare</label><input id="f-sito" name="sito" type="text" tabindex="-1" autocomplete="off"></p>
           <!-- provenienza della visita: la riempie main.js dai parametri UTM dell'annuncio.
                Viaggia con il messaggio, non serve alcun cookie. -->
           <input type="hidden" name="origine" id="f-origine" value="">
           <label class="consent">
-            <input type="checkbox" name="consenso" value="1" required>
-            <span>Ho letto l'<a href="/privacy-policy.html">informativa privacy</a>: i dati servono solo a rispondere a questa richiesta e restano 24 mesi. Nessuna newsletter, nessuna cessione a terzi.</span>
+            <input type="checkbox" name="consenso" value="1" required aria-describedby="e-consenso">
+            <span>Ho letto l'<a href="/privacy-policy.html">informativa privacy</a>: i dati servono solo a rispondere a questa richiesta e restano 24 mesi. Nessuna newsletter, nessuna cessione a terzi. <span class="req" aria-hidden="true">*</span></span>
           </label>
-          <button type="submit" data-cta="form">Invia il messaggio</button>
-          <p class="form-msg" id="formMsg" role="status"></p>
+          <p class="field-err consent-err" id="e-consenso" hidden></p>
+          <button class="btn" type="submit" data-cta="form">Invia il messaggio</button>
+          <p class="form-msg" id="formMsg" role="status" tabindex="-1"></p>
         </form>
       </div>
     </div>

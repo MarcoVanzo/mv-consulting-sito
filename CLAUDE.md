@@ -32,6 +32,8 @@ deploy, verifiche dopo la pubblicazione. Questo file dice come lavorare nel repo
 
 ## Dove stanno le cose
 
+Grafica: leggi design-system/mv-consulting/MASTER.md prima di toccare style.css o index.html.
+
 I contenuti sono direttamente in `index.html`; non esistono template né parziali. Le
 schede progetto (`<article class="case">`) prendono i colori del brand dall'attributo
 `style` (`--p`, `--p2`, `--p3`, `--tint`): per aggiungerne una si duplica l'articolo e
