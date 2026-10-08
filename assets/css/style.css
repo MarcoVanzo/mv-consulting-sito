@@ -180,7 +180,11 @@ header.nav.stuck .brand{width:150px; height:30px;}
 }
 /* la colonna del testo era più stretta della scheda: il titolo andava a sei righe
    e accanto restava un vuoto. Ora il peso delle due colonne è invertito. */
-.hero-grid{display:grid; grid-template-columns:minmax(0,1.14fr) minmax(0,1fr); gap:52px; align-items:center; position:relative;}
+.hero-grid{display:grid; grid-template-columns:minmax(0,1.14fr) minmax(0,1fr); gap:0 52px; align-items:center; position:relative;
+  grid-template-areas:"testo demo" "numeri demo";}
+.hero-grid > :first-child{grid-area:testo;}
+.hero-grid > .demo{grid-area:demo;}
+.hero-grid > .stats{grid-area:numeri; align-self:start;}
 .eyebrow{
   display:inline-flex; align-items:center; gap:10px; font-size:13px; letter-spacing:.1em;
   text-transform:uppercase; color:var(--brand); border:1px solid var(--edge); border-radius:999px;
@@ -197,12 +201,11 @@ header.nav.stuck .brand{width:150px; height:30px;}
   border-top:1px solid var(--edge); padding-top:24px;}
 .stat b{display:block; font-size:29px; font-weight:600; letter-spacing:-.03em; font-variant-numeric:tabular-nums; line-height:1.1;}
 .stat span{font-size:13px; color:var(--dim);}
-/* su schermi stretti tre colonne diventano tre parole a capo per riga: si passa a elenco */
+/* su telefono restano tre colonne, con la didascalia sotto la cifra: messa a
+   fianco, con la cifra in una colonna fissa, sembravano una tabella */
 @media (max-width:620px){
-  .stats{grid-template-columns:1fr; gap:0; padding-top:8px;}
-  .stat{display:flex; align-items:baseline; gap:14px; padding:11px 0; border-bottom:1px solid var(--edge);}
-  .stat b{font-size:24px; min-width:52px; flex:none;}
-  .stat span{font-size:13px;}
+  .stats{gap:16px; padding-top:20px;}
+  .stat b{font-size:26px;}
 }
 
 /* ---------- demo trasformazione ---------- */
@@ -595,6 +598,8 @@ input[type=checkbox].CybotCookiebotDialogBodyLevelButton{accent-color:var(--bran
   .w{padding:0 20px;}
   .hero{padding:36px 0 56px;}
   .hero-grid,.case-top,.founder-grid,.end-in{grid-template-columns:1fr; gap:34px;}
+  .hero-grid{grid-template-areas:"testo" "demo" "numeri";}
+  .hero-cta{margin-bottom:0;}
   .areas{grid-template-columns:1fr;}
   .ba{grid-template-columns:1fr;}
   .ba .before{border-right:0; border-bottom:1px solid var(--edge);}
@@ -1009,7 +1014,6 @@ footer .foot-in::before{content:""; position:absolute; top:0; left:32px; right:3
 /* numeri della hero: le didascalie andavano a capo a caso, interlinea larga */
 .stats{grid-template-columns:repeat(3,minmax(0,1fr)); gap:28px;}
 .stat span{display:block; margin-top:6px; line-height:1.4; text-wrap:balance;}
-@media (max-width:620px){.stats{grid-template-columns:1fr; gap:0;} .stat span{margin-top:0;}}
 
 /* aree: titoli, testi ed elenchi partono alla stessa altezza in tutte e
    quattro le schede, qualunque sia la lunghezza del paragrafo */

@@ -158,8 +158,9 @@ Non c'è una scala a token: i valori ricorrono per convenzione.
 - **Hero**: due aloni (blu dietro il titolo, ambra diluita in alto a destra) che
   derivano in 22s, griglia tecnica 56px mascherata, luce che segue il puntatore.
   Eyebrow a pillola; H1 con parole che salgono e «sai fare» in gradiente blu→ciano;
-  due CTA (piena + ghost); tre stats che diventano elenco sotto 620px. A destra la
-  **demo**: scheda con canvas, due etichette «prima» (ambra) / «dopo» (blu), slider,
+  due CTA (piena + ghost); tre stats con la didascalia sotto la cifra, sempre su tre
+  colonne. Le aree della griglia (`testo`, `demo`, `numeri`) tengono i numeri sotto il
+  testo su schermo e li portano **dopo la demo** sotto 820px. A destra la **demo**: scheda con canvas, due etichette «prima» (ambra) / «dopo» (blu), slider,
   inclinazione 3D verso il puntatore.
 - **Nastro clienti** `.marquee`: loghi in scala di grigi a .55, colore in hover;
   scorre in 40s dentro la colonna con dissolvenze ai bordi; pulsante di pausa.
@@ -211,7 +212,7 @@ Non c'è una scala a token: i valori ricorrono per convenzione.
 ## Breakpoint
 
 `max-width`: **400** (logo e nav compatti) · **560** (CTA hero a tutta larghezza, scan
-e footer a una colonna, etichette demo separate) · **620** (stats a elenco) · **820**
+e footer a una colonna, etichette demo separate) · **620** (stats più compatti) · **820**
 (il principale: una colonna, gutter 20px, cta-bar, `--navh` 66px) · **900** (burger e
 menu; sommario legale in testa) · **960** (aree a 2, testimonianze a 1, footer a 2).
 `min-width`: **821** (scacchiera dei progetti), **961** (FAQ sticky, testimonianza
@@ -298,6 +299,10 @@ valori reali dei token.
    guida la compilazione, scritte più piccole del testo di consenso.
 
 ### 3. Resa su mobile
+
+0. ✓ **risolto** in `fix(mobile)` — **Hero sul telefono**: la demo stava sotto i numeri,
+   lontana dalla prima schermata, e i numeri avevano la didascalia a fianco in una
+   colonna fissa (sembravano una tabella).
 
 1. ✓ **risolto** in `fix(form)` — **Campi a 14.5px: iOS ingrandisce la pagina al tocco** (sotto i 16px,
    `style.css:423`). È il difetto più visibile su iPhone, proprio nel modulo.
