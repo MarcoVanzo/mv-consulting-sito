@@ -65,6 +65,7 @@ Ogni `<article class="case">` porta i colori del cliente nell'attributo `style`:
 | `--p` | colore principale | barretta verticale del titolo `h3::before`, «Dopo» `.ba .after h4` e suo filetto, secondo testo di `.viz-head`, ultimo passaggio di `.flow`, pallini dei moduli accesi, alone del bordo dello screenshot |
 | `--p2` | secondo colore | pallino del 3° modulo acceso, scansione NIS 2 (`.scan-it`) |
 | `--p3` | terzo colore (facoltativo, ricade su `--p`) | pallino del 5° modulo acceso |
+| `--p-text` | `--p` schiarito per i **testi piccoli** (ricade su `--p`); va dichiarato quando `--p` sta sotto 4.5:1 su `--panel2` | «Dopo», secondo testo di `.viz-head`, ultimo passaggio di `.flow` |
 | `--tint` | alone trasparente (~.10–.13) | gradiente in testa alla fascia, fondo di «Dopo», testata della viz, moduli accesi |
 
 Default (`style.css:280`): tutto `--brand`, `--tint rgba(66,157,218,.07)`.
@@ -72,9 +73,9 @@ Default (`style.css:280`): tutto `--brand`, `--tint rgba(66,157,218,.07)`.
 | Progetto | `--p` | `--p2` | `--p3` | `--tint` | Eccezioni |
 |---|---|---|---|---|---|
 | Savino Del Bene Volley | `#C9A84C` | `#ED028C` | `#003063` | `rgba(201,168,76,.10)` | — |
-| MV Sport Travel | `#E8006A` | `#34D399` | `#E8006A` | `rgba(232,0,106,.10)` | — |
+| MV Sport Travel | `#E8006A` | `#34D399` | `#E8006A` | `rgba(232,0,106,.10)` | `--p-text:#FF4A9D` (4.65:1 su `--panel2`) |
 | Klubia (`.klubia`) | `#00E5FF` | `#8B5CF6` | `#EC4899` | `rgba(139,92,246,.13)` | barretta e testata con gradiente rosa→viola→ciano, filetto «Dopo» `#8B5CF6` |
-| Zanutta NIS 2 (`.nis`) | `#E04552` | `#5B86D6` | `#E04552` | `rgba(173,34,48,.12)` | barretta `#AD2230→#1E3A72`, logo su lastra chiara `#F4F2EE` |
+| Zanutta NIS 2 (`.nis`) | `#E04552` | `#5B86D6` | `#E04552` | `rgba(173,34,48,.12)` | `--p-text:#E76C77` (4.72:1), barretta `#AD2230→#1E3A72`, logo su lastra chiara `#F4F2EE` |
 
 I campioni `.pal .sw i` mostrano invece la palette originale del cliente (colori
 letterali, possono differire da `--p`: sono i colori veri, `--p` è quello leggibile sul
@@ -252,7 +253,7 @@ valori reali dei token.
 
 ### 1. Accessibilità e contrasto
 
-1. **`--p` di MV Sport Travel e Zanutta sotto 4.5:1 su testo piccolo.** `#E8006A` su
+1. ✓ **risolto** in `fix(a11y)` con `--p-text` — **`--p` di MV Sport Travel e Zanutta sotto 4.5:1 su testo piccolo.** `#E8006A` su
    `--panel` = 3.71:1, `#E04552` = 4.11:1, usati per «Dopo» / «L'obiettivo» a 10px
    maiuscolo (`style.css:315`) e per la testata della viz (`style.css:322`). Valori in
    `index.html:491` e `index.html:591`. Serve un `--p` più chiaro per il testo,
