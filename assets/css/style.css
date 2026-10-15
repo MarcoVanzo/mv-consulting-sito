@@ -278,6 +278,21 @@ section[id], main[id]{scroll-margin-top:90px;}
 .area li::before{content:""; position:absolute; left:0; top:11px; width:6px; height:1px; background:var(--brand);}
 .area.hi{border-color:rgba(66,157,218,.55); background:linear-gradient(180deg, rgba(66,157,218,.07), transparent 45%), var(--panel);}
 
+/* video sotto le aree: muto, parte quando è in vista e si ferma quando esce */
+.film{position:relative; margin:40px 0 0; border:1px solid var(--edge); border-radius:12px; overflow:hidden;
+  background:var(--panel); box-shadow:0 30px 60px -30px rgba(0,0,0,.7); aspect-ratio:16/9;}
+.film video{display:block; width:100%; height:100%; object-fit:cover;}
+.film-btn{position:absolute; right:14px; bottom:14px; width:40px; height:40px; border-radius:50%; cursor:pointer;
+  border:1px solid rgba(255,255,255,.25); background:rgba(16,19,21,.6); backdrop-filter:blur(6px);
+  display:grid; place-items:center; transition:border-color .2s var(--ease);}
+.film-btn:hover{border-color:var(--brand);}
+.film-btn:focus-visible{outline:2px solid var(--brand); outline-offset:3px;}
+/* triangolo = avvia, due barre = metti in pausa */
+.film-btn span{width:0; height:0; margin-left:3px; border-style:solid; border-width:7px 0 7px 12px;
+  border-color:transparent transparent transparent var(--text);}
+.film.play .film-btn span{width:10px; height:14px; margin:0; border:0;
+  border-left:3px solid var(--text); border-right:3px solid var(--text);}
+
 /* progetti - ogni fascia prende i colori del progetto */
 /* l'alone di ogni fascia deborda di 14vw per lato: senza questo taglio allargava
    il documento di una quarantina di pixel e la pagina scorreva in orizzontale. */
