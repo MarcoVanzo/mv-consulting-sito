@@ -543,4 +543,31 @@
         .then(function(){ btn.disabled = false; btn.textContent = "Invia il messaggio"; });
     });
   }
+
+  /* ---- video sotto le aree ----
+     Muto e in loop: parte da solo quando è in vista e si ferma quando esce, così
+     chi non arriva fin lì non scarica niente (preload="none"). Con movimento
+     ridotto non parte da solo: c'è il pulsante. */
+  var film = document.querySelector(".film");
+  if(film){
+    var vid = film.querySelector("video"), fbtn = film.querySelector(".film-btn");
+    var fermato = reduce; // l'utente ha premuto pausa: non ripartire allo scroll
+    var stato = function(){
+      var va = !vid.paused;
+      film.classList.toggle("play", va);
+      fbtn.setAttribute("aria-label", va ? "Metti in pausa il video" : "Avvia il video");
+    };
+    vid.addEventListener("play", stato);
+    vid.addEventListener("pause", stato);
+    fbtn.addEventListener("click", function(){
+      if(vid.paused){ fermato = false; vid.play().catch(function(){}); }
+      else { fermato = true; vid.pause(); }
+    });
+    new IntersectionObserver(function(es){
+      es.forEach(function(e){
+        if(e.isIntersecting){ if(!fermato) vid.play().catch(function(){}); }
+        else if(!vid.paused) vid.pause();
+      });
+    }, {threshold:.4}).observe(film);
+  }
 })();
